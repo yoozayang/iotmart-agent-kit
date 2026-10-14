@@ -43,6 +43,10 @@ iotmart-agent-kit/
 ├── .mcp.json                  Claude Code專案MCP設定
 ├── salesforce-mcp-config.json Salesforce hosted MCP端點
 ├── scripts/link.sh            掛載到專案工作目錄
+├── scripts/upstream/          上游檢查:風險掃描,個人工具版本比對
+├── scripts/install-autopull.sh 本機每日自動同步
+├── upstream-watch.json        個人工具的上游與固定版本
+├── .github/workflows/         upstream-check排程
 ├── THIRD_PARTY_NOTICES.md
 └── LICENSES/
 ```
@@ -168,6 +172,20 @@ npx skills update -p -y                                     # 更新
 自有規則:
 - 背景知識放`.codex/knowledge/`,可執行程序放`.codex/playbooks/`,產出格式範本放`.codex/skills/`,需原生觸發的skill放`.agents/skills/<name>/SKILL.md`
 - 新檔案要同時登記到`.codex/routing.md`與`AGENTS.md`的檔案清單
+
+## 上游更新機制
+
+不在每次session觸發,改為排程檢查;會改變規則或評估對象的更新一律需人工確認
+
+| 對象 | 檢查 | 結果 | 套用 |
+| --- | --- | --- | --- |
+| 官方sf-skills(`.agents/skills/platform-*`) | GitHub Actions `upstream-check`,每週一09:00(台北) | 有更新時開或更新PR `upstream/sf-skills`,附變更摘要與風險掃描(`scripts/upstream/scan-risk.sh`) | 對照overlay審查後合併 |
+| 個人工具(`upstream-watch.json`列出的caveman,Ponytail) | 同上(`scripts/upstream/watch.sh`) | 監看範圍有變更時開或更新issue `[upstream] <名稱>有新版本`,只通知 | 自行升級後把`upstream-watch.json`的`pinned`改為新commit,issue下次檢查自動關閉 |
+| 本機kit clone | macOS LaunchAgent,每日09:30 | `git pull --ff-only`,合併後的PR自動同步到所有掛載專案 | 自動;有未推送修改時略過 |
+
+- 手動觸發檢查:GitHub Actions頁面執行`Upstream check`,或`gh workflow run upstream-check.yml`
+- 安裝本機自動同步:`scripts/install-autopull.sh`;移除:`scripts/install-autopull.sh --remove`;紀錄:`~/Library/Logs/iotmart-agent-kit-autopull.log`
+- Repo設定需允許GitHub Actions建立PR(Settings→Actions→General→Workflow permissions)
 
 ## 執行層防護
 

@@ -1,0 +1,125 @@
+name: Upstream check
+
+# Weekly check of third-party sources. Nothing is applied automatically:
+# - official sf-skills: updates are proposed as a pull request for review against the overlay
+# - personal tools (upstream-watch.json): new upstream versions are reported as issues only
+on:
+  schedule:
+    - cron: "0 1 * * 1" # Monday 01:00 UTC (09:00 Taipei)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: upstream-check
+  cancel-in-progress: false
+
+jobs:
+  sf-skills:
+    name: Official sf-skills update PR
+    runs-on: ubuntu-latest
+    env:
+      DO_NOT_TRACK: "1"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Update project skills from skills-lock.json
+        run: CI=true npx -y skills update -p -y < /dev/null
+
+      - name: Keep only official skill changes
+        run: |
+          # The CLI may add per-agent links (e.g. .claude/skills); the kit mounts .agents/skills instead.
+          rm -rf .claude/skills
+          git checkout -- .claude 2>/dev/null || true
+          unexpected="$(git status --porcelain | awk '{print $2}' | grep -vE '^(\.agents/skills/platform-|skills-lock\.json$)' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected changes outside official skills:"; echo "$unexpected"; exit 1
+          fi
+
+      - name: Build PR body
+        id: body
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          head="$(gh api repos/forcedotcom/sf-skills/commits/main --jq '.sha[0:7] + "," + .commit.committer.date[0:10]')"
+          sed -i -E "s/commit \`[0-9a-f]{7}\`,[0-9]{4}-[0-9]{2}-[0-9]{2}/commit \`${head%%,*}\`,${head#*,}/" THIRD_PARTY_NOTICES.md
+          {
+            echo "上游 [forcedotcom/sf-skills](https://github.com/forcedotcom/sf-skills) 有更新,上游最新commit \`${head%%,*}\`(${head#*,})"
+            echo
+            echo "### 變更檔案"
+            echo '```'
+            git add -A .agents/skills skills-lock.json THIRD_PARTY_NOTICES.md
+            git diff --cached --stat -- . ':(exclude)*.json' | tail -40
+            echo "JSON資產變更檔數: $(git diff --cached --name-only -- '*.json' | wc -l)"
+            echo '```'
+            echo
+            bash scripts/upstream/scan-risk.sh HEAD
+            echo
+            echo "### 合併前檢查"
+            echo "- [ ] 風險掃描命中項目已在\`.codex/playbooks/sf-skills-overlay.md\`覆寫"
+            echo "- [ ] SKILL.md的description變更不會誤觸發或與repo規則衝突"
+            echo "- [ ] 新增的引用skill或script已評估"
+            echo "- [ ] README與THIRD_PARTY_NOTICES內容正確"
+          } > "$RUNNER_TEMP/pr-body.md"
+          git reset -q
+
+      - name: Ensure label
+        if: steps.body.outputs.changed == 'true'
+        run: gh label create upstream-update --color 0E8A16 --description "Automated upstream skill update" --force
+
+      - name: Open or update pull request
+        if: steps.body.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: upstream/sf-skills
+          delete-branch: true
+          title: "chore:更新官方sf-skills"
+          commit-message: |
+            docs:更新官方sf-skills
+
+            由upstream-check workflow自動產生,合併前需對照sf-skills-overlay.md審查
+          body-path: ${{ runner.temp }}/pr-body.md
+          labels: upstream-update
+          add-paths: |
+            .agents/skills
+            skills-lock.json
+            THIRD_PARTY_NOTICES.md
+
+  personal-tools:
+    name: Personal tools watch (issue only)
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure label
+        run: gh label create upstream-watch --color FBCA04 --description "Upstream new version notice" --force
+
+      - name: Check upstream and sync issues
+        run: |
+          out="$RUNNER_TEMP/watch"
+          bash scripts/upstream/watch.sh "$out" | while IFS=$'\t' read -r name status report; do
+            title="[upstream] ${name}有新版本"
+            number="$(gh issue list --label upstream-watch --state open --search "in:title \"$title\"" --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number" | head -1)"
+            if [ "$status" = "ahead" ]; then
+              if [ -n "$number" ]; then
+                gh issue edit "$number" --body-file "$report"
+              else
+                gh issue create --title "$title" --label upstream-watch --body-file "$report"
+              fi
+            elif [ -n "$number" ]; then
+              gh issue close "$number" --comment "固定版本已與上游監看範圍一致,自動關閉"
+            fi
+          done

@@ -1,0 +1,16 @@
+{
+  "caveman": {
+    "repo": "JuliusBrussee/caveman",
+    "pinned": "e2c09c9a7e66d6bb30cadb5f955bd8a36b0e8d9a",
+    "paths": ["skills/"],
+    "installed": "~/.agents/skills/cave*(使用者層級,~/.claude/skills連結)",
+    "update": "npx skills add JuliusBrussee/caveman -g -a codex -a claude-code -y"
+  },
+  "ponytail": {
+    "repo": "DietrichGebert/ponytail",
+    "pinned": "763e04deeeb59551aba28557dc46bde6092f2e21",
+    "paths": [""],
+    "installed": "~/.codex/plugins/ponytail(v4.8.1,git clone)",
+    "update": "git -C ~/.codex/plugins/ponytail fetch --tags && git -C ~/.codex/plugins/ponytail checkout <新版tag>"
+  }
+}
