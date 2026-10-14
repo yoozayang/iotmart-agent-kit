@@ -1,0 +1,75 @@
+﻿IoTMart Agent Kit 安裝說明
+==========================
+
+這個資料夾裡有 IoTMart 專案共用的 AI agent 規則與 skill(Codex / Claude Code / Gemini 都能用)。
+安裝程式只會複製檔案,不會改動你的程式碼,也不需要管理員權限。
+
+【Windows】
+1. 在下載的 zip 檔按右鍵 →「全部解壓縮」
+2. 打開解壓縮後的資料夾,雙擊 install-windows.cmd
+   (如果跳出「Windows 已保護您的電腦」,按「其他資訊」→「仍要執行」)
+3. 跳出「選擇資料夾」視窗時,選你的 IoTMart 專案資料夾
+   (就是裡面有 sfdx-project.json 的那一層)
+   按「取消」= 只安裝 skill,不放專案規則
+4. 看到「安裝完成」後按 Enter 關閉視窗
+5. 重新開啟 Codex / Claude Code / Gemini
+
+【macOS】
+1. 雙擊 zip 檔解壓縮
+2. 在 install-mac.command 按右鍵 →「打開」→ 再按「打開」
+   (第一次需要這樣做,之後可以直接雙擊)
+3. 跳出「選擇資料夾」視窗時,選你的 IoTMart 專案資料夾
+   按「取消」= 只安裝 skill
+4. 問到「要安裝 sf 指令防護嗎」時,直接按 Enter
+5. 看到「安裝完成」後按 Enter,重新開啟終端機與 Codex / Claude Code / Gemini
+
+【更新】
+下載新版 zip,重複上面的步驟即可。
+有變動的舊檔會先備份到使用者資料夾下的 .iotmart-agent-kit-backup 資料夾。
+
+【不會被覆蓋的個人設定】
+.codex/config.toml、.gemini/settings.json 已存在時會保留你的版本。
+.claude/settings.json 已存在時,只會加入 kit 的權限規則,其他設定不動。
+
+【遇到問題】
+把安裝視窗的畫面截圖,連同你的作業系統,傳給 kit 維護者。
+
+
+==========================
+IoTMart Agent Kit - Install guide (English)
+==========================
+
+This folder contains the shared AI agent rules and skills for the IoTMart project
+(usable by Codex / Claude Code / Gemini). The installer only copies files; it does not
+change your code and needs no admin rights. Its on-screen messages are in Chinese.
+
+[Windows]
+1. Right-click the downloaded zip -> "Extract All" (skip if you used git clone)
+2. Open the folder and double-click install-windows.cmd
+   (if "Windows protected your PC" appears, click "More info" -> "Run anyway")
+3. In the folder picker, choose your IoTMart project folder
+   (the one that contains sfdx-project.json)
+   Cancel = install the skills only, without project rules
+4. When "安裝完成" (installation complete) appears, press Enter
+5. Restart Codex / Claude Code / Gemini
+
+[macOS]
+1. Double-click the zip to extract it (skip if you used git clone)
+2. Right-click install-mac.command -> "Open" -> "Open"
+   (needed the first time only; afterwards you can double-click it)
+3. In the folder picker, choose your IoTMart project folder
+   Cancel = install the skills only
+4. When asked "要安裝 sf 指令防護嗎" (install the sf command guard?), just press Enter
+5. When "安裝完成" appears, press Enter, then restart your terminal and Codex / Claude Code / Gemini
+
+[Update]
+Run "git pull" (or download the new zip) and repeat the steps above.
+Changed files are first backed up to the .iotmart-agent-kit-backup folder in your user folder.
+
+[Personal settings that are never overwritten]
+Existing .codex/config.toml and .gemini/settings.json are kept as they are.
+If .claude/settings.json exists, only the kit's permission rules are added.
+
+[Problems]
+Take a screenshot of the installer window and send it, with your operating system,
+to the kit maintainer.

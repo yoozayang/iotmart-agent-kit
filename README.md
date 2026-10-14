@@ -1,6 +1,28 @@
 # iotmart-agent-kit
 
-IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一份規則與skill,以symlink掛進專案工作目錄,不進公司repo版控
+**中文** | [English](README.en.md)
+
+IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一份規則與skill,裝進專案工作目錄,不進公司repo版控
+
+## 團隊成員安裝(Windows/macOS)
+
+不需要agent協助,也不需要管理員權限
+
+1. 取得kit:`git clone https://github.com/yoozayang/iotmart-agent-kit.git`,或在GitHub頁面按「Code→Download ZIP」後解壓縮
+2. 雙擊安裝檔:
+   - Windows:`install-windows.cmd`(若出現「Windows已保護您的電腦」,按「其他資訊」→「仍要執行」)
+   - macOS:在`install-mac.command`按右鍵→「打開」(第一次需要,之後可直接雙擊)
+3. 跳出「選擇資料夾」時選IoTMart專案資料夾(有`sfdx-project.json`的那一層);按「取消」=只安裝skill到使用者資料夾
+4. 看到「安裝完成」後按Enter,重新開啟Codex/Claude Code/Gemini
+
+安裝程式會做的事:
+- 把規則(`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`.codex/`)與skill(`.agents/skills`,`.claude/skills`)複製進專案,並寫入專案`.git/info/exclude`
+- 把Codex執行規則複製到`~/.codex/rules/iotmart-sf-guard.rules`
+- `.claude/settings.json`已存在時只合併kit的ask/deny規則;`.codex/config.toml`,`.gemini/settings.json`已存在時保留原檔
+- 有變動的舊檔先移到`~/.iotmart-agent-kit-backup/<時間>/`,內容相同則不動
+- macOS會詢問是否安裝`sf`指令防護(`bin/sf`,加入shell PATH);Windows沒有此項,由Codex規則與Claude權限把關
+
+更新:`git pull`(或重新下載ZIP)後再雙擊一次安裝檔。操作說明也放在根目錄`INSTALL.txt`
 
 ## 架構總覽
 
@@ -42,12 +64,16 @@ iotmart-agent-kit/
 ├── .gemini/                   Gemini MCP設定與code review風格
 ├── .mcp.json                  Claude Code專案MCP設定
 ├── salesforce-mcp-config.json Salesforce hosted MCP端點
-├── scripts/link.sh            掛載到專案工作目錄
+├── scripts/link.sh            維護者用:以symlink掛載到專案工作目錄
+├── scripts/install.ps1,install.sh 團隊成員用:以複製方式安裝
 ├── scripts/upstream/          官方skill更新的風險掃描
 ├── scripts/autoupdate.sh      本機每日自動更新(kit與個人工具)
 ├── scripts/install-autoupdate.sh 安裝本機排程
 ├── personal-tools.json        個人工具的上游與更新方式
 ├── .github/workflows/         upstream-check排程
+├── install-windows.cmd        團隊成員安裝入口(Windows,呼叫scripts/install.ps1)
+├── install-mac.command        團隊成員安裝入口(macOS,呼叫scripts/install.sh)
+├── INSTALL.txt                給非技術使用者的安裝說明
 ├── THIRD_PARTY_NOTICES.md
 └── LICENSES/
 ```
@@ -63,7 +89,9 @@ iotmart-agent-kit/
 | 工作模式 | `.codex/skills/*.md` | 需求審查,最小規格,SDD,測試案例,驗證審查,部署包的產出格式 | 環境操作 |
 | Agent skill | `.agents/skills/*/SKILL.md` | 自有skill與第三方官方skill | 對第三方檔案的修改 |
 
-## 快速開始
+## 維護者安裝(symlink模式)
+
+直接編輯kit並commit的人使用;改動會即時反映到掛載的專案
 
 ```bash
 git clone git@github.com:yoozayang/iotmart-agent-kit.git ~/Development/iotmart-agent-kit
@@ -138,7 +166,7 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 
 ## 可選的個人工具
 
-下列工具屬個人工作偏好,不放在本repo,也不會由`link.sh`掛進專案。需要時自行安裝在使用者層級:
+下列工具屬個人工作偏好,不放在本repo,也不會由`link.sh`或安裝程式裝進專案。需要時自行安裝在使用者層級(`scripts/autoupdate.sh`與`personal-tools.json`為維護者本機使用):
 
 | 工具 | 用途 | 安裝 | 注意 |
 | --- | --- | --- | --- |
@@ -168,7 +196,7 @@ npx skills update -p -y                                     # 更新
 1. 檢查skill內容是否與`AGENTS.md`硬限制衝突,衝突寫進overlay
 2. 需要路由時更新`.codex/routing.md`,並在`AGENTS.md`對應清單加入
 3. 更新`THIRD_PARTY_NOTICES.md`與`LICENSES/`
-4. 更新本README的Skill清單
+4. 更新`README.md`與`README.en.md`的Skill清單
 
 自有規則:
 - 背景知識放`.codex/knowledge/`,可執行程序放`.codex/playbooks/`,產出格式範本放`.codex/skills/`,需原生觸發的skill放`.agents/skills/<name>/SKILL.md`
