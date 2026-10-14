@@ -33,6 +33,8 @@
 - 最終manifest定案後,執行`sf project convert source -x <final-package.xml> -d ~/codex_tmp/<task>/mdapi`產生MetadataAPI套件
 - 使用`--metadata-dir ~/codex_tmp/<task>/mdapi`做dry-run與部署,兩者必須使用同一套件與測試範圍
 - 禁止`--ignore-conflicts`與任何guard bypass
+- 部署期間的合併與修補只可存在`~/codex_tmp/<task>`的暫存來源與套件,不可修改目前工作分支
+- 若來源程式本身無法編譯或必須修改才能部署,停止部署處理並將修正作為獨立的實作或PR,取得使用者明確授權後才修改來源
 - 僅deploy差異檔,前提是充分檢查相依性
 - 禁止:
   - 全量deploy
