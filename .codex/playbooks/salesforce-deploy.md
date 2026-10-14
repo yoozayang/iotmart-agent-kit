@@ -20,9 +20,8 @@
 - 禁止`sfdx`
 
 ## Metadata
-- 互動確認目標org
-- 先retrieve再作業
-- 先retrieve再修改
+- 目標org依`.codex/playbooks/mcp-usage.md`的Target Org規則
+- 先retrieve再作業與修改
 - 禁止本地覆蓋org
 
 ## Deploy
@@ -46,7 +45,6 @@
 ## Sandbox
 - deploy前同步最新sandbox
 - deploy前檢查目標檔案
-- 禁止覆蓋他人修改
 - 禁止覆蓋他人修改，予以整合保留後一併部署
 - 衝突不明:
   - 停止並討論

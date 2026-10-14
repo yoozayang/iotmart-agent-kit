@@ -12,7 +12,7 @@
 - 開發角色:Salesforce+Magnolia架構與開發
 
 ## 暫存輸出
-- 暫存輸出:`~/codex_tmp`，確保此資料夾已經在本地即被git exclude
+- `~/codex_tmp`，確保此資料夾已經在本地即被git exclude
 
 ## 工作完成後
 - 完成PR後:

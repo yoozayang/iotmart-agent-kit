@@ -31,6 +31,10 @@ more conservative rule — same policy the source system uses internally.
 ## Hard constraints (do not weaken or bypass)
 - No unauthorized Prod deploy. No deploy/validate/dry-run command without explicit
   user authorization AND a confirmed Target Org.
+- Target Org = the org the user named in this conversation; reuse it without asking
+  again or comparing it to `SF_TARGET_ORG`. Ask only if none was named. Always pass
+  `-o <Target Org>` to `sf`; use the Salesforce MCP only when its default org is the
+  Target Org.
 - Before any environment comparison: the comparison target is always the actual
   files retrieved from that target environment — never treat a branch diff as an
   environment diff.

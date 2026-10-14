@@ -29,12 +29,12 @@
 ## Guardrails
 - Do not design or implement before identifying missing information and risks
 - Do not assume Prod,UAT,Dev,target org,market,or platform responsibility when not specified
-- For Data/Metadata/MCP tasks,confirm Target Org first
+- For Data/Metadata/MCP tasks,use the Target Org named in the conversation; ask only if none has been named
 - If Prod validation,dry-run,or deploy may be involved,stop before commands until explicit authorization is obtained
 - Preserve fact vs inference separation when writing investigation notes
 
 ## 外部資源存取規範 (Azure/Notion/Salesforce/GitLab)
-- **Notion**：讀取根目錄 `.env` 的 `NOTION_API_KEY`，以連結末 32 位 hex 作為 page_id 調用 Notion API 獲取 Markdown，
-- **Azure**：使用本地 SSH 金鑰進行 Git 與 WIT 驗證，
-- **Salesforce**：直接執行 `sf` 指令（預設組織為 `ccdev01`），無需登入，
-- **GitLab**：使用 `~/.ssh/id_gitlab_antigravity` 密鑰進行代碼倉庫 SSH 存取，
+- **Notion**：優先使用Notion MCP；沒有MCP時讀取根目錄 `.env` 的 `NOTION_API_KEY`，以連結末 32 位 hex 作為 page_id 調用 Notion API 獲取 Markdown
+- **Azure**：使用本機 SSH 金鑰(依 `~/.ssh/config` 設定)進行 Git 與 WIT 驗證
+- **Salesforce**：直接執行 `sf` 指令，以對話中指定的 Target Org 帶入 `-o`；Target Org 規則見 `.codex/playbooks/mcp-usage.md`
+- **GitLab**：使用本機 SSH 金鑰(依 `~/.ssh/config` 設定)進行代碼倉庫存取

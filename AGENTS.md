@@ -47,10 +47,11 @@
 - Sandbox:
   - 禁止覆蓋他人修改，以保留org既有開發，與整合本地開發為原則
   - 衝突不明時停止整合，並討論
-- Data/Metadata前:
-  - 確認Target Org
-- `SF_TARGET_ORG`不符:
-  - 主動提醒
+- Target Org:
+  - 以使用者在對話中指定的org為準;同一對話已指定即沿用,不需重複確認,也不需比對`SF_TARGET_ORG`
+  - 未指定時,Data/Metadata操作前先詢問
+  - `sf`指令一律明確帶`-o <Target Org>`,不依賴預設org
+  - MCP只作用於設定檔的預設org;與Target Org不同時改用`sf` CLI
 
 ## Deploy硬限制
 - 僅deploy差異檔

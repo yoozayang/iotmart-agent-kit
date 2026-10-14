@@ -11,12 +11,10 @@
 - 回覆中若提到「這次分支新增/這次修改/相對差異」,都應先以`origin/Dev...HEAD`確認
 
 ## Commit/PR
-- Commit/PR:
-  - 遵循`GIT_GUIDE.md`
+- 遵循`GIT_GUIDE.md`
 
 ## 大量非功能diff
-- 大量非功能diff:
-  - 優先檢查base branch
+- 優先檢查base branch
 
 ## Guardrails
 - 本檔只定義git baseline與diff判斷

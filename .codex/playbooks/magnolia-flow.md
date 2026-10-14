@@ -11,8 +11,8 @@
   - feature基於`main`
   - 禁止直接改`main`
   - `_A`:開發分支
-  - `_B`:`_A + new_develop`
-  - `_C`:`_A + new_uat`
+  - `_B`:`_A + new_develop`,使用於Dev環境部署
+  - `_C`:`_A + new_uat`,使用於UAT環境部署
 
 ## Branch Naming
 - 建立任何branch前必須有task number；缺少時先詢問並停止
@@ -35,17 +35,11 @@
 - push`_A`並建立target為`main`的MR
 - MR建立並填入資訊後停止，不merge、deploy、trigger pipeline或使用browser，除非使用者明確要求
 
-## Split Source Detail Preserved
-- `_B`:`_A + new_develop` 使用於Dev環境部署
-- `_C`:`_A + new_uat` 使用於UAT環境部署
-
 ## Merge前
-- merge前:
-  - rebase目標環境
+- rebase目標環境
 
 ## 大量diff
-- 大量diff:
-  - 重新確認base
+- 重新確認base
 
 ## Deploy機制(light-modules)
 - 純檔案同步:
