@@ -84,8 +84,8 @@ iotmart-agent-kit/
 
 | Layer | Location | Contains | Does not contain |
 | --- | --- | --- | --- |
-| Root control | `AGENTS.md` | hard constraints, Ponytail-first, routing entry, file lists | detailed procedures |
-| Routing | `.codex/routing.md` | which files to read per task type, canonical location of each rule | rule bodies |
+| Root control | `AGENTS.md` | hard constraints, Ponytail-first, routing entry | detailed procedures and file inventories |
+| Routing | `.codex/routing.md` | which files to read per task type and layer baseline | rule bodies |
 | Knowledge | `.codex/knowledge/*.md` | market architecture, system responsibility boundaries, domain background | operating steps |
 | Procedures | `.codex/playbooks/*.md` | deploy, validate, compare, MCP usage and other executable procedures and guardrails | background explanations |
 | Work patterns | `.codex/skills/*.md` | output formats for requirement review, minimum spec, SDD, test cases, validation review, deployment package | environment operations |
@@ -182,7 +182,7 @@ The official skills are written for general use, and parts of them conflict with
 - `platform-metadata-retrieve` offers `--ignore-conflicts`
 - the default org is used when none is specified
 
-These conflicts are not fixed in the official files. They are written in `.codex/playbooks/sf-skills-overlay.md`, and `AGENTS.md`, `routing.md`, `CLAUDE.md` and `GEMINI.md` require reading the overlay before using an official skill. When the official skills are upgraded, only the overlay needs to be re-checked.
+These conflicts are not fixed in the official files. They are written in `.codex/playbooks/sf-skills-overlay.md`; `AGENTS.md` and the Task Routing Table require it before an official Salesforce skill is used. `CLAUDE.md` and `GEMINI.md` bridge to that shared path. When the official skills are upgraded, only the overlay needs to be re-checked.
 
 ## Adding or updating skills
 
@@ -196,13 +196,13 @@ npx skills update -p -y                                     # update
 
 Then:
 1. Check the skill against the hard constraints in `AGENTS.md`; write any conflict into the overlay
-2. If routing is needed, update `.codex/routing.md` and add it to the matching list in `AGENTS.md`
+2. If routing is needed, update `.codex/routing.md`
 3. Update `THIRD_PARTY_NOTICES.md` and `LICENSES/`
 4. Update the skill list in both READMEs (`README.md`, `README.zh-TW.md`)
 
 Own rules:
 - background knowledge goes in `.codex/knowledge/`, executable procedures in `.codex/playbooks/`, output templates in `.codex/skills/`, natively triggered skills in `.agents/skills/<name>/SKILL.md`
-- register new files in both `.codex/routing.md` and the file lists in `AGENTS.md`
+- add a Task Routing Table entry only when a new file must be loaded for a distinct task type; do not add static file inventories to `AGENTS.md`
 
 ## Upstream updates
 

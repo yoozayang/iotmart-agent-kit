@@ -82,8 +82,8 @@ iotmart-agent-kit/
 
 | 層 | 位置 | 放什麼 | 不放什麼 |
 | --- | --- | --- | --- |
-| 根控制 | `AGENTS.md` | 硬限制,Ponytail-first,路由入口,檔案清單 | 細節流程 |
-| 路由 | `.codex/routing.md` | 任務類型對應要讀的檔案,各規則的正式基準位置 | 規則本文 |
+| 根控制 | `AGENTS.md` | 硬限制,Ponytail-first,路由入口 | 細節流程與檔案清單 |
+| 路由 | `.codex/routing.md` | 任務類型對應要讀的檔案與分層基準 | 規則本文 |
 | 知識 | `.codex/knowledge/*.md` | 市場架構,系統責任邊界,領域背景 | 操作步驟 |
 | 流程 | `.codex/playbooks/*.md` | deploy,validate,比對,MCP使用等可執行程序與守門規則 | 背景說明 |
 | 工作模式 | `.codex/skills/*.md` | 需求審查,最小規格,SDD,測試案例,驗證審查,部署包的產出格式 | 環境操作 |
@@ -180,7 +180,7 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 - `platform-metadata-retrieve`提供`--ignore-conflicts`
 - 未指定org時使用預設org
 
-這些衝突不修改官方檔案,而是寫在`.codex/playbooks/sf-skills-overlay.md`,並由`AGENTS.md`,`routing.md`,`CLAUDE.md`,`GEMINI.md`要求使用官方skill前先讀overlay。官方skill升版時只需重新比對overlay一個檔案
+這些衝突不修改官方檔案,而是寫在`.codex/playbooks/sf-skills-overlay.md`;`AGENTS.md`與Task Routing Table要求使用官方Salesforce skill前先讀overlay,`CLAUDE.md`與`GEMINI.md`只橋接到這條共用路徑。官方skill升版時只需重新比對overlay一個檔案
 
 ## 新增或更新skill
 
@@ -194,13 +194,13 @@ npx skills update -p -y                                     # 更新
 
 之後:
 1. 檢查skill內容是否與`AGENTS.md`硬限制衝突,衝突寫進overlay
-2. 需要路由時更新`.codex/routing.md`,並在`AGENTS.md`對應清單加入
+2. 需要路由時更新`.codex/routing.md`
 3. 更新`THIRD_PARTY_NOTICES.md`與`LICENSES/`
 4. 更新`README.md`與`README.zh-TW.md`的Skill清單
 
 自有規則:
 - 背景知識放`.codex/knowledge/`,可執行程序放`.codex/playbooks/`,產出格式範本放`.codex/skills/`,需原生觸發的skill放`.agents/skills/<name>/SKILL.md`
-- 新檔案要同時登記到`.codex/routing.md`與`AGENTS.md`的檔案清單
+- 只有新檔案需由特定任務類型載入時才新增Task Routing Table項目,不可在`AGENTS.md`新增靜態檔案清單
 
 ## 上游更新機制
 
