@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evidence Investigation Documentation"
+  short_description: "Evidence-led investigation and safe documentation updates"
+  default_prompt: "Use $evidence-investigation-documentation to investigate this task from evidence and prepare safe documentation updates."

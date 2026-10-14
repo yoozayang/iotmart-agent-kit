@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "ccdev01": {
+      "url": "https://api.salesforce.com/platform/mcp/v1-beta.2/sandbox/ccdev01",
+      "type": "sandbox"
+    },
+    "ecvdev": {
+      "url": "https://api.salesforce.com/platform/mcp/v1-beta.2/sandbox/ecvdev",
+      "type": "sandbox"
+    },
+    "nqa": {
+      "url": "https://api.salesforce.com/platform/mcp/v1-beta.2/sandbox/nqa",
+      "type": "sandbox"
+    }
+  }
+}
