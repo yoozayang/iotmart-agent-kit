@@ -43,9 +43,10 @@ iotmart-agent-kit/
 ├── .mcp.json                  Claude Code專案MCP設定
 ├── salesforce-mcp-config.json Salesforce hosted MCP端點
 ├── scripts/link.sh            掛載到專案工作目錄
-├── scripts/upstream/          上游檢查:風險掃描,個人工具版本比對
-├── scripts/install-autopull.sh 本機每日自動同步
-├── upstream-watch.json        個人工具的上游與固定版本
+├── scripts/upstream/          官方skill更新的風險掃描
+├── scripts/autoupdate.sh      本機每日自動更新(kit與個人工具)
+├── scripts/install-autoupdate.sh 安裝本機排程
+├── personal-tools.json        個人工具的上游與更新方式
 ├── .github/workflows/         upstream-check排程
 ├── THIRD_PARTY_NOTICES.md
 └── LICENSES/
@@ -141,8 +142,8 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 
 | 工具 | 用途 | 安裝 | 注意 |
 | --- | --- | --- | --- |
-| Ponytail | 執行`AGENTS.md`的Ponytail-first評估 | Codex personal plugin | 可選;評估清單已內建於`AGENTS.md`,沒有plugin也能照清單執行 |
-| caveman系列 | 壓縮輸出,subagent委派 | `npx skills add JuliusBrussee/caveman -g -a codex -a claude-code -y` | `caveman-commit`產出Conventional Commits,與`GIT_GUIDE.md`格式不同;`caveman-compress`會覆寫原檔;`cavecrew`需另備subagent定義 |
+| Ponytail | 執行`AGENTS.md`的Ponytail-first評估 | Codex personal plugin(git clone於`~/.codex/plugins/ponytail`),由`scripts/autoupdate.sh`更新 | 可選;評估清單已內建於`AGENTS.md`,沒有plugin也能照清單執行 |
+| caveman系列 | 壓縮輸出,subagent委派 | 由`scripts/autoupdate.sh`依`personal-tools.json`安裝與更新 | `caveman-commit`產出Conventional Commits,與`GIT_GUIDE.md`格式不同;`caveman-compress`會覆寫原檔;`cavecrew`需另備subagent定義 |
 
 ## 官方skill與overlay
 
@@ -175,16 +176,21 @@ npx skills update -p -y                                     # 更新
 
 ## 上游更新機制
 
-不在每次session觸發,改為排程檢查;會改變規則或評估對象的更新一律需人工確認
+全自動,不需人工介入;危險操作由執行層防護攔截,不依賴人工審查skill內容
 
-| 對象 | 檢查 | 結果 | 套用 |
+| 對象 | 執行者 | 頻率 | 動作 |
 | --- | --- | --- | --- |
-| 官方sf-skills(`.agents/skills/platform-*`) | GitHub Actions `upstream-check`,每週一09:00(台北) | 有更新時開或更新PR `upstream/sf-skills`,附變更摘要與風險掃描(`scripts/upstream/scan-risk.sh`) | 對照overlay審查後合併 |
-| 個人工具(`upstream-watch.json`列出的caveman,Ponytail) | 同上(`scripts/upstream/watch.sh`) | 監看範圍有變更時開或更新issue `[upstream] <名稱>有新版本`,只通知 | 自行升級後把`upstream-watch.json`的`pinned`改為新commit,issue下次檢查自動關閉 |
-| 本機kit clone | macOS LaunchAgent,每日09:30 | `git pull --ff-only`,合併後的PR自動同步到所有掛載專案 | 自動;有未推送修改時略過 |
+| 官方sf-skills(`.agents/skills/platform-*`) | GitHub Actions `upstream-check` | 每週一09:00(台北) | 有更新時建立PR並自動合併;PR附變更摘要,風險掃描(`scripts/upstream/scan-risk.sh`)與overlay引用檢查 |
+| 本機kit clone | macOS LaunchAgent(`scripts/autoupdate.sh`) | 每日09:30 | `git pull --ff-only`,合併後的更新自動生效於所有掛載專案 |
+| 個人工具(`personal-tools.json`) | 同上 | 每日09:30 | caveman:上游有新commit時重新安裝列出的skill;Ponytail:切換到最新release tag |
 
-- 手動觸發檢查:GitHub Actions頁面執行`Upstream check`,或`gh workflow run upstream-check.yml`
-- 安裝本機自動同步:`scripts/install-autopull.sh`;移除:`scripts/install-autopull.sh --remove`;紀錄:`~/Library/Logs/iotmart-agent-kit-autopull.log`
+- 唯一的自動閘門:官方skill更新只能改動`.agents/skills/platform-*`,`skills-lock.json`,`THIRD_PARTY_NOTICES.md`;超出範圍時workflow失敗(GitHub寄信通知),不合併
+- 本機有未推送修改或工具目錄有修改時略過該項,不覆蓋
+- 有更新或失敗時跳出macOS通知;紀錄:`~/Library/Logs/iotmart-agent-kit-autoupdate.log`
+- 回復Ponytail舊版:log中記有`git -C ~/.codex/plugins/ponytail checkout <舊版>`
+- 調整caveman安裝範圍:編輯`personal-tools.json`的`skills`
+- 手動觸發:`gh workflow run upstream-check.yml`;`bash scripts/autoupdate.sh`
+- 安裝本機排程:`scripts/install-autoupdate.sh`;移除:`scripts/install-autoupdate.sh --remove`
 - Repo設定需允許GitHub Actions建立PR(Settings→Actions→General→Workflow permissions)
 
 ## 執行層防護

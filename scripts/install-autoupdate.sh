@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Install (or remove) a macOS LaunchAgent that fast-forwards this kit from origin once a day,
-# so merged upstream-update PRs reach every linked project without manual pulls.
-# Only `git pull --ff-only` runs: local uncommitted or diverged work is never merged or reset.
+# Install (or remove) a macOS LaunchAgent that runs scripts/autoupdate.sh once a day:
+# fast-forwards this kit and updates the personal tools in personal-tools.json.
+# Local uncommitted or diverged work is never merged or reset.
 #
 # Usage:
-#   scripts/install-autopull.sh            install / refresh (daily 09:30 local time)
-#   scripts/install-autopull.sh --remove   uninstall
+#   scripts/install-autoupdate.sh            install / refresh (daily 09:30 local time)
+#   scripts/install-autoupdate.sh --remove   uninstall
 set -euo pipefail
 
 KIT="$(cd "$(dirname "$0")/.." && pwd)"
-LABEL="com.$(id -un).iotmart-agent-kit.autopull"
+LABEL="com.$(id -un).iotmart-agent-kit.autoupdate"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
-LOG="$HOME/Library/Logs/iotmart-agent-kit-autopull.log"
+LOG="$HOME/Library/Logs/iotmart-agent-kit-autoupdate.log"
 DOMAIN="gui/$(id -u)"
 
 launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true
@@ -31,9 +31,8 @@ cat > "$PLIST" <<EOF
   <key>Label</key><string>$LABEL</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/bin/sh</string>
-    <string>-c</string>
-    <string>date '+%Y-%m-%d %H:%M:%S'; /usr/bin/git -C '$KIT' pull --ff-only 2>&amp;1</string>
+    <string>/bin/bash</string>
+    <string>$KIT/scripts/autoupdate.sh</string>
   </array>
   <key>StartCalendarInterval</key>
   <dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>30</integer></dict>

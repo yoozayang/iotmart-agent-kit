@@ -1,8 +1,12 @@
 name: Upstream check
 
-# Weekly check of third-party sources. Nothing is applied automatically:
-# - official sf-skills: updates are proposed as a pull request for review against the overlay
-# - personal tools (upstream-watch.json): new upstream versions are reported as issues only
+# Weekly update of the official sf-skills, applied without manual review:
+# - updates are committed through a pull request that is merged automatically
+# - safety does not rely on reading skill text: bin/sf, Codex rules and Claude permissions
+#   enforce the hard constraints at execution time
+# - the only gate is structural: changes must stay inside official skills, the lock file and notices;
+#   otherwise the job fails (GitHub notifies by email) and nothing is merged
+# Personal tools (caveman, Ponytail) are updated locally by scripts/autoupdate.sh.
 on:
   schedule:
     - cron: "0 1 * * 1" # Monday 01:00 UTC (09:00 Taipei)
@@ -11,7 +15,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  issues: write
+  issues: write # label creation
 
 concurrency:
   group: upstream-check
@@ -65,11 +69,11 @@ jobs:
             echo
             bash scripts/upstream/scan-risk.sh HEAD
             echo
-            echo "### 合併前檢查"
-            echo "- [ ] 風險掃描命中項目已在\`.codex/playbooks/sf-skills-overlay.md\`覆寫"
-            echo "- [ ] SKILL.md的description變更不會誤觸發或與repo規則衝突"
-            echo "- [ ] 新增的引用skill或script已評估"
-            echo "- [ ] README與THIRD_PARTY_NOTICES內容正確"
+            echo "### overlay引用檢查"
+            missing="$(grep -oE '\.agents/skills/platform-[^\`]+' .codex/playbooks/sf-skills-overlay.md | sort -u | while read -r f; do [ -e "$f" ] || echo "- \`$f\`"; done)"
+            if [ -n "$missing" ]; then echo "overlay引用的下列路徑已不存在,需更新overlay:"; echo "$missing"; else echo "overlay引用的路徑皆存在"; fi
+            echo
+            echo "此PR由workflow自動合併;執行層防護(bin/sf,Codex rules,Claude permissions)不受skill內容影響"
           } > "$RUNNER_TEMP/pr-body.md"
           git reset -q
 
@@ -78,6 +82,7 @@ jobs:
         run: gh label create upstream-update --color 0E8A16 --description "Automated upstream skill update" --force
 
       - name: Open or update pull request
+        id: cpr
         if: steps.body.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
@@ -95,31 +100,9 @@ jobs:
             skills-lock.json
             THIRD_PARTY_NOTICES.md
 
-  personal-tools:
-    name: Personal tools watch (issue only)
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Ensure label
-        run: gh label create upstream-watch --color FBCA04 --description "Upstream new version notice" --force
-
-      - name: Check upstream and sync issues
+      - name: Merge pull request
+        if: steps.cpr.outputs.pull-request-number != ''
         run: |
-          out="$RUNNER_TEMP/watch"
-          bash scripts/upstream/watch.sh "$out" | while IFS=$'\t' read -r name status report; do
-            title="[upstream] ${name}有新版本"
-            number="$(gh issue list --label upstream-watch --state open --search "in:title \"$title\"" --json number,title \
-              --jq ".[] | select(.title == \"$title\") | .number" | head -1)"
-            if [ "$status" = "ahead" ]; then
-              if [ -n "$number" ]; then
-                gh issue edit "$number" --body-file "$report"
-              else
-                gh issue create --title "$title" --label upstream-watch --body-file "$report"
-              fi
-            elif [ -n "$number" ]; then
-              gh issue close "$number" --comment "固定版本已與上游監看範圍一致,自動關閉"
-            fi
-          done
+          gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --squash --delete-branch \
+            --subject "docs:更新官方sf-skills" \
+            --body "由upstream-check workflow自動更新並合併"
