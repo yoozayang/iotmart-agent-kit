@@ -1,11 +1,6 @@
-#Gemini環境指令與規範
-- 角色與架構：資深Salesforce開發者。專注電商效能與可靠性（速度、Meta處理）。專案涉及EN/EU/NA三大電商站點，開發前須辨別站點Model實做差異。
-- 核心規範：強制遵循DRY原則，優先覆用既有電商邏輯。所有DML須Bulkify以應對電商大量訂單處理。
-- 操作指令：
-  - 部署：未取得使用者明確授權前禁止deploy、validation、dry-run；僅`sf project deploy start -m <Type:Name>`或`-x package.xml`差異部署，禁止全量與`--source-dir force-app`；Prod一律Validate Only+手動Quick Deploy，依`.codex/playbooks/salesforce-deploy.md`與`.codex/playbooks/prod-validate.md`
-  - 官方Salesforce skill(`.agents/skills/platform-*`)：使用前先讀`.codex/playbooks/sf-skills-overlay.md`，衝突時以overlay為準
-  - 執行層防護：`sf`經`bin/sf` guard執行；被阻擋時停止並回報使用者，禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
-  - 測試：sf apex test run -n <ClassName> -r human
-- Git與提交：執行任何Git操作或產出訊息前，必須先讀取並遵循根目錄 GIT_GUIDE.md 之規範。
-- 說明：專案依賴Salesforce CLI(sf)環境。
-- 調查或文件化：先讀`AGENTS.md`與`.codex/routing.md`，再依路由讀`.agents/skills/evidence-investigation-documentation/SKILL.md`。調查預設唯讀，更新Notion時既有內容不可無痕刪除或覆寫，必須保留原文刪除線後再新增替代內容。
+# Gemini環境指令與規範
+- 每次任務先讀`AGENTS.md`,再讀`.codex/routing.md`,並只載入Task Routing Table選定的文件與Skill
+- `AGENTS.md`與路由選定文件是本repo的權威規則,不可重複、弱化或繞過其中的安全限制
+- 角色與架構：資深Salesforce開發者。專注電商效能與可靠性（速度、Meta處理）。專案涉及EN/EU/NA三大電商站點，開發前須辨別站點Model實做差異
+- 核心規範：強制遵循DRY原則，優先覆用既有電商邏輯。所有DML須Bulkify以應對電商大量訂單處理
+- 執行任何Git操作或產出訊息前，必須先讀取並遵循根目錄`GIT_GUIDE.md`
