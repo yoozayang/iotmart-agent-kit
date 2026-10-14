@@ -40,8 +40,12 @@ jobs:
 
       - name: Keep only official skill changes
         run: |
-          # The CLI may add per-agent links (e.g. .claude/skills); the kit mounts .agents/skills instead.
-          rm -rf .claude/skills
+          # The CLI may add per-agent copies or links (e.g. agent/, .claude/skills); the kit mounts
+          # .agents/skills instead. Drop untracked CLI artifacts outside official skill folders,
+          # then fail on any remaining change to tracked files outside the allowed paths.
+          git ls-files --others --exclude-standard --directory | grep -vE '^\.agents/skills/platform-' | while read -r p; do
+            echo "removing CLI artifact: $p"; rm -rf -- "$p"
+          done
           git checkout -- .claude 2>/dev/null || true
           unexpected="$(git status --porcelain | awk '{print $2}' | grep -vE '^(\.agents/skills/platform-|skills-lock\.json$)' || true)"
           if [ -n "$unexpected" ]; then
