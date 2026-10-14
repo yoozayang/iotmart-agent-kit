@@ -124,9 +124,6 @@ Execution-layer guard setup (once per machine):
 
 # 2. Let Codex load the guard rules
 ln -s ~/Development/iotmart-agent-kit/.codex/rules/sf-guard.rules ~/.codex/rules/iotmart-sf-guard.rules
-
-# 3. Do not keep Prod logged in; log in only when a validation is needed
-sf org logout -o prod
 ```
 
 Verify:
@@ -234,11 +231,10 @@ Text rules depend on how well a model follows them, so dangerous operations are 
 | Codex rules | `.codex/rules/sf-guard.rules` | org-writing commands prompt; `sfdx`, `sf org delete` and bypass are forbidden; the most restrictive rule wins | Codex |
 | Claude permissions | `.claude/settings.json` | org-writing commands ask; `sfdx`, `sf org delete`, bypass and MCP `deploy_metadata` / `delete_org` are denied | Claude Code |
 | MCP | `.codex/config.toml`, `.gemini/settings.json` | the Salesforce DX MCP does not enable the `metadata` toolset | Codex, Gemini |
-| Org login | `sf` CLI | Prod is not kept logged in | all |
 
 - Prod detection: any org whose `sf org display` instanceUrl is not `*.sandbox.my.salesforce.com` is treated as Prod; orgs that cannot be resolved are blocked
 - `SF_GUARD_BYPASS=1 sf ...` is for the user in a terminal only; agent rules explicitly forbid it
-- The wrapper is a guardrail, not a security boundary: calling the real `sf` by absolute path bypasses it, which is why Prod is not kept logged in
+- The wrapper is a guardrail, not a security boundary: calling the real `sf` by absolute path bypasses it
 
 ## Notes
 

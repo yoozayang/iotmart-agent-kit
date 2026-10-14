@@ -122,9 +122,6 @@ scripts/link.sh ~/Development/IoTMart3.0 --user-links
 
 # 2. 讓Codex載入guard規則
 ln -s ~/Development/iotmart-agent-kit/.codex/rules/sf-guard.rules ~/.codex/rules/iotmart-sf-guard.rules
-
-# 3. Prod平時不保持登入,需要validate時再登入
-sf org logout -o prod
 ```
 
 驗證:
@@ -232,11 +229,10 @@ npx skills update -p -y                                     # 更新
 | Codex rules | `.codex/rules/sf-guard.rules` | 寫入org的指令prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先 | Codex |
 | Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
 | MCP | `.codex/config.toml`,`.gemini/settings.json` | Salesforce DX MCP不啟用`metadata` toolset | Codex,Gemini |
-| Org登入 | `sf` CLI | Prod平時不保持登入 | 全部 |
 
 - 判定Prod的方式:`sf org display`的instanceUrl不是`*.sandbox.my.salesforce.com`即視為Prod;無法解析的org一律阻擋
 - `SF_GUARD_BYPASS=1 sf ...`僅供使用者本人在終端機使用,agent規則明確禁止
-- wrapper是護欄不是安全邊界:以真實`sf`絕對路徑呼叫可繞過,因此仍需搭配Prod不保持登入
+- wrapper是護欄不是安全邊界:以真實`sf`絕對路徑呼叫可繞過
 
 ## 注意事項
 
