@@ -19,12 +19,17 @@
 - 使用:
   - `-m`
   - `-x package.xml`
+  - `--metadata-dir`僅限由最終`package.xml`轉出的MetadataAPI套件
+- validation前在`~/codex_tmp/<task>/source`建立固定來源快照,只用此快照與定案的manifest作業
+- 先retrieve正式環境最終範圍並比對,確認相依性與測試範圍後才執行ValidateOnly
+- 將最終manifest轉成`~/codex_tmp/<task>/mdapi`的MetadataAPI套件後,以`sf project deploy validate --metadata-dir`驗證
 
 ## 正式環境部署方式
 - 一律`Validate Only + manual Quick Deploy`
 - 先Validate Only,之後由使用者手動Quick Deploy
 - validation與Quick Deploy使用相同metadata範圍
 - validation成功後不可自動Quick Deploy,只能提示使用者於Deployment Status手動Quick Deploy,並提供網址
+- Quick Deploy沿用成功的server-side validation,不需要CLI來源追蹤
 
 ## 產物位置
 - Prod retrieve compare,validation產物只放已exclude目錄,預設`~/codex_tmp`

@@ -45,7 +45,7 @@
   - `references/deploy.sh`以目錄為單位的部署
 - 一律依`.codex/playbooks/salesforce-deploy.md`與`.codex/playbooks/prod-validate.md`:
   - 未取得使用者明確授權前,禁止deploy,validation,dry-run
-  - 僅`-m`或`-x package.xml`差異部署
+  - 僅`-m`、`-x package.xml`或由最終`package.xml`轉出的`--metadata-dir`差異部署
   - Prod一律Validate Only+手動Quick Deploy
 - 部署範圍:
   - `origin/Dev...HEAD`只是候選清單
