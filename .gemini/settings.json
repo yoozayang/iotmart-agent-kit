@@ -2,7 +2,7 @@
   "mcpServers": {
     "Salesforce DX": {
       "command": "npx",
-      "args": ["-y", "@salesforce/mcp", "--toolsets", "orgs,metadata,data", "--no-telemetry"],
+      "args": ["-y", "@salesforce/mcp", "--toolsets", "orgs,data", "--no-telemetry"],
       "env": { "SF_TARGET_ORG": "NQA" }
     },
     "context7": {

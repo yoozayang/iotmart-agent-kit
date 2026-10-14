@@ -104,6 +104,7 @@
 - Salesforce/SFCC task:
   - 讀`.codex/knowledge/market-architecture.md`
   - 讀`.codex/playbooks/salesforce-deploy.md`
+  - 使用官方`platform-*` skill前讀`.codex/playbooks/sf-skills-overlay.md`
 - Cross-platform task:
   - 讀`.codex/knowledge/system-landscape.md`
   - 讀`.codex/knowledge/market-architecture.md`
@@ -115,8 +116,9 @@
   - 讀`.codex/playbooks/uat-compare.md`
 - Data/Metadata/MCP:
   - 讀`.codex/playbooks/mcp-usage.md`
+  - 讀`.codex/playbooks/sf-skills-overlay.md`
 - Investigation/documentation:
-  - 讀`/Users/yoozayang/.agents/skills/evidence-investigation-documentation/SKILL.md`
+  - 讀`.agents/skills/evidence-investigation-documentation/SKILL.md`
   - 調查先唯讀，文件編輯需使用者明確授權
 
 ## 知識檔
@@ -132,6 +134,7 @@
 - `.codex/playbooks/magnolia-flow.md`
 - `.codex/playbooks/uat-compare.md`
 - `.codex/playbooks/prod-validate.md`
+- `.codex/playbooks/sf-skills-overlay.md`
 
 ## 技能檔
 - `.codex/skills/requirement-review.md`
@@ -140,7 +143,12 @@
 - `.codex/skills/test-case-generation.md`
 - `.codex/skills/validation-review.md`
 - `.codex/skills/deployment-package.md`
-- `/Users/yoozayang/.agents/skills/evidence-investigation-documentation/SKILL.md`
+- `.agents/skills/evidence-investigation-documentation/SKILL.md`
+
+## 官方skill
+- 來源:`forcedotcom/sf-skills`,原樣保留,來源與hash記錄於`skills-lock.json`
+- 位置:`.agents/skills/platform-*/`
+- 與repo規則衝突時以`.codex/playbooks/sf-skills-overlay.md`為準
 
 ## 補充規則
 - 暫存輸出:

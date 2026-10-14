@@ -1,6 +1,6 @@
 [mcp_servers."Salesforce DX"]
 command = "npx"
-args = ["-y", "@salesforce/mcp", "--toolsets", "orgs,metadata,data", "--no-telemetry"]
+args = ["-y", "@salesforce/mcp", "--toolsets", "orgs,data", "--no-telemetry"]
 
 [mcp_servers."Salesforce DX".env]
 SF_TARGET_ORG = "ccdev01"

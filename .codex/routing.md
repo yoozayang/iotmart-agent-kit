@@ -17,6 +17,9 @@
   - Executable operational procedures,deployment steps,validation steps,compare flow,environment-specific workflows
 - `.codex/skills/*.md`:
   - Reusable AI/coding-agent work patterns that produce structured outputs
+- `.agents/skills/*/SKILL.md`:
+  - Installed agent skills,own and third-party
+  - Third-party official skills stay unmodified,repo overrides live in`.codex/playbooks/sf-skills-overlay.md`
 
 ## Task Routing Table
 | Task type | Required files |
@@ -27,25 +30,19 @@
 | Before handover | `.codex/skills/test-case-generation.md`,`.codex/skills/validation-review.md` |
 | Before deployment task creation | `.codex/skills/deployment-package.md`,relevant deployment playbook |
 | Magnolia task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
-| Salesforce/SFCC task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
+| Salesforce/SFCC task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md`,`.codex/playbooks/sf-skills-overlay.md` |
 | Cross-platform task | `.codex/knowledge/system-landscape.md`,`.codex/knowledge/market-architecture.md`,related playbooks,`.codex/skills/deployment-package.md` |
-| Prod validation | `.codex/playbooks/prod-validate.md` |
+| Prod validation | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md` |
 | Prod compare | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/mcp-usage.md` |
 | Dev/UAT compare | `.codex/playbooks/uat-compare.md` |
 | Sandbox deploy scope | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/salesforce-deploy.md` |
-| Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md` |
-| Investigation,repository/system discovery,or task documentation | `/Users/yoozayang/.agents/skills/evidence-investigation-documentation/SKILL.md` |
+| Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md` |
+| Investigation,repository/system discovery,or task documentation | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
 | Git baseline,branch diff,PR scope | `.codex/playbooks/git-baseline.md` |
 | SAP/SIS task | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
 | Product/pricing/cart/order | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
 | UI/template/content | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
-| Apex implementation / refactor | `.codex/knowledge/market-architecture.md`,`.agents/skills/sf-apex-engine/SKILL.md` |
-| Code review / Performance scan | `.agents/skills/sf-quality-gate/SKILL.md`,`.codex/skills/validation-review.md` |
-| Apex test execution / generation | `.agents/skills/sf-apex-engine/SKILL.md`,`.codex/skills/test-case-generation.md` |
-| Metadata change (Field, PermSet, Flow) | `.agents/skills/sf-metadata-architect/SKILL.md` |
-| Org data inquiry / Log debug | `.agents/skills/sf-data-explorer/SKILL.md`,`.codex/playbooks/mcp-usage.md` |
-| Deployment preparation | `.agents/skills/sf-deploy-guard/SKILL.md`,`.codex/skills/deployment-package.md`,`.codex/playbooks/salesforce-deploy.md` |
-| Prod validation preparation | `.agents/skills/sf-deploy-guard/SKILL.md`,`.codex/playbooks/prod-validate.md` |
+| Salesforce official skill usage(retrieve,deploy,SOQL,metadata XML,Apex test) | `.codex/playbooks/sf-skills-overlay.md`,then matching`.agents/skills/platform-*/SKILL.md` |
 
 ## 正式基準位置
 | Rule/content block | 正式基準位置 | Preserved references |
@@ -67,12 +64,8 @@
 | Test case generation workflow | `.codex/skills/test-case-generation.md` | `AGENTS.md`,this routing file |
 | Validation review workflow | `.codex/skills/validation-review.md` | `AGENTS.md`,this routing file |
 | Deployment package workflow | `.codex/skills/deployment-package.md` | `AGENTS.md`,this routing file |
-| Evidence investigation and documentation workflow | `/Users/yoozayang/.agents/skills/evidence-investigation-documentation/SKILL.md` | `AGENTS.md`,this routing file |
-| Salesforce quality gate | `.agents/skills/sf-quality-gate/SKILL.md` | `AGENTS.md`,this routing file |
-| Salesforce Apex engine | `.agents/skills/sf-apex-engine/SKILL.md` | `AGENTS.md`,this routing file |
-| Salesforce metadata architect | `.agents/skills/sf-metadata-architect/SKILL.md` | `AGENTS.md`,this routing file |
-| Salesforce data explorer | `.agents/skills/sf-data-explorer/SKILL.md` | `AGENTS.md`,this routing file |
-| Salesforce deploy guard | `.agents/skills/sf-deploy-guard/SKILL.md` | `AGENTS.md`,this routing file |
+| Evidence investigation and documentation workflow | `.agents/skills/evidence-investigation-documentation/SKILL.md` | `AGENTS.md`,this routing file |
+| Official sf-skills overrides and SOQL/metadata supplementary rules | `.codex/playbooks/sf-skills-overlay.md` | `AGENTS.md`,this routing file |
 
 ## Needs Human Review
 - Salesforce EN/NA environment is preserved from both sources:
