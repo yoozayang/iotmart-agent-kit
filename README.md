@@ -128,9 +128,17 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 | `platform-metadata-deploy` | forcedotcom/sf-skills | deploy,validate知識參考,agent不可自行執行 |
 | `platform-soql-query` | forcedotcom/sf-skills | SOQL寫法與查詢 |
 | `platform-apex-test-run` | forcedotcom/sf-skills | Apex測試執行與覆蓋率 |
-| `cavecrew`,`caveman*` | JuliusBrussee/caveman | subagent委派與壓縮輸出 |
 
 官方sf-skills的選擇依據是過往agent session的錯誤統計(SOQL欄位或物件寫錯,CLI flag不存在,metadata成員格式錯誤等),細節見Notion「官方Agent Skill整合計畫」頁
+
+## 可選的個人工具
+
+下列工具屬個人工作偏好,不放在本repo,也不會由`link.sh`掛進專案。需要時自行安裝在使用者層級:
+
+| 工具 | 用途 | 安裝 | 注意 |
+| --- | --- | --- | --- |
+| Ponytail | 執行`AGENTS.md`的Ponytail-first評估 | Codex personal plugin | 可選;評估清單已內建於`AGENTS.md`,沒有plugin也能照清單執行 |
+| caveman系列 | 壓縮輸出,subagent委派 | `npx skills add JuliusBrussee/caveman -g -a codex -a claude-code -y` | `caveman-commit`產出Conventional Commits,與`GIT_GUIDE.md`格式不同;`caveman-compress`會覆寫原檔;`cavecrew`需另備subagent定義 |
 
 ## 官方skill與overlay
 
