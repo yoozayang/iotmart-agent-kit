@@ -33,7 +33,7 @@
 - 禁止:
   - `--ignore-conflicts`,會覆蓋他人或本地修改
   - `--source-dir force-app`整包retrieve進repo
-  - 官方`retrieval_modes.md`中直接覆寫`force-app`的範例
+  - 官方`.agents/skills/platform-metadata-retrieve/references/retrieval_modes.md`中直接覆寫`force-app`的範例
 - 官方引用的`platform-manifest-generate`在上游不存在:
   - manifest改用`sfdx-git-delta`或`sf project generate manifest`
   - 產生失敗時中止,禁止退回全量manifest
