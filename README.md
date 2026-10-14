@@ -1,250 +1,252 @@
 # iotmart-agent-kit
 
-**中文** | [English](README.en.md)
+**English** | [繁體中文](README.zh-TW.md)
 
-IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一份規則與skill,裝進專案工作目錄,不進公司repo版控
+Coding-agent rules and skills for IoTMart 3.0. Codex, Claude Code and Gemini read the same rules and skills, installed into the project working tree and kept out of the company repository's version control.
 
-## 團隊成員安裝(Windows/macOS)
+## Install for team members (Windows / macOS)
 
-不需要agent協助,也不需要管理員權限
+No agent, git skills or admin rights needed.
 
-1. 取得kit:`git clone https://github.com/yoozayang/iotmart-agent-kit.git`,或在GitHub頁面按「Code→Download ZIP」後解壓縮
-2. 雙擊安裝檔:
-   - Windows:`install-windows.cmd`(若出現「Windows已保護您的電腦」,按「其他資訊」→「仍要執行」)
-   - macOS:在`install-mac.command`按右鍵→「打開」(第一次需要,之後可直接雙擊)
-3. 跳出「選擇資料夾」時選IoTMart專案資料夾(有`sfdx-project.json`的那一層);按「取消」=只安裝skill到使用者資料夾
-4. 看到「安裝完成」後按Enter,重新開啟Codex/Claude Code/Gemini
+1. Get the kit: `git clone https://github.com/yoozayang/iotmart-agent-kit.git`, or on the GitHub page click **Code → Download ZIP** and extract it
+2. Double-click the installer:
+   - Windows: `install-windows.cmd` (if "Windows protected your PC" appears, click **More info → Run anyway**)
+   - macOS: right-click `install-mac.command` → **Open** (needed the first time only)
+3. When the folder picker appears, choose your IoTMart project folder (the one containing `sfdx-project.json`); **Cancel** installs the skills to your user folder only
+4. When "安裝完成" (installation complete) appears, press Enter, then restart Codex / Claude Code / Gemini
 
-安裝程式會做的事:
-- 把規則(`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`.codex/`)與skill(`.agents/skills`,`.claude/skills`)複製進專案,並寫入專案`.git/info/exclude`
-- 把Codex執行規則複製到`~/.codex/rules/iotmart-sf-guard.rules`
-- `.claude/settings.json`已存在時只合併kit的ask/deny規則;`.codex/config.toml`,`.gemini/settings.json`已存在時保留原檔
-- 有變動的舊檔先移到`~/.iotmart-agent-kit-backup/<時間>/`,內容相同則不動
-- macOS會詢問是否安裝`sf`指令防護(`bin/sf`,加入shell PATH);Windows沒有此項,由Codex規則與Claude權限把關
+What the installer does:
+- Copies the rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.codex/`) and skills (`.agents/skills`, `.claude/skills`) into the project and adds them to the project's `.git/info/exclude`
+- Copies the Codex execution rules to `~/.codex/rules/iotmart-sf-guard.rules`
+- If `.claude/settings.json` already exists, only the kit's ask/deny rules are merged in; existing `.codex/config.toml` and `.gemini/settings.json` are left untouched
+- Changed files are first moved to `~/.iotmart-agent-kit-backup/<timestamp>/`; identical files are left alone
+- On macOS it asks whether to install the `sf` command guard (`bin/sf`, added to the shell PATH); Windows has no such guard and relies on the Codex rules and Claude permissions
 
-更新:`git pull`(或重新下載ZIP)後再雙擊一次安裝檔。操作說明也放在根目錄`INSTALL.txt`
+To update: `git pull` (or download the ZIP again) and double-click the installer again. The same steps are in `INSTALL.txt` at the repository root.
 
-## 架構總覽
+The installer's on-screen messages are in Traditional Chinese.
+
+## Architecture
 
 ```mermaid
 flowchart TD
-    A[AGENTS.md<br/>根控制層:硬限制,Ponytail-first,路由入口] --> R[.codex/routing.md<br/>任務路由表]
-    C[CLAUDE.md] -->|橋接| A
-    G[GEMINI.md] -->|橋接| A
-    R --> K[.codex/knowledge<br/>穩定背景知識]
-    R --> P[.codex/playbooks<br/>可執行程序與守門規則]
-    R --> S[.codex/skills<br/>工作模式範本]
-    R --> O[.codex/playbooks/sf-skills-overlay.md<br/>官方skill覆寫規則]
-    O -->|覆寫| F[.agents/skills/platform-*<br/>官方sf-skills,原樣保留]
-    R --> E[.agents/skills/evidence-investigation-documentation<br/>自有skill]
+    A[AGENTS.md<br/>root control: hard constraints, Ponytail-first, routing entry] --> R[.codex/routing.md<br/>task routing table]
+    C[CLAUDE.md] -->|bridge| A
+    G[GEMINI.md] -->|bridge| A
+    R --> K[.codex/knowledge<br/>stable background knowledge]
+    R --> P[.codex/playbooks<br/>executable procedures and guardrails]
+    R --> S[.codex/skills<br/>work-pattern templates]
+    R --> O[.codex/playbooks/sf-skills-overlay.md<br/>overrides for official skills]
+    O -->|overrides| F[.agents/skills/platform-*<br/>official sf-skills, unmodified]
+    R --> E[.agents/skills/evidence-investigation-documentation<br/>own skill]
 ```
 
-- 優先序:`AGENTS.md`>`.codex/playbooks`>官方skill。規則衝突時採更嚴格,更保守的一方
-- 官方skill只提供知識與操作模式,不手改;IoTMart專屬限制一律寫在overlay
+- Precedence: `AGENTS.md` > `.codex/playbooks` > official skills. When rules conflict, the stricter and more conservative one applies
+- Official skills only provide knowledge and operating patterns and are never edited by hand; IoTMart-specific constraints live in the overlay
 
-## 目錄結構
+## Directory layout
 
 ```text
 iotmart-agent-kit/
-├── AGENTS.md                  根控制層,Codex直接讀取
-├── CLAUDE.md                  Claude Code橋接,指向AGENTS.md與.codex
-├── GEMINI.md                  Gemini橋接
-├── GIT_GUIDE.md               Commit與PR規範
-├── skills-lock.json           skill來源與內容hash
+├── AGENTS.md                  root control layer, read directly by Codex
+├── CLAUDE.md                  Claude Code bridge to AGENTS.md and .codex
+├── GEMINI.md                  Gemini bridge
+├── GIT_GUIDE.md               commit and PR conventions
+├── skills-lock.json           skill sources and content hashes
 ├── .codex/
-│   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion)
-│   ├── rules/sf-guard.rules   Codex執行規則:寫入org的指令需確認
-│   ├── routing.md             任務類型→要讀的檔案
-│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖
-│   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay
-│   └── skills/                requirement-review,minimum-spec,minimum-sdd,test-case-generation,validation-review,deployment-package
-├── .agents/skills/            agent skill(自有+第三方)
-├── .claude/settings.json      Claude Code權限:寫入org的指令需確認
-├── bin/sf,bin/sfdx            sf guard wrapper,三個agent共用的執行層防護
-├── .gemini/                   Gemini MCP設定與code review風格
-├── .mcp.json                  Claude Code專案MCP設定
-├── salesforce-mcp-config.json Salesforce hosted MCP端點
-├── scripts/link.sh            維護者用:以symlink掛載到專案工作目錄
-├── scripts/install.ps1,install.sh 團隊成員用:以複製方式安裝
-├── scripts/upstream/          官方skill更新的風險掃描
-├── scripts/autoupdate.sh      本機每日自動更新(kit與個人工具)
-├── scripts/install-autoupdate.sh 安裝本機排程
-├── personal-tools.json        個人工具的上游與更新方式
-├── .github/workflows/         upstream-check排程
-├── install-windows.cmd        團隊成員安裝入口(Windows,呼叫scripts/install.ps1)
-├── install-mac.command        團隊成員安裝入口(macOS,呼叫scripts/install.sh)
-├── INSTALL.txt                給非技術使用者的安裝說明
+│   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
+│   ├── rules/sf-guard.rules   Codex execution rules: org-writing commands need confirmation
+│   ├── routing.md             task type -> files to read
+│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map
+│   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay
+│   └── skills/                requirement-review, minimum-spec, minimum-sdd, test-case-generation, validation-review, deployment-package
+├── .agents/skills/            agent skills (own + third party)
+├── .claude/settings.json      Claude Code permissions: org-writing commands need confirmation
+├── bin/sf, bin/sfdx           sf guard wrapper, execution-layer guard shared by all three agents
+├── .gemini/                   Gemini MCP settings and code review style
+├── .mcp.json                  Claude Code project MCP settings
+├── salesforce-mcp-config.json Salesforce hosted MCP endpoints
+├── scripts/link.sh            maintainers: mount into a project with symlinks
+├── scripts/install.ps1, install.sh  team members: install by copying
+├── scripts/upstream/          risk scan for official skill updates
+├── scripts/autoupdate.sh      maintainer's daily local auto-update (kit and personal tools)
+├── scripts/install-autoupdate.sh  installs the local schedule
+├── personal-tools.json        upstream and update method of personal tools
+├── .github/workflows/         upstream-check schedule
+├── install-windows.cmd        team member installer entry (Windows, runs scripts/install.ps1)
+├── install-mac.command        team member installer entry (macOS, runs scripts/install.sh)
+├── INSTALL.txt                install guide for non-technical users
 ├── THIRD_PARTY_NOTICES.md
 └── LICENSES/
 ```
 
-## 分層說明
+## Layers
 
-| 層 | 位置 | 放什麼 | 不放什麼 |
+| Layer | Location | Contains | Does not contain |
 | --- | --- | --- | --- |
-| 根控制 | `AGENTS.md` | 硬限制,Ponytail-first,路由入口,檔案清單 | 細節流程 |
-| 路由 | `.codex/routing.md` | 任務類型對應要讀的檔案,各規則的正式基準位置 | 規則本文 |
-| 知識 | `.codex/knowledge/*.md` | 市場架構,系統責任邊界,領域背景 | 操作步驟 |
-| 流程 | `.codex/playbooks/*.md` | deploy,validate,比對,MCP使用等可執行程序與守門規則 | 背景說明 |
-| 工作模式 | `.codex/skills/*.md` | 需求審查,最小規格,SDD,測試案例,驗證審查,部署包的產出格式 | 環境操作 |
-| Agent skill | `.agents/skills/*/SKILL.md` | 自有skill與第三方官方skill | 對第三方檔案的修改 |
+| Root control | `AGENTS.md` | hard constraints, Ponytail-first, routing entry, file lists | detailed procedures |
+| Routing | `.codex/routing.md` | which files to read per task type, canonical location of each rule | rule bodies |
+| Knowledge | `.codex/knowledge/*.md` | market architecture, system responsibility boundaries, domain background | operating steps |
+| Procedures | `.codex/playbooks/*.md` | deploy, validate, compare, MCP usage and other executable procedures and guardrails | background explanations |
+| Work patterns | `.codex/skills/*.md` | output formats for requirement review, minimum spec, SDD, test cases, validation review, deployment package | environment operations |
+| Agent skills | `.agents/skills/*/SKILL.md` | own skills and third-party official skills | edits to third-party files |
 
-## 維護者安裝(symlink模式)
+## Maintainer install (symlink mode)
 
-直接編輯kit並commit的人使用;改動會即時反映到掛載的專案
+For people who edit and commit the kit directly; changes show up immediately in mounted projects.
 
 ```bash
 git clone git@github.com:yoozayang/iotmart-agent-kit.git ~/Development/iotmart-agent-kit
 cd ~/Development/iotmart-agent-kit
 
-# 專案根目錄沒有同名檔案時
+# project root has no files with the same names
 scripts/link.sh ~/Development/IoTMart3.0
 
-# 專案根目錄已有舊版AGENTS.md,.codex等實體檔案時,先移到~/codex_tmp/agent-kit-backup/再連結
+# project root already has real AGENTS.md, .codex etc.: move them to ~/codex_tmp/agent-kit-backup/ first, then link
 scripts/link.sh ~/Development/IoTMart3.0 --replace
 
-# 讓其他專案也能用自有skill(連結到~/.agents/skills/)
+# also expose own skills to other projects (links into ~/.agents/skills/)
 scripts/link.sh ~/Development/IoTMart3.0 --user-links
 ```
 
-`link.sh`會:
-- 在專案根目錄建立`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`GIT_GUIDE.md`,`skills-lock.json`,`.mcp.json`,`salesforce-mcp-config.json`,`.codex`,`.agents`,`.gemini`,`.claude/settings.json`的symlink
-- 建立`.claude/skills`→`../.agents/skills`,讓Claude Code原生載入skill
-- 在專案的`.git/info/exclude`加入上述路徑,公司repo的`git status`不會出現這些連結
-- 可重複執行;已正確連結的項目顯示`ok`
+`link.sh`:
+- creates symlinks in the project root for `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GIT_GUIDE.md`, `skills-lock.json`, `.mcp.json`, `salesforce-mcp-config.json`, `.codex`, `.agents`, `.gemini`, `.claude/settings.json`
+- creates `.claude/skills` -> `../.agents/skills` so Claude Code loads the skills natively
+- adds those paths to the project's `.git/info/exclude`, so they never show up in the company repo's `git status`
+- can be re-run; correctly linked items print `ok`
 
-執行層防護設定(每台機器一次):
+Execution-layer guard setup (once per machine):
 
 ```bash
-# 1. 讓所有shell優先使用bin/sf guard;加在~/.zprofile與~/.zshrc最後一行(在brew shellenv等PATH設定之後),
-#    並加入~/.zshenv與~/.bashrc以涵蓋非互動shell
+# 1. Put the bin/sf guard first on PATH in every shell: append to the end of ~/.zprofile and ~/.zshrc
+#    (after brew shellenv and other PATH settings), and to ~/.zshenv and ~/.bashrc for non-interactive shells
 [ -d "$HOME/Development/iotmart-agent-kit/bin" ] && export PATH="$HOME/Development/iotmart-agent-kit/bin:$PATH"  # iotmart-agent-kit sf guard
 
-# 2. 讓Codex載入guard規則
+# 2. Let Codex load the guard rules
 ln -s ~/Development/iotmart-agent-kit/.codex/rules/sf-guard.rules ~/.codex/rules/iotmart-sf-guard.rules
 
-# 3. Prod平時不保持登入,需要validate時再登入
+# 3. Do not keep Prod logged in; log in only when a validation is needed
 sf org logout -o prod
 ```
 
-驗證:
+Verify:
 
 ```bash
 cd ~/Development/IoTMart3.0
-git status --short                      # 不應出現agent檔案
+git status --short                      # no agent files should appear
 ls -la AGENTS.md .codex .agents .claude/skills
-command -v sf                           # 應為~/Development/iotmart-agent-kit/bin/sf
-codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart-sf-guard.rules -- sf project deploy start   # 應為prompt
+command -v sf                           # should be ~/Development/iotmart-agent-kit/bin/sf
+codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart-sf-guard.rules -- sf project deploy start   # should be prompt
 ```
 
-## 三個環境如何讀取
+## How each environment reads the kit
 
-| 環境 | 規則入口 | Skill載入 |
+| Environment | Rule entry | Skill loading |
 | --- | --- | --- |
-| Codex | `AGENTS.md` | 原生掃描`.agents/skills/` |
-| Claude Code | `CLAUDE.md`→`AGENTS.md` | 原生掃描`.claude/skills/`(連到`.agents/skills/`) |
-| Gemini | `GEMINI.md`→`AGENTS.md` | 依`GEMINI.md`與`routing.md`的路徑讀取`SKILL.md` |
+| Codex | `AGENTS.md` | scans `.agents/skills/` natively |
+| Claude Code | `CLAUDE.md` -> `AGENTS.md` | scans `.claude/skills/` natively |
+| Gemini | `GEMINI.md` -> `AGENTS.md` | reads `SKILL.md` via the paths in `GEMINI.md` and `routing.md` |
 
-## Skill清單
+## Skills
 
-### 自有
-| Skill | 用途 |
+### Own
+| Skill | Purpose |
 | --- | --- |
-| `evidence-investigation-documentation` | 以證據為本的調查與文件化流程,含Notion安全更新規則 |
+| `evidence-investigation-documentation` | evidence-led investigation and documentation workflow, including safe Notion update rules |
 
-### 第三方
-| Skill | 來源 | 用途 |
+### Third party
+| Skill | Source | Purpose |
 | --- | --- | --- |
-| `platform-metadata-api-context-get` | forcedotcom/sf-skills | 604種Metadata API型別的欄位,目錄,命名,範例XML |
-| `platform-data-and-tooling-api-context-get` | forcedotcom/sf-skills | 2130個標準物件與Tooling物件的欄位定義 |
-| `platform-metadata-retrieve` | forcedotcom/sf-skills | retrieve指令模式與flag |
-| `platform-metadata-deploy` | forcedotcom/sf-skills | deploy,validate知識參考,agent不可自行執行 |
-| `platform-soql-query` | forcedotcom/sf-skills | SOQL寫法與查詢 |
-| `platform-apex-test-run` | forcedotcom/sf-skills | Apex測試執行與覆蓋率 |
+| `platform-metadata-api-context-get` | forcedotcom/sf-skills | fields, directories, naming and sample XML for 604 Metadata API types |
+| `platform-data-and-tooling-api-context-get` | forcedotcom/sf-skills | field definitions for 2130 standard and Tooling objects |
+| `platform-metadata-retrieve` | forcedotcom/sf-skills | retrieve command patterns and flags |
+| `platform-metadata-deploy` | forcedotcom/sf-skills | deploy/validate reference knowledge; agents must not run deployments on their own |
+| `platform-soql-query` | forcedotcom/sf-skills | writing and running SOQL |
+| `platform-apex-test-run` | forcedotcom/sf-skills | Apex test execution and coverage |
 
-官方sf-skills的選擇依據是過往agent session的錯誤統計(SOQL欄位或物件寫錯,CLI flag不存在,metadata成員格式錯誤等),細節見Notion「官方Agent Skill整合計畫」頁
+The official sf-skills were chosen from error statistics of past agent sessions (wrong SOQL fields or objects, non-existent CLI flags, malformed metadata members, etc.); details are on the Notion page "官方Agent Skill整合計畫".
 
-## 可選的個人工具
+## Optional personal tools
 
-下列工具屬個人工作偏好,不放在本repo,也不會由`link.sh`或安裝程式裝進專案。需要時自行安裝在使用者層級(`scripts/autoupdate.sh`與`personal-tools.json`為維護者本機使用):
+These tools are personal preferences. They are not in this repository and are not installed into projects by `link.sh` or the installers. Install them at user level if wanted (`scripts/autoupdate.sh` and `personal-tools.json` are for the maintainer's own machine):
 
-| 工具 | 用途 | 安裝 | 注意 |
+| Tool | Purpose | Install | Notes |
 | --- | --- | --- | --- |
-| Ponytail | 執行`AGENTS.md`的Ponytail-first評估 | Codex personal plugin(git clone於`~/.codex/plugins/ponytail`),由`scripts/autoupdate.sh`更新 | 可選;評估清單已內建於`AGENTS.md`,沒有plugin也能照清單執行 |
-| caveman系列 | 壓縮輸出,subagent委派 | 由`scripts/autoupdate.sh`依`personal-tools.json`安裝與更新 | `caveman-commit`產出Conventional Commits,與`GIT_GUIDE.md`格式不同;`caveman-compress`會覆寫原檔;`cavecrew`需另備subagent定義 |
+| Ponytail | runs the Ponytail-first evaluation in `AGENTS.md` | Codex personal plugin (git clone at `~/.codex/plugins/ponytail`), updated by `scripts/autoupdate.sh` | optional; the checklist is built into `AGENTS.md` and works without the plugin |
+| caveman skills | compressed output, subagent delegation | installed and updated by `scripts/autoupdate.sh` from `personal-tools.json` | `caveman-commit` writes Conventional Commits, which differ from `GIT_GUIDE.md`; `caveman-compress` rewrites the original file; `cavecrew` needs its own subagent definitions |
 
-## 官方skill與overlay
+## Official skills and the overlay
 
-官方skill為通用情境撰寫,部分內容與IoTMart硬限制衝突,例如:
-- `platform-metadata-deploy`示範`sf project deploy start --source-dir force-app`
-- `platform-metadata-retrieve`提供`--ignore-conflicts`
-- 未指定org時使用預設org
+The official skills are written for general use, and parts of them conflict with IoTMart's hard constraints, for example:
+- `platform-metadata-deploy` shows `sf project deploy start --source-dir force-app`
+- `platform-metadata-retrieve` offers `--ignore-conflicts`
+- the default org is used when none is specified
 
-這些衝突不修改官方檔案,而是寫在`.codex/playbooks/sf-skills-overlay.md`,並由`AGENTS.md`,`routing.md`,`CLAUDE.md`,`GEMINI.md`要求使用官方skill前先讀overlay。官方skill升版時只需重新比對overlay一個檔案
+These conflicts are not fixed in the official files. They are written in `.codex/playbooks/sf-skills-overlay.md`, and `AGENTS.md`, `routing.md`, `CLAUDE.md` and `GEMINI.md` require reading the overlay before using an official skill. When the official skills are upgraded, only the overlay needs to be re-checked.
 
-## 新增或更新skill
+## Adding or updating skills
 
-第三方skill:
+Third-party skills:
 
 ```bash
 cd ~/Development/iotmart-agent-kit
-npx skills add <owner>/<repo> -s <skill-name> -a codex -y   # 新增,寫入.agents/skills與skills-lock.json
-npx skills update -p -y                                     # 更新
+npx skills add <owner>/<repo> -s <skill-name> -a codex -y   # add; writes .agents/skills and skills-lock.json
+npx skills update -p -y                                     # update
 ```
 
-之後:
-1. 檢查skill內容是否與`AGENTS.md`硬限制衝突,衝突寫進overlay
-2. 需要路由時更新`.codex/routing.md`,並在`AGENTS.md`對應清單加入
-3. 更新`THIRD_PARTY_NOTICES.md`與`LICENSES/`
-4. 更新`README.md`與`README.en.md`的Skill清單
+Then:
+1. Check the skill against the hard constraints in `AGENTS.md`; write any conflict into the overlay
+2. If routing is needed, update `.codex/routing.md` and add it to the matching list in `AGENTS.md`
+3. Update `THIRD_PARTY_NOTICES.md` and `LICENSES/`
+4. Update the skill list in both READMEs (`README.md`, `README.zh-TW.md`)
 
-自有規則:
-- 背景知識放`.codex/knowledge/`,可執行程序放`.codex/playbooks/`,產出格式範本放`.codex/skills/`,需原生觸發的skill放`.agents/skills/<name>/SKILL.md`
-- 新檔案要同時登記到`.codex/routing.md`與`AGENTS.md`的檔案清單
+Own rules:
+- background knowledge goes in `.codex/knowledge/`, executable procedures in `.codex/playbooks/`, output templates in `.codex/skills/`, natively triggered skills in `.agents/skills/<name>/SKILL.md`
+- register new files in both `.codex/routing.md` and the file lists in `AGENTS.md`
 
-## 上游更新機制
+## Upstream updates
 
-全自動,不需人工介入;危險操作由執行層防護攔截,不依賴人工審查skill內容
+Fully automatic, no manual step. Dangerous operations are stopped by the execution-layer guard, not by manually reviewing skill text.
 
-| 對象 | 執行者 | 頻率 | 動作 |
+| Target | Runner | Frequency | Action |
 | --- | --- | --- | --- |
-| 官方sf-skills(`.agents/skills/platform-*`) | GitHub Actions `upstream-check` | 每週一09:00(台北) | 有更新時建立PR並自動合併;PR附變更摘要,風險掃描(`scripts/upstream/scan-risk.sh`)與overlay引用檢查 |
-| 本機kit clone | macOS LaunchAgent(`scripts/autoupdate.sh`) | 每日09:30 | `git pull --ff-only`,合併後的更新自動生效於所有掛載專案 |
-| 個人工具(`personal-tools.json`) | 同上 | 每日09:30 | caveman:上游有新commit時重新安裝列出的skill;Ponytail:切換到最新release tag |
+| official sf-skills (`.agents/skills/platform-*`) | GitHub Actions `upstream-check` | Mondays 09:00 Taipei | opens a PR when upstream changes and merges it automatically; the PR includes a change summary, a risk scan (`scripts/upstream/scan-risk.sh`) and an overlay reference check |
+| maintainer's local kit clone | macOS LaunchAgent (`scripts/autoupdate.sh`) | daily 09:30 | `git pull --ff-only`; merged updates take effect in every mounted project |
+| personal tools (`personal-tools.json`) | same | daily 09:30 | caveman: reinstalls the listed skills when upstream has a new commit; Ponytail: checks out the newest release tag |
 
-- 唯一的自動閘門:官方skill更新只能改動`.agents/skills/platform-*`,`skills-lock.json`,`THIRD_PARTY_NOTICES.md`;超出範圍時workflow失敗(GitHub寄信通知),不合併
-- 本機有未推送修改或工具目錄有修改時略過該項,不覆蓋
-- 有更新或失敗時跳出macOS通知;紀錄:`~/Library/Logs/iotmart-agent-kit-autoupdate.log`
-- 回復Ponytail舊版:log中記有`git -C ~/.codex/plugins/ponytail checkout <舊版>`
-- 調整caveman安裝範圍:編輯`personal-tools.json`的`skills`
-- 手動觸發:`gh workflow run upstream-check.yml`;`bash scripts/autoupdate.sh`
-- 安裝本機排程:`scripts/install-autoupdate.sh`;移除:`scripts/install-autoupdate.sh --remove`
-- Repo設定需允許GitHub Actions建立PR(Settings→Actions→General→Workflow permissions)
+- The only automatic gate: an official skill update may only change `.agents/skills/platform-*`, `skills-lock.json` and `THIRD_PARTY_NOTICES.md`; anything else fails the workflow (GitHub sends an email) and nothing is merged
+- Local unpushed changes or modified tool folders are skipped, never overwritten
+- A macOS notification appears on update or failure; log: `~/Library/Logs/iotmart-agent-kit-autoupdate.log`
+- Roll back Ponytail with the `git -C ~/.codex/plugins/ponytail checkout <old version>` command recorded in the log
+- Change which caveman skills are installed by editing `skills` in `personal-tools.json`
+- Manual run: `gh workflow run upstream-check.yml`; `bash scripts/autoupdate.sh`
+- Install the local schedule: `scripts/install-autoupdate.sh`; remove: `scripts/install-autoupdate.sh --remove`
+- The repository must allow GitHub Actions to create pull requests (Settings → Actions → General → Workflow permissions)
 
-## 執行層防護
+## Execution-layer guard
 
-文字規則依模型遵循程度而定,因此對危險操作另加執行層防護:
+Text rules depend on how well a model follows them, so dangerous operations are also blocked at execution time:
 
-| 層 | 位置 | 作用 | 涵蓋 |
+| Layer | Location | Effect | Covers |
 | --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf` | 寫入org的指令必須明確`-o`;Prod只允許`deploy validate`;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
-| `sfdx` blocker | `bin/sfdx` | 一律阻擋 | 同上 |
-| Codex rules | `.codex/rules/sf-guard.rules` | 寫入org的指令prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先 | Codex |
-| Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
-| MCP | `.codex/config.toml`,`.gemini/settings.json` | Salesforce DX MCP不啟用`metadata` toolset | Codex,Gemini |
-| Org登入 | `sf` CLI | Prod平時不保持登入 | 全部 |
+| `sf` wrapper | `bin/sf` | org-writing commands need an explicit `-o`; Prod allows only `deploy validate`; blocks directory deploys, unscoped deploys and `--ignore-conflicts`; blocks Prod data writes, anonymous Apex and `delete source`; blocks `org delete` | Codex, Claude Code, Gemini, terminal (macOS/Linux) |
+| `sfdx` blocker | `bin/sfdx` | always blocked | same |
+| Codex rules | `.codex/rules/sf-guard.rules` | org-writing commands prompt; `sfdx`, `sf org delete` and bypass are forbidden; the most restrictive rule wins | Codex |
+| Claude permissions | `.claude/settings.json` | org-writing commands ask; `sfdx`, `sf org delete`, bypass and MCP `deploy_metadata` / `delete_org` are denied | Claude Code |
+| MCP | `.codex/config.toml`, `.gemini/settings.json` | the Salesforce DX MCP does not enable the `metadata` toolset | Codex, Gemini |
+| Org login | `sf` CLI | Prod is not kept logged in | all |
 
-- 判定Prod的方式:`sf org display`的instanceUrl不是`*.sandbox.my.salesforce.com`即視為Prod;無法解析的org一律阻擋
-- `SF_GUARD_BYPASS=1 sf ...`僅供使用者本人在終端機使用,agent規則明確禁止
-- wrapper是護欄不是安全邊界:以真實`sf`絕對路徑呼叫可繞過,因此仍需搭配Prod不保持登入
+- Prod detection: any org whose `sf org display` instanceUrl is not `*.sandbox.my.salesforce.com` is treated as Prod; orgs that cannot be resolved are blocked
+- `SF_GUARD_BYPASS=1 sf ...` is for the user in a terminal only; agent rules explicitly forbid it
+- The wrapper is a guardrail, not a security boundary: calling the real `sf` by absolute path bypasses it, which is why Prod is not kept logged in
 
-## 注意事項
+## Notes
 
-- 本repo只放agent規則與skill,不放`force-app`或任何公司程式碼
-- 專案`.git/info/exclude`中帶結尾斜線的規則(如`.agents/`)只比對真實目錄,不比對symlink;`link.sh`會補上不帶斜線的版本
-- Salesforce DX MCP不啟用`metadata` toolset;retrieve,deploy,validate一律走`sf` CLI並遵守playbook授權流程
-- 暫存輸出一律放`~/codex_tmp`
+- This repository holds only agent rules and skills, never `force-app` or any company code
+- In a project's `.git/info/exclude`, patterns with a trailing slash (such as `.agents/`) match real directories only, not symlinks; `link.sh` adds the slash-less form
+- The Salesforce DX MCP does not enable the `metadata` toolset; retrieve, deploy and validate always go through the `sf` CLI and the playbook authorization flow
+- Temporary output always goes to `~/codex_tmp`
 
-## 授權
+## License
 
-第三方skill的來源與授權見[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+Sources and licenses of the third-party skills are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
