@@ -29,8 +29,10 @@
 - 優先:
   - `sf project deploy start -m`
   - `sf project deploy start -x`
-- source tracking異常:
-  - 才允許metadata-dir
+- 比對只採目標orgretrieve下來的實際檔案與三方整合結果,不以CLI source tracking作第二次判斷
+- 最終manifest定案後,執行`sf project convert source -x <final-package.xml> -d ~/codex_tmp/<task>/mdapi`產生MetadataAPI套件
+- 使用`--metadata-dir ~/codex_tmp/<task>/mdapi`做dry-run與部署,兩者必須使用同一套件與測試範圍
+- 禁止`--ignore-conflicts`與任何guard bypass
 - 僅deploy差異檔,前提是充分檢查相依性
 - 禁止:
   - 全量deploy
@@ -45,8 +47,10 @@
 ## Sandbox
 - deploy前同步最新sandbox
 - deploy前檢查目標檔案
-- 禁止覆蓋他人修改，予以整合保留後一併部署
-- 衝突不明:
+- 非正式環境以整合他人同步工作為預設,不可因有差異就停止
+- 已由使用者確認的本次來源版本(包含使用者自己已修改並指定部署的內容)不需重複確認
+- 他人修改須先三方整合,保留雙方有效變更後一併部署
+- 三方整合的語意衝突不明:
   - 停止並討論
 - sandbox test受他人影響:
   - 可暫時`NoTestRun`

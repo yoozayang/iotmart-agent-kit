@@ -61,6 +61,7 @@
 - 使用:
   - `-m`
   - `-x package.xml`
+  - `--metadata-dir`僅限以最終`package.xml`執行`sf project convert source -x`產生的MetadataAPI套件
 - 修改後:
   - DRY檢查
   - Apex test
