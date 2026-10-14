@@ -69,6 +69,9 @@
 - Prod正式環境部署方式:
   - 一律`Validate Only + manual Quick Deploy`
   - validation成功後提示使用者於Deployment Status手動Quick Deploy，並提供網址
+- 執行層防護:
+  - `sf`經`bin/sf` guard執行，Codex rules與Claude permissions另行要求確認，詳見`.codex/playbooks/sf-skills-overlay.md`
+  - 被guard阻擋時停止並回報使用者，禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
 
 ## Git基準硬限制
 - branch:

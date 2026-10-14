@@ -4,6 +4,7 @@
 - 操作指令：
   - 部署：未取得使用者明確授權前禁止deploy、validation、dry-run；僅`sf project deploy start -m <Type:Name>`或`-x package.xml`差異部署，禁止全量與`--source-dir force-app`；Prod一律Validate Only+手動Quick Deploy，依`.codex/playbooks/salesforce-deploy.md`與`.codex/playbooks/prod-validate.md`
   - 官方Salesforce skill(`.agents/skills/platform-*`)：使用前先讀`.codex/playbooks/sf-skills-overlay.md`，衝突時以overlay為準
+  - 執行層防護：`sf`經`bin/sf` guard執行；被阻擋時停止並回報使用者，禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
   - 測試：sf apex test run -n <ClassName> -r human
 - Git與提交：執行任何Git操作或產出訊息前，必須先讀取並遵循根目錄 GIT_GUIDE.md 之規範。
 - 說明：專案依賴Salesforce CLI(sf)環境。

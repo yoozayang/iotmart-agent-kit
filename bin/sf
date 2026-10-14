@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# sf guard: thin wrapper in front of the real Salesforce CLI.
+# Enforces at execution time what AGENTS.md only states in text:
+#   - org-writing commands must name the Target Org explicitly (-o/--target-org)
+#   - Prod: only `project deploy validate` (+ resume/report); no deploy start,
+#     quick deploy, data writes, anonymous Apex, or source delete
+#   - deploy/validate scope must be -m, -x, --metadata-dir, or individual files;
+#     never a directory such as force-app, never "all local changes"
+#   - no --ignore-conflicts on deploy (would overwrite other people's org changes)
+#   - no org deletion
+# Read-only commands pass straight through. Humans can bypass with SF_GUARD_BYPASS=1;
+# agents must not (AGENTS.md, Codex rules, Claude settings).
+set -uo pipefail
+
+SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REAL_SF=""
+IFS=: read -r -a path_dirs <<< "$PATH"
+for dir in "${path_dirs[@]}"; do
+  [ -n "$dir" ] || continue
+  [ "$(cd "$dir" 2>/dev/null && pwd)" = "$SELF_DIR" ] && continue
+  if [ -x "$dir/sf" ]; then REAL_SF="$dir/sf"; break; fi
+done
+[ -n "$REAL_SF" ] || { echo "sf-guard: real sf CLI not found on PATH" >&2; exit 127; }
+
+[ "${SF_GUARD_BYPASS:-}" = "1" ] && exec "$REAL_SF" "$@"
+
+block() {
+  echo "sf-guard: blocked: $1" >&2
+  echo "sf-guard: rules: .codex/playbooks/salesforce-deploy.md, prod-validate.md, sf-skills-overlay.md" >&2
+  exit 3
+}
+
+# Leading command words (stop at the first flag).
+words=()
+for a in "$@"; do
+  case "$a" in -*) break ;; *) words+=("$a") ;; esac
+  [ "${#words[@]}" -ge 3 ] && break
+done
+w0="${words[0]:-}"; w1="${words[1]:-}"; w2="${words[2]:-}"
+
+kind=""
+case "$w0 $w1" in
+  "project deploy")
+    case "$w2" in start|validate|quick|resume) kind="deploy-$w2" ;; esac ;;
+  "deploy metadata")  # legacy alias
+    case "$w2" in validate|quick|resume) kind="deploy-$w2" ;; *) kind="deploy-start" ;; esac ;;
+  "project delete")
+    [ "$w2" = "source" ] && kind="delete-source" ;;
+  "data create"|"data update"|"data upsert"|"data delete"|"data import")
+    kind="data-write" ;;
+  "apex run")
+    [ "$w2" = "test" ] || kind="apex-anonymous" ;;
+  "org delete")
+    kind="org-delete" ;;
+esac
+[ -n "$kind" ] || exec "$REAL_SF" "$@"
+
+[ "$kind" = "org-delete" ] && block "deleting orgs or sandboxes is not done from this environment"
+
+# Parse target org and deploy scope flags.
+target_org=""
+has_scope=0
+dir_scope=""
+ignore_conflicts=0
+args=("$@")
+n=${#args[@]}
+i=0
+while [ "$i" -lt "$n" ]; do
+  a="${args[$i]}"
+  case "$a" in
+    -o|--target-org) target_org="${args[$((i+1))]:-}"; i=$((i+1)) ;;
+    --target-org=*) target_org="${a#--target-org=}" ;;
+    -o?*) target_org="${a#-o}" ;;
+    -m|--metadata|-x|--manifest|--metadata-dir) has_scope=1 ;;
+    --metadata=*|--manifest=*|--metadata-dir=*) has_scope=1 ;;
+    --ignore-conflicts|-c) ignore_conflicts=1 ;;
+    -d|--source-dir|--source-dir=*)
+      has_scope=1
+      if [ "${a#--source-dir=}" != "$a" ]; then
+        [ -d "${a#--source-dir=}" ] && dir_scope="${a#--source-dir=}"
+      else
+        j=$((i+1))
+        while [ "$j" -lt "$n" ] && [ "${args[$j]#-}" = "${args[$j]}" ]; do
+          [ -d "${args[$j]}" ] && dir_scope="${args[$j]}"
+          j=$((j+1))
+        done
+        i=$((j-1))
+      fi ;;
+  esac
+  i=$((i+1))
+done
+
+[ -n "$target_org" ] || block "$w0 $w1 $w2 needs an explicit -o/--target-org (confirm the Target Org with the user first)"
+
+# Resolve the org: anything that is not a sandbox (or cannot be resolved) is treated as Prod.
+org_json="$("$REAL_SF" org display -o "$target_org" --json 2>/dev/null)"
+instance_url="$(printf '%s' "$org_json" | sed -n 's/.*"instanceUrl"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+[ -n "$instance_url" ] || block "cannot resolve org '$target_org' (not logged in?). Log in explicitly before an authorized operation"
+is_prod=1
+case "$instance_url" in *.sandbox.my.salesforce.com*|*.scratch.my.salesforce.com*) is_prod=0 ;; esac
+
+if [ "$is_prod" -eq 1 ]; then
+  case "$kind" in
+    deploy-validate|deploy-resume) ;;
+    deploy-start)  block "Prod ($instance_url): deploy start is not allowed. Use 'sf project deploy validate' then Quick Deploy manually in Setup > Deployment Status" ;;
+    deploy-quick)  block "Prod ($instance_url): Quick Deploy is done manually in Setup > Deployment Status" ;;
+    *)             block "Prod ($instance_url): $kind is not allowed" ;;
+  esac
+fi
+
+case "$kind" in
+  deploy-start|deploy-validate)
+    [ "$ignore_conflicts" -eq 0 ] || block "--ignore-conflicts would overwrite other people's org changes"
+    [ -z "$dir_scope" ] || block "deploying a directory ($dir_scope) is a bulk deploy. Use -m <Type:Name> or -x package.xml"
+    [ "$has_scope" -eq 1 ] || block "deploy without -m/-x/--metadata-dir deploys all local changes. Use -m <Type:Name> or -x package.xml"
+    ;;
+esac
+
+exec "$REAL_SF" "$@"

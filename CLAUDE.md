@@ -46,6 +46,10 @@ more conservative rule — same policy the source system uses internally.
 - Sandbox: never overwrite someone else's changes — integrate them, or stop and ask
   if the conflict is unclear.
 - Commits/PRs follow `GIT_GUIDE.md`.
+- `sf` runs through the `bin/sf` guard and `.claude/settings.json` asks before any
+  org-writing command. If the guard blocks a command, stop and report the reason to
+  the user. Never bypass it with `SF_GUARD_BYPASS`, the real `sf` absolute path, MCP,
+  or any other route.
 
 ## Market/system quick reference
 - EN/NA: pure SFCC / B2B Commerce.

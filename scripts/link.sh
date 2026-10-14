@@ -29,7 +29,7 @@ TARGET="$(cd "$TARGET" && pwd)"
 
 # Paths linked from the project root to the kit (same relative path on both sides).
 ITEMS=(AGENTS.md CLAUDE.md GEMINI.md GIT_GUIDE.md skills-lock.json .mcp.json
-       salesforce-mcp-config.json .codex .agents .gemini)
+       salesforce-mcp-config.json .codex .agents .gemini .claude/settings.json)
 # Own skills also exposed at user level with --user-links.
 OWN_SKILLS=(evidence-investigation-documentation)
 

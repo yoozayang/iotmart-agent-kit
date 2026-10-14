@@ -76,6 +76,21 @@
 - 非Metadata型別:
   - `OrgWideEmailAddress`等為sObject,不可當metadata retrieve,先查`platform-metadata-api-context-get`確認型別存在
 
+## 執行層防護
+| 層 | 位置 | 作用 | 適用 |
+| --- | --- | --- | --- |
+| `sf` wrapper | `bin/sf`,經shell設定檔放在PATH最前 | 寫入org的指令必須明確`-o`;Prod只允許`deploy validate`;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
+| `sfdx` blocker | `bin/sfdx` | 一律阻擋 | 同上 |
+| Codex rules | `.codex/rules/sf-guard.rules`,連結到`~/.codex/rules/iotmart-sf-guard.rules` | 寫入org的指令一律prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先,蓋過`default.rules`的allow | Codex |
+| Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
+| MCP | `.codex/config.toml`,`.gemini/settings.json`,`~/.claude.json` | Salesforce DX MCP不啟用`metadata` toolset | 三者 |
+| Org登入 | `sf` CLI | Prod平時不保持登入,取得授權後才`sf org login web -a prod`,完成後`sf org logout -o prod` | 全部 |
+
+- 被guard阻擋時:
+  - 停止並回報使用者阻擋原因
+  - 禁止以`SF_GUARD_BYPASS=1`,真實`sf`絕對路徑,MCP或其他方式繞過
+- `SF_GUARD_BYPASS=1`僅限使用者本人在終端機使用
+
 ## 上游更新
 - 以`npx skills update`或重新`npx skills add forcedotcom/sf-skills -s <skill> -a codex -y`更新
 - 更新後檢查本檔覆寫項目是否仍對應官方內容

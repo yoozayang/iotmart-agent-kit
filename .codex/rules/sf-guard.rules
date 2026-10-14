@@ -1,0 +1,41 @@
+# IoTMart Salesforce guard rules for Codex execpolicy.
+# Most restrictive decision wins across all loaded rule files, so these "prompt"
+# and "forbidden" rules override any earlier "allow" approval (e.g. in default.rules).
+# Content checks (target org, prod, full deploy) are enforced by bin/sf; these rules
+# make sure a human approves every org-writing command first.
+
+prefix_rule(
+    pattern=["sf", "project", "deploy", ["start", "validate", "quick", "resume"]],
+    decision="prompt",
+    justification="Deploy/validate needs explicit user authorization and a confirmed Target Org (AGENTS.md)",
+)
+prefix_rule(
+    pattern=["sf", "project", "delete", "source"],
+    decision="prompt",
+    justification="Deletes metadata from the org",
+)
+prefix_rule(
+    pattern=["sf", "data", ["create", "update", "upsert", "delete", "import"]],
+    decision="prompt",
+    justification="Writes org data",
+)
+prefix_rule(
+    pattern=["sf", "apex", "run"],
+    decision="prompt",
+    justification="Anonymous Apex can run arbitrary DML; also covers apex run test",
+)
+prefix_rule(
+    pattern=["sf", "org", "delete"],
+    decision="forbidden",
+    justification="Deleting orgs or sandboxes is never done by an agent",
+)
+prefix_rule(
+    pattern=["sfdx"],
+    decision="forbidden",
+    justification="Only the sf CLI is allowed (AGENTS.md)",
+)
+prefix_rule(
+    pattern=["env", "SF_GUARD_BYPASS=1"],
+    decision="forbidden",
+    justification="The bin/sf guard bypass is for humans only",
+)

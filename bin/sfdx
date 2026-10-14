@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# This environment uses the sf CLI only (AGENTS.md). sfdx is blocked for agents and humans alike.
+echo "sf-guard: blocked: use 'sf' instead of 'sfdx' (AGENTS.md)" >&2
+exit 3

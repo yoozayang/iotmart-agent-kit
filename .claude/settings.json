@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(sf project deploy start *)",
+      "Bash(sf project deploy validate *)",
+      "Bash(sf project deploy quick *)",
+      "Bash(sf project deploy resume *)",
+      "Bash(sf project delete source *)",
+      "Bash(sf data create *)",
+      "Bash(sf data update *)",
+      "Bash(sf data upsert *)",
+      "Bash(sf data delete *)",
+      "Bash(sf data import *)",
+      "Bash(sf apex run *)",
+      "Bash(sf org logout *)",
+      "Bash(sf org login *)"
+    ],
+    "deny": [
+      "Bash(sfdx *)",
+      "Bash(sf org delete *)",
+      "Bash(SF_GUARD_BYPASS=1 *)",
+      "Bash(env SF_GUARD_BYPASS=1 *)",
+      "mcp__salesforce-dx__deploy_metadata",
+      "mcp__salesforce-dx__delete_org"
+    ]
+  }
+}
