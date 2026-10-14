@@ -84,7 +84,6 @@
 | Codex rules | `.codex/rules/sf-guard.rules`,連結到`~/.codex/rules/iotmart-sf-guard.rules` | 寫入org的指令一律prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先,蓋過`default.rules`的allow | Codex |
 | Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
 | MCP | `.codex/config.toml`,`.gemini/settings.json`,`~/.claude.json` | Salesforce DX MCP不啟用`metadata` toolset | 三者 |
-| Org登入 | `sf` CLI | Prod平時不保持登入,取得授權後才`sf org login web -a prod`,完成後`sf org logout -o prod` | 全部 |
 
 - 被guard阻擋時:
   - 停止並回報使用者阻擋原因
