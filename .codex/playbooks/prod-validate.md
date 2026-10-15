@@ -1,6 +1,8 @@
 # Prod Validate
 
 ## Production
+- 預設TargetOrg:`prod`;使用者在對話中明確指定其他Prod org時,以使用者指定為準
+- 任何Prod metadata操作前,先執行`sf org display -o <TargetOrg> --json`確認該別名已認證;失敗即停止,不可改用CLI建議的其他org
 - 絕對禁止未授權Prod deploy
 - 未取得使用者明確授權前,禁止執行任何deploy,validation,dry-run命令;validation與dry-run同樣需要授權並確認Target Org
 - 僅允許:

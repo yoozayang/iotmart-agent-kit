@@ -55,6 +55,11 @@ case "$w0 $w1" in
 esac
 [ -n "$kind" ] || exec "$REAL_SF" "$@"
 
+# Salesforce CLI exits after rendering help; it does not contact or change an org.
+for a in "$@"; do
+  case "$a" in -h|--help) exec "$REAL_SF" "$@" ;; esac
+done
+
 [ "$kind" = "org-delete" ] && block "deleting orgs or sandboxes is not done from this environment"
 
 # Parse target org and deploy scope flags.
