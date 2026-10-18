@@ -11,8 +11,7 @@
 | UAT | `ccdev01` | Sandbox | `00Dfd000001gGz3EAE` | `https://adv--ccdev01.sandbox.my.salesforce.com` |
 | Prod | `prod` | Production(DevHub) | `00D280000017Eo3EAE` | `https://adv.my.salesforce.com` |
 
-- alias為各人本機`sf org list`名稱,可能不同;以Org Id確認實際目標
-- 本機default org可能被設為Prod;`-o <Target Org>`規則見`AGENTS.md`,執行前以`sf org display -o <alias>`核對Org Id
+- 使用者指定的org直接沿用,本表僅作參考,不另行比對或重複確認(見`AGENTS.md` Target Org)
 - Prod僅可做唯讀查詢;validation,dry-run,deploy依`.codex/playbooks/prod-validate.md`
 
 ## Experience Cloud / Site Domain

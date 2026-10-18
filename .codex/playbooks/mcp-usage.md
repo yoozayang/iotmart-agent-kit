@@ -12,7 +12,7 @@
   - 同一對話已指定即沿用,不需重複確認,也不需比對`SF_TARGET_ORG`
   - 未指定時先詢問;詢問前不執行retrieve,query,deploy,validation,dry-run
 - `sf`指令一律明確帶`-o <Target Org>`,不依賴預設org
-- UAT(`ccdev01`)與Prod的Org Id見`.codex/knowledge/environments.md`;執行前以`sf org display -o <alias>`核對
+- UAT(`ccdev01`)與Prod的Org Id,網址等參考資訊見`.codex/knowledge/environments.md`
 - Salesforce MCP只作用於設定檔的預設org(`.codex/config.toml`的`SF_TARGET_ORG`):
   - 與Target Org相同時可用
   - 不同時改用`sf` CLI
