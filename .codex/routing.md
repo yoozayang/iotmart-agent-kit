@@ -26,6 +26,7 @@
 | Prod validation | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md` |
 | Prod compare | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/mcp-usage.md` |
 | Dev/UAT compare | `.codex/playbooks/uat-compare.md` |
+| UAT/Prod環境識別(org alias,Org Id,前台網址,登入方式),UAT前台測試 | `.codex/knowledge/environments.md` |
 | Sandbox deploy scope | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/salesforce-deploy.md` |
 | Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md` |
 | Investigation,repository/system discovery,or task documentation | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
