@@ -6,6 +6,7 @@
   - UAT:`ccdev01`
 - EN/NA:
   - NQA+Prod
+- UAT(`ccdev01`)與Prod的Org Id,Instance URL,前台網址見`.codex/knowledge/environments.md`
 
 ## Split Source Detail Preserved
 ```text

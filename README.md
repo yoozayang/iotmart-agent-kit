@@ -57,7 +57,7 @@ iotmart-agent-kit/
 │   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
 │   ├── rules/sf-guard.rules   Codex execution rules: org-writing commands need confirmation
 │   ├── routing.md             task type -> files to read
-│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map
+│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay
 │   └── skills/                requirement-review, minimum-spec, minimum-sdd, test-case-generation, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)

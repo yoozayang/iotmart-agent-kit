@@ -63,4 +63,5 @@
 ## Guardrails
 - Magnolia task前先讀`.codex/knowledge/market-architecture.md`
 - 若涉及Prod部署,同時讀`.codex/playbooks/prod-validate.md`
+- UAT/Prod前台網址與對應SF org見`.codex/knowledge/environments.md`
 - 若涉及跨系統資料責任邊界,同時讀`.codex/knowledge/system-landscape.md`

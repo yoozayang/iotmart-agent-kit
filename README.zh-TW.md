@@ -55,7 +55,7 @@ iotmart-agent-kit/
 │   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion)
 │   ├── rules/sf-guard.rules   Codex執行規則:寫入org的指令需確認
 │   ├── routing.md             任務類型→要讀的檔案
-│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖
+│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊
 │   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay
 │   └── skills/                requirement-review,minimum-spec,minimum-sdd,test-case-generation,validation-review,deployment-package
 ├── .agents/skills/            agent skill(自有+第三方)
