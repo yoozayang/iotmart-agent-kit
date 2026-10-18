@@ -12,9 +12,7 @@
 | Prod | `prod` | Production(DevHub) | `00D280000017Eo3EAE` | `https://adv.my.salesforce.com` |
 
 - alias為各人本機`sf org list`名稱,可能不同;以Org Id確認實際目標
-- 本機default org可能被設為Prod:
-  - 所有`sf`指令一律明確帶`-o <alias>`,禁止依賴default target org
-  - 執行前以`sf org display -o <alias>`核對Org Id
+- 本機default org可能被設為Prod;`-o <Target Org>`規則見`AGENTS.md`,執行前以`sf org display -o <alias>`核對Org Id
 - Prod僅可做唯讀查詢;validation,dry-run,deploy依`.codex/playbooks/prod-validate.md`
 
 ## Experience Cloud / Site Domain

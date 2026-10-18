@@ -23,12 +23,12 @@
 | Magnolia task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
 | Salesforce/SFCC task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md`,`.codex/playbooks/sf-skills-overlay.md` |
 | Cross-platform task | `.codex/knowledge/system-landscape.md`,`.codex/knowledge/market-architecture.md`,related playbooks,`.codex/skills/deployment-package.md` |
-| Prod validation | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md` |
-| Prod compare | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/mcp-usage.md` |
-| Dev/UAT compare | `.codex/playbooks/uat-compare.md` |
-| UAT/Prod環境識別(org alias,Org Id,前台網址,登入方式),UAT前台測試 | `.codex/knowledge/environments.md` |
+| Prod validation | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
+| Prod compare | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/mcp-usage.md`,`.codex/knowledge/environments.md` |
+| Dev/UAT compare | `.codex/playbooks/uat-compare.md`,`.codex/knowledge/environments.md` |
+| UAT/Prod前台測試(Playwright,瀏覽器驗證),或需確認org alias,Org Id,前台網址,登入方式 | `.codex/knowledge/environments.md` |
 | Sandbox deploy scope | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/salesforce-deploy.md` |
-| Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md` |
+| Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
 | Investigation,repository/system discovery,or task documentation | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
 | Git baseline,branch diff,PR scope | `.codex/playbooks/git-baseline.md` |
 | SAP/SIS task | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
