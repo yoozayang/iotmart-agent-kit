@@ -1,7 +1,7 @@
 # Environments
 
 ## 目的
-- 本檔是UAT(`ccdev01`)與Prod環境識別資訊的正式基準位置
+- 本檔是UAT(`ccdev01`),QA(`nqa`)與Prod環境識別資訊的正式基準位置
 - 只記錄非機密識別資訊;禁止寫入帳密,Token,Cookie,Session ID
 - 部署,比對,驗證規則仍以`.codex/playbooks/salesforce-deploy.md`,`.codex/playbooks/uat-compare.md`,`.codex/playbooks/prod-validate.md`為準
 
@@ -9,6 +9,7 @@
 | 環境 | 建議alias | Org類型 | Org Id | Instance URL |
 | --- | --- | --- | --- | --- |
 | UAT | `ccdev01` | Sandbox | `00Dfd000001gGz3EAE` | `https://adv--ccdev01.sandbox.my.salesforce.com` |
+| QA | `nqa` | Sandbox | `00DIm000000LNY3MAO` | `https://adv--iotmartnqa.sandbox.my.salesforce.com` |
 | Prod | `prod` | Production(DevHub) | `00D280000017Eo3EAE` | `https://adv.my.salesforce.com` |
 
 - 使用者指定的org直接沿用,本表僅作參考,不另行比對或重複確認(見`AGENTS.md` Target Org)
