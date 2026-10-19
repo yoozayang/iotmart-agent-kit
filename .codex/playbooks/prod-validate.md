@@ -33,6 +33,19 @@
 - validation成功後不可自動Quick Deploy,只能提示使用者於Deployment Status手動Quick Deploy,並提供網址
 - Quick Deploy沿用成功的server-side validation,不需要CLI來源追蹤
 
+## 獨立軟體例外
+- 定義:使用者明確聲明為「獨立軟體」的專案;有自己的repo與部署pipeline,只部署自身元件,不修改IoTMart既有metadata
+- 已聲明:
+  - `IoTMart.ArchitectureViewer`(Azure DevOps`IoTMart 3.0`專案)
+- 允許:
+  - 由該專案pipeline在推送`main`後直接部署Prod,不需Validate Only與手動Quick Deploy
+  - 該專案對各環境的部署不需逐次詢問授權
+- 仍須遵守:
+  - 只以該專案`manifest/package.xml`部署,禁止全量deploy與`--source-dir force-app`
+  - 元件不得覆寫IoTMart既有或他人的metadata;同名衝突時停止並回報
+  - Prod test level依該專案設定,變更需使用者確認
+  - 本機`bin/sf` guard不變,本機對Prod仍只允許validate;Prod部署走該專案pipeline,禁止繞過guard
+
 ## 產物位置
 - Prod retrieve compare,validation產物只放已exclude目錄,預設`~/codex_tmp`
 - retrieve到`~/codex_tmp`時,優先使用`sf project retrieve start --target-metadata-dir <~/codex_tmp/...> --unzip`
