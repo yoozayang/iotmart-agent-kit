@@ -28,7 +28,7 @@ $Notes = New-Object System.Collections.Generic.List[string]
 function Say([string]$msg, [string]$color = 'Gray') { Write-Host $msg -ForegroundColor $color }
 
 function Finish([int]$code) {
-  if (-not $Yes) { [void](Read-Host '按 Enter 關閉視窗') }
+  if (-not $Yes -and -not $env:IOTMART_AGENT_KIT_LAUNCHER) { [void](Read-Host '按 Enter 關閉視窗') }
   exit $code
 }
 
