@@ -94,6 +94,12 @@
 - 位置:`.agents/skills/platform-*/`
 - 與repo規則衝突時以`.codex/playbooks/sf-skills-overlay.md`為準
 
+## 協作平台與多Agent環境原則（條件式）
+- 僅在運行於多Agent協作平台（如Buzz、多人頻道環境，或接收到協作中繼事件）時生效:
+  - 遵循「公開透明（Work in the open）」原則，所有調查、審核結果與交接狀態須在公開頻道發布，確保Owner與全員掌握
+  - 具體指令與操作規範詳見Task Routing載入之`.agents/skills/buzz-collaboration/SKILL.md`
+- 在非協作平台（本地IDE、單機CLI對話）時，維持原生對話文字輸出，不執行平台發布指令
+
 ## 補充規則
 - 暫存輸出:
   - `~/codex_tmp`
