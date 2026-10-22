@@ -35,6 +35,7 @@
 | Product/pricing/cart/order | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
 | UI/template/content | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
 | Salesforce official skill usage(retrieve,deploy,SOQL,metadata XML,Apex test) | `.codex/playbooks/sf-skills-overlay.md`,then matching`.agents/skills/platform-*/SKILL.md` |
+| Multi-agent platform collaboration (Buzz, Nostr) | `.agents/skills/buzz-collaboration/SKILL.md` |
 
 ## 正式基準
 - 全域硬限制與Ponytail-first以`AGENTS.md`為準
