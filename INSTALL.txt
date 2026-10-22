@@ -1,4 +1,4 @@
-﻿IoTMart Agent Kit 安裝說明
+IoTMart Agent Kit 安裝說明
 ==========================
 
 這個資料夾裡有 IoTMart 專案共用的 AI agent 規則與 skill(Codex / Claude Code / Gemini 都能用)。
@@ -24,8 +24,8 @@
 5. 看到「安裝完成」後按 Enter,重新開啟終端機與 Codex / Claude Code / Gemini
 
 【更新】
-下載新版 zip,重複上面的步驟即可。
-有變動的舊檔會先備份到使用者資料夾下的 .iotmart-agent-kit-backup 資料夾。
+- 若使用 Git：在 iotmart-agent-kit 資料夾執行 `git pull` 即可同步最新 skill 與規則。
+- 若下載 zip：下載新版 zip，重複上面的步驟即可。有變動的舊檔會先備份到使用者資料夾下的 .iotmart-agent-kit-backup 資料夾。
 
 【不會被覆蓋的個人設定】
 .codex/config.toml、.gemini/settings.json 已存在時會保留你的版本。
