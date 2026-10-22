@@ -12,8 +12,10 @@ IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一�
 2. 雙擊安裝檔:
    - Windows:`install-windows.cmd`(若出現「Windows已保護您的電腦」,按「其他資訊」→「仍要執行」)
    - macOS:在`install-mac.command`按右鍵→「打開」(第一次需要,之後可直接雙擊)
-3. 跳出「選擇資料夾」時選IoTMart專案資料夾(有`sfdx-project.json`的那一層);按「取消」=只安裝skill到使用者資料夾
-4. 看到「安裝完成」後按Enter,重新開啟Codex/Claude Code/Gemini
+3. 跳出資料夾選擇視窗時選IoTMart專案根目錄(有`sfdx-project.json`的那一層);按「Cancel」=只安裝skill到使用者資料夾
+4. 看到「Installation complete」後按任意鍵關閉視窗,重新開啟Codex/Claude Code/Gemini
+
+Windows安裝器提示為英文。只需選專案根目錄,不必指定Codex、Claude Code或Gemini的agent資料夾;安裝器會使用各工具的標準使用者路徑。
 
 安裝程式會做的事:
 - 把規則(`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`.codex/`)與skill(`.agents/skills`,`.claude/skills`)複製進專案,並寫入專案`.git/info/exclude`

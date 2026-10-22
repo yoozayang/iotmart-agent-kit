@@ -13,7 +13,7 @@ No agent, git skills or admin rights needed.
    - Windows: `install-windows.cmd` (if "Windows protected your PC" appears, click **More info → Run anyway**)
    - macOS: right-click `install-mac.command` → **Open** (needed the first time only)
 3. When the folder picker appears, choose your IoTMart project folder (the one containing `sfdx-project.json`); **Cancel** installs the skills to your user folder only
-4. When "安裝完成" (installation complete) appears, press Enter, then restart Codex / Claude Code / Gemini
+4. When "Installation complete" appears, press any key to close the window, then restart Codex / Claude Code / Gemini
 
 What the installer does:
 - Copies the rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.codex/`) and skills (`.agents/skills`, `.claude/skills`) into the project and adds them to the project's `.git/info/exclude`
@@ -24,7 +24,7 @@ What the installer does:
 
 To update: `git pull` (or download the ZIP again) and double-click the installer again. The same steps are in `INSTALL.txt` at the repository root.
 
-The installer's on-screen messages are in Traditional Chinese.
+The Windows installer's on-screen messages are in English. Choose the project root that contains `sfdx-project.json`; the installer finds the standard Codex, Claude Code and Gemini user-level locations automatically, so no agent folder is needed.
 
 ## Architecture
 

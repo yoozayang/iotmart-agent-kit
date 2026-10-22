@@ -28,7 +28,7 @@ $Notes = New-Object System.Collections.Generic.List[string]
 function Say([string]$msg, [string]$color = 'Gray') { Write-Host $msg -ForegroundColor $color }
 
 function Finish([int]$code) {
-  if (-not $Yes -and -not $env:IOTMART_AGENT_KIT_LAUNCHER) { [void](Read-Host '按 Enter 關閉視窗') }
+  if (-not $Yes -and -not $env:IOTMART_AGENT_KIT_LAUNCHER) { [void](Read-Host 'Press Enter to close') }
   exit $code
 }
 
@@ -59,8 +59,8 @@ function Test-IsLink([string]$path) {
 function Install-Copy([string]$src, [string]$dst, [string]$label) {
   if (-not (Test-Path -LiteralPath $src)) { return }
   if (Test-Path -LiteralPath $dst) {
-    if (Test-IsLink $dst) { $Kept.Add("$label (是連結,維持原樣)"); return }
-    if ((Get-TreeHash $src) -eq (Get-TreeHash $dst)) { $Kept.Add("$label (已是最新)"); return }
+    if (Test-IsLink $dst) { $Kept.Add("$label (symbolic link; left unchanged)"); return }
+    if ((Get-TreeHash $src) -eq (Get-TreeHash $dst)) { $Kept.Add("$label (already up to date)"); return }
     $bk = Get-BackupPath $label
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $bk) | Out-Null
     try {
@@ -80,7 +80,7 @@ function Install-Copy([string]$src, [string]$dst, [string]$label) {
 # Copy only when the destination does not exist yet (personal settings stay untouched).
 function Install-IfMissing([string]$src, [string]$dst, [string]$label) {
   if (-not (Test-Path -LiteralPath $src)) { return }
-  if (Test-Path -LiteralPath $dst) { $Kept.Add("$label (已存在,保留你的設定)"); return }
+  if (Test-Path -LiteralPath $dst) { $Kept.Add("$label (already exists; kept)"); return }
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dst) | Out-Null
   Copy-Item -LiteralPath $src -Destination $dst -Force
   $Installed.Add($label)
@@ -89,13 +89,13 @@ function Install-IfMissing([string]$src, [string]$dst, [string]$label) {
 # Merge Claude permissions: keep everything already there, add the kit's ask/deny rules.
 function Merge-ClaudeSettings([string]$src, [string]$dst, [string]$label) {
   if (-not (Test-Path -LiteralPath $dst)) { Install-IfMissing $src $dst $label; return }
-  if (Test-IsLink $dst) { $Kept.Add("$label (是連結,維持原樣)"); return }
+  if (Test-IsLink $dst) { $Kept.Add("$label (symbolic link; left unchanged)"); return }
   try {
     $cur = Get-Content -LiteralPath $dst -Raw -Encoding UTF8 | ConvertFrom-Json
   } catch {
     $alt = Join-Path (Split-Path -Parent $dst) 'settings.iotmart.json'
     Copy-Item -LiteralPath $src -Destination $alt -Force
-    $Notes.Add("$label 格式無法讀取,未合併;kit的權限設定另存為 settings.iotmart.json,請手動合併")
+    $Notes.Add("$label could not be parsed, so permissions were not merged. Kit permissions were saved as settings.iotmart.json for manual review.")
     return
   }
   $kit = Get-Content -LiteralPath $src -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -111,14 +111,14 @@ function Merge-ClaudeSettings([string]$src, [string]$dst, [string]$label) {
     if ($cur.permissions.PSObject.Properties[$key]) { $cur.permissions.$key = $merged }
     else { $cur.permissions | Add-Member -NotePropertyName $key -NotePropertyValue $merged }
   }
-  if (-not $changed) { $Kept.Add("$label (權限已包含kit規則)"); return }
+  if (-not $changed) { $Kept.Add("$label (kit permissions already present)"); return }
   $bk = Get-BackupPath $label
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $bk) | Out-Null
   Copy-Item -LiteralPath $dst -Destination $bk -Force
   $BackedUp.Add($label)
   $json = $cur | ConvertTo-Json -Depth 20
   [IO.File]::WriteAllText($dst, $json, (New-Object Text.UTF8Encoding($false)))
-  $Installed.Add("$label (合併kit權限)")
+  $Installed.Add("$label (kit permissions merged)")
 }
 
 function Add-GitExclude([string]$project, [string[]]$entries) {
@@ -132,7 +132,7 @@ function Add-GitExclude([string]$project, [string[]]$entries) {
   if ($add.Count -eq 0) { return }
   $text = "`n# iotmart-agent-kit`n" + ($add -join "`n") + "`n"
   [IO.File]::AppendAllText($exclude, $text, (New-Object Text.UTF8Encoding($false)))
-  $Installed.Add('.git/info/exclude (避免把agent檔案commit進公司repo)')
+  $Installed.Add('.git/info/exclude (keeps agent files out of company repository changes)')
 }
 
 # ---------------------------------------------------------------------------
@@ -143,28 +143,28 @@ if ($OnWindows) {
 }
 
 if (-not (Test-Path -LiteralPath (Join-Path $Kit 'AGENTS.md'))) {
-  Say '找不到 AGENTS.md:請先把整個 zip 解壓縮,再執行資料夾裡的安裝檔' 'Red'
+  Say 'AGENTS.md was not found. Extract the entire ZIP archive, then run the installer from the extracted folder.' 'Red'
   Finish 1
 }
 
 Say ''
-Say '=== IoTMart Agent Kit 安裝 ===' 'Cyan'
-Say "來源:$Kit"
+Say '=== IoTMart Agent Kit Installer ===' 'Cyan'
+Say "Source: $Kit"
 Say ''
 
 if (-not $ProjectPath -and -not $SkillsOnly) {
-  Say '接下來會跳出「選擇資料夾」視窗:'
-  Say '  - 請選你的 IoTMart 專案資料夾(裡面有 sfdx-project.json 的那一層)'
-  Say '  - 按「取消」= 只安裝 skill,不放專案規則'
+  Say 'Choose your IoTMart project root in the folder picker.'
+  Say '  - Select the folder that contains sfdx-project.json.'
+  Say '  - Cancel to install skills in your user profile only.'
   Say ''
   if ($OnWindows) {
     Add-Type -AssemblyName System.Windows.Forms
     $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-    $dialog.Description = '選擇 IoTMart 專案資料夾(取消 = 只安裝 skill)'
+    $dialog.Description = 'Select your IoTMart project root (the folder containing sfdx-project.json). Cancel installs user-level skills only.'
     $dialog.ShowNewFolderButton = $false
     if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $ProjectPath = $dialog.SelectedPath }
   } else {
-    $ProjectPath = (Read-Host '輸入專案資料夾路徑(直接 Enter = 只安裝 skill)').Trim().Trim('"').Trim("'")
+    $ProjectPath = (Read-Host 'Enter your IoTMart project root path (press Enter to install user-level skills only)').Trim().Trim('"').Trim("'")
   }
 }
 
@@ -172,22 +172,22 @@ $SkillDirs = @(Get-ChildItem -LiteralPath ([IO.Path]::Combine($Kit, '.agents', '
 
 if ($ProjectPath) {
   if (-not (Test-Path -LiteralPath $ProjectPath -PathType Container)) {
-    Say "資料夾不存在:$ProjectPath" 'Red'
+    Say "Folder not found: $ProjectPath" 'Red'
     Finish 1
   }
   $ProjectPath = (Resolve-Path -LiteralPath $ProjectPath).Path
   if ($ProjectPath -eq $Kit) {
-    Say '選到的是 kit 本身,請改選你的專案資料夾' 'Red'
+    Say 'You selected the kit folder. Select your IoTMart project folder instead.' 'Red'
     Finish 1
   }
   if (-not (Test-Path -LiteralPath (Join-Path $ProjectPath 'sfdx-project.json'))) {
-    Say "這個資料夾裡沒有 sfdx-project.json,看起來不是 IoTMart 專案:$ProjectPath" 'Yellow'
+    Say "No sfdx-project.json was found in this folder. It may not be an IoTMart project: $ProjectPath" 'Yellow'
     if (-not $Yes) {
-      $ans = Read-Host '仍要安裝到這裡嗎?輸入 Y 繼續,其他鍵取消'
-      if ($ans -notmatch '^[Yy]') { Say '已取消'; Finish 1 }
+      $ans = Read-Host 'Install here anyway? Enter Y to continue; any other key cancels'
+      if ($ans -notmatch '^[Yy]') { Say 'Installation cancelled.'; Finish 1 }
     }
   }
-  Say "安裝到專案:$ProjectPath" 'Cyan'
+  Say "Installing to project: $ProjectPath" 'Cyan'
 
   foreach ($f in 'AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'GIT_GUIDE.md', 'skills-lock.json', 'salesforce-mcp-config.json') {
     Install-Copy (Join-Path $Kit $f) (Join-Path $ProjectPath $f) $f
@@ -206,27 +206,27 @@ if ($ProjectPath) {
   Add-GitExclude $ProjectPath @('/AGENTS.md', '/CLAUDE.md', '/GEMINI.md', '/GIT_GUIDE.md', '/skills-lock.json',
     '/salesforce-mcp-config.json', '/.codex', '/.agents', '/.gemini', '/.claude/skills', '/.claude/settings.json')
 } else {
-  Say '只安裝 skill 到使用者資料夾(所有專案都能用)' 'Cyan'
+  Say 'Installing skills to your user profile (available to all projects).' 'Cyan'
   foreach ($s in $SkillDirs) {
     Install-Copy $s.FullName ([IO.Path]::Combine($UserHome, '.agents', 'skills', $s.Name)) "~/.agents/skills/$($s.Name)"
     Install-Copy $s.FullName ([IO.Path]::Combine($UserHome, '.claude', 'skills', $s.Name)) "~/.claude/skills/$($s.Name)"
   }
-  $Notes.Add('只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾')
+  $Notes.Add('Only skills were installed. Project rules (including AGENTS.md) and sf-skills-overlay.md were not installed. Run the installer again and select your project folder for the complete setup.')
 }
 
 # Codex execution rules apply to every project, so they go to the user profile in both modes.
 Install-Copy ([IO.Path]::Combine($Kit, '.codex', 'rules', 'sf-guard.rules')) ([IO.Path]::Combine($UserHome, '.codex', 'rules', 'iotmart-sf-guard.rules')) '~/.codex/rules/iotmart-sf-guard.rules'
 
 if ($OnWindows) {
-  $Notes.Add('Windows 沒有 sf 指令防護 wrapper(bin/sf 只支援 macOS/Linux);寫入 org 的指令由 Codex 規則與 Claude 權限要求確認')
+  $Notes.Add('The sf command guard is not available on Windows (bin/sf supports macOS/Linux only). Codex rules and Claude permissions require confirmation for commands that write to an org.')
 }
 
 Say ''
-Say '=== 安裝完成 ===' 'Green'
-if ($Installed.Count) { Say "已安裝或更新($($Installed.Count)):" 'Green'; $Installed | ForEach-Object { Say "  + $_" } }
-if ($Kept.Count) { Say "未變動($($Kept.Count)):"; $Kept | ForEach-Object { Say "  = $_" 'DarkGray' } }
-if ($BackedUp.Count) { Say "舊檔已備份到:$Backup" 'Yellow' }
-if ($Notes.Count) { Say '注意:' 'Yellow'; $Notes | ForEach-Object { Say "  ! $_" 'Yellow' } }
+Say '=== Installation complete ===' 'Green'
+if ($Installed.Count) { Say "Installed or updated ($($Installed.Count)) items:" 'Green'; $Installed | ForEach-Object { Say "  + $_" } }
+if ($Kept.Count) { Say "Unchanged ($($Kept.Count)) items:"; $Kept | ForEach-Object { Say "  = $_" 'DarkGray' } }
+if ($BackedUp.Count) { Say "Previous files backed up to: $Backup" 'Yellow' }
+if ($Notes.Count) { Say 'Notes:' 'Yellow'; $Notes | ForEach-Object { Say "  ! $_" 'Yellow' } }
 Say ''
-Say '請重新開啟 Codex / Claude Code / Gemini 讓設定生效' 'Cyan'
+Say 'Restart Codex / Claude Code / Gemini to apply the changes.' 'Cyan'
 Finish 0

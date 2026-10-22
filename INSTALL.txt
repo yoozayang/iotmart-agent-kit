@@ -8,10 +8,10 @@ IoTMart Agent Kit 安裝說明
 1. 在下載的 zip 檔按右鍵 →「全部解壓縮」
 2. 打開解壓縮後的資料夾,雙擊 install-windows.cmd
    (如果跳出「Windows 已保護您的電腦」,按「其他資訊」→「仍要執行」)
-3. 跳出「選擇資料夾」視窗時,選你的 IoTMart 專案資料夾
+3. 跳出資料夾選擇視窗時,選你的 IoTMart 專案資料夾
    (就是裡面有 sfdx-project.json 的那一層)
-   按「取消」= 只安裝 skill,不放專案規則
-4. 看到「安裝完成」後按 Enter 關閉視窗
+   按「Cancel」= 只安裝 skill,不放專案規則
+4. 看到「Installation complete」後按任意鍵關閉視窗
 5. 重新開啟 Codex / Claude Code / Gemini
 
 【macOS】
@@ -41,7 +41,7 @@ IoTMart Agent Kit - Install guide (English)
 
 This folder contains the shared AI agent rules and skills for the IoTMart project
 (usable by Codex / Claude Code / Gemini). The installer only copies files; it does not
-change your code and needs no admin rights. Its on-screen messages are in Chinese.
+change your code and needs no admin rights. Windows installer prompts are in English.
 
 [Windows]
 1. Right-click the downloaded zip -> "Extract All" (skip if you used git clone)
@@ -50,7 +50,7 @@ change your code and needs no admin rights. Its on-screen messages are in Chines
 3. In the folder picker, choose your IoTMart project folder
    (the one that contains sfdx-project.json)
    Cancel = install the skills only, without project rules
-4. When "安裝完成" (installation complete) appears, press Enter
+4. When "Installation complete" appears, press any key to close the window
 5. Restart Codex / Claude Code / Gemini
 
 [macOS]
