@@ -2,7 +2,7 @@
 # sf guard: thin wrapper in front of the real Salesforce CLI.
 # Enforces at execution time what AGENTS.md only states in text:
 #   - org-writing commands must name the Target Org explicitly (-o/--target-org)
-#   - Prod: only `project deploy validate` (+ resume/report); no deploy start,
+#   - Prod: deploy start/quick requires explicit per-task approval flag; otherwise validate only;
 #     quick deploy, data writes, anonymous Apex, or source delete
 #   - deploy/validate scope must be -m, -x, --metadata-dir, or individual files;
 #     never a directory such as force-app, never "all local changes"
@@ -107,8 +107,8 @@ case "$instance_url" in *.sandbox.my.salesforce.com*|*.scratch.my.salesforce.com
 if [ "$is_prod" -eq 1 ]; then
   case "$kind" in
     deploy-validate|deploy-resume) ;;
-    deploy-start)  block "Prod ($instance_url): deploy start is not allowed. Use 'sf project deploy validate' then Quick Deploy manually in Setup > Deployment Status" ;;
-    deploy-quick)  block "Prod ($instance_url): Quick Deploy is done manually in Setup > Deployment Status" ;;
+    deploy-start)  [ "${SF_PROD_DEPLOY_APPROVED:-}" = "YES" ] || block "Prod ($instance_url): explicit user Y/N approval required; after Y, set SF_PROD_DEPLOY_APPROVED=YES for this authorized deploy" ;;
+    deploy-quick)  [ "${SF_PROD_DEPLOY_APPROVED:-}" = "YES" ] || block "Prod ($instance_url): explicit user Y/N approval required; after Y, set SF_PROD_DEPLOY_APPROVED=YES for this authorized quick deploy" ;;
     *)             block "Prod ($instance_url): $kind is not allowed" ;;
   esac
 fi
