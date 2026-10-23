@@ -1,7 +1,7 @@
 # Codex專案規範
 
 ## 第一必要步驟:Ponytail-first evaluation
-- 每次任務的第一步必須先做Ponytail-first evaluation
+- 每次任務的第一步在內部完成Ponytail-first evaluation，不需在回覆中宣告、重述清單或報告框架名稱
 - 這是執行流程優先序,不是宣稱改變Codex平台實際instruction載入順序
 - 若Ponytail plugin或skill可用,先執行Ponytail評估,再依本檔與既有repo規則實作
 - 評估清單:
@@ -22,8 +22,8 @@
 - 詳細執行流程讀`.codex/playbooks/*.md`
 - 可重用AI/coding-agent工作模式讀`.codex/skills/*.md`
 - 任務路由先讀`.codex/routing.md`
-- 若本檔與子文件衝突,採用更嚴格且更保守的規則
-- 若不確定規則歸屬,保留原規則並增加reference,不可刪除或弱化
+- 若本檔與子文件衝突,依任務類型與明確授權條款處理；不可把預設限制解讀成拒絕使用者已明確授權的操作
+- 若不確定規則歸屬,先查對應playbook並消除衝突；不得累加互相矛盾的規則
 
 ## 取用順序
 1. 先做Ponytail評估
@@ -37,7 +37,7 @@
 ## Repo硬限制
 - security/compliance/data integrity/permissions/deployment requirements仍由本repo規範主導
 - 絕對禁止未授權Prod deploy
-- 未取得使用者明確授權前,禁止執行任何deploy、validation、dry-run命令
+- Deploy、validation、dry-run需取得使用者對目標Org及工作範圍的明確授權；同一任務已授權即沿用，不得逐條指令反覆詢問
 - 任何validation或dry-run也必須先取得使用者明確授權並確認Target Org
 - 檔案比對前:
   - 比較對象一律是對象環境實際檔案
@@ -69,12 +69,12 @@
   - 僅`sf`
   - 不使用`sfdx`
 - Prod正式環境部署方式:
-  - 一律`Validate Only + manual Quick Deploy`
+  - 預設`Validate Only + manual Quick Deploy`；使用者明確要求Agent部署Production時，完成影響範圍檢查後，以一次Y/N確認取得授權並依`.codex/playbooks/prod-validate.md`執行
   - validation成功後提示使用者於Deployment Status手動Quick Deploy，並提供網址
   - 例外:使用者明確聲明為「獨立軟體」的專案可直接部署Prod且不需逐次詢問，範圍與限制見`.codex/playbooks/prod-validate.md`「獨立軟體例外」
 - 執行層防護:
   - `sf`經`bin/sf` guard執行，Codex rules與Claude permissions另行要求確認，詳見`.codex/playbooks/sf-skills-overlay.md`
-  - 被guard阻擋時停止並回報使用者，禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
+  - 不得以`SF_GUARD_BYPASS`、真實`sf`絕對路徑或MCP繞過guard；Production部署使用guard內建的明確授權路徑，若未授權應詢問Y/N而非直接拒絕
 
 ## Git基準硬限制
 - branch:
@@ -85,7 +85,7 @@
   - 非使用者明確指定時,禁止以`origin/main`作為此repo的預設相對基準
   - 回覆中若提到「這次分支新增/這次修改/相對差異」,都應先以`origin/Dev...HEAD`確認
 - Commit/PR:
-  - 遵循`GIT_GUIDE.md`
+  - 遵循`GIT_GUIDE.md`，個人repo符合檢查條件時自主建立並合併PR，不需逐次要求核准
 - 大量非功能diff:
   - 優先檢查base branch
 
@@ -112,3 +112,4 @@
   - 中英文不加空格
   - 英文保留空格
   - 不使用中文句點
+- 預設先報結果與阻礙，避免重述背景、Ponytail判斷、重複確認已授權事項
