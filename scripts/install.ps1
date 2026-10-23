@@ -135,6 +135,33 @@ function Add-GitExclude([string]$project, [string[]]$entries) {
   $Installed.Add('.git/info/exclude (避免把agent檔案commit進公司repo)')
 }
 
+# Keep the user's own text in dst; replace only the kit's marked block with src.
+function Install-Block([string]$src, [string]$dst, [string]$label) {
+  $begin = '<!-- iotmart-agent-kit:begin -->'; $end = '<!-- iotmart-agent-kit:end -->'
+  $own = @()
+  if (Test-Path -LiteralPath $dst) {
+    $skip = $false
+    foreach ($line in [IO.File]::ReadAllLines($dst)) {
+      if ($line -eq $begin) { $skip = $true }
+      if (-not $skip) { $own += $line }
+      if ($line -eq $end) { $skip = $false }
+    }
+  }
+  $ownText = ($own -join "`n").TrimEnd()
+  $block = $begin + "`n" + ([IO.File]::ReadAllText($src).Replace("`r`n", "`n").TrimEnd()) + "`n" + $end
+  $new = $(if ($ownText) { $ownText + "`n`n" + $block } else { $block }) + "`n"
+  if (Test-Path -LiteralPath $dst) {
+    if ([IO.File]::ReadAllText($dst).Replace("`r`n", "`n") -eq $new) { $Kept.Add("$label (已是最新)"); return }
+    $bk = Get-BackupPath $label
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $bk) | Out-Null
+    Copy-Item -LiteralPath $dst -Destination $bk -Force
+    $BackedUp.Add($label)
+  }
+  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dst) | Out-Null
+  [IO.File]::WriteAllText($dst, $new, (New-Object Text.UTF8Encoding($false)))
+  $Installed.Add($label)
+}
+
 # ---------------------------------------------------------------------------
 
 if ($OnWindows) {
@@ -213,6 +240,12 @@ if ($ProjectPath) {
   }
   $Notes.Add('只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾')
 }
+
+# Global reply rules for every project, in each agent's user-level instruction file.
+$GlobalRules = [IO.Path]::Combine($Kit, 'global', 'agent-rules.md')
+Install-Block $GlobalRules ([IO.Path]::Combine($UserHome, '.codex', 'AGENTS.md')) '~/.codex/AGENTS.md'
+Install-Block $GlobalRules ([IO.Path]::Combine($UserHome, '.claude', 'CLAUDE.md')) '~/.claude/CLAUDE.md'
+Install-Block $GlobalRules ([IO.Path]::Combine($UserHome, '.gemini', 'GEMINI.md')) '~/.gemini/GEMINI.md'
 
 # Codex execution rules apply to every project, so they go to the user profile in both modes.
 Install-Copy ([IO.Path]::Combine($Kit, '.codex', 'rules', 'sf-guard.rules')) ([IO.Path]::Combine($UserHome, '.codex', 'rules', 'iotmart-sf-guard.rules')) '~/.codex/rules/iotmart-sf-guard.rules'

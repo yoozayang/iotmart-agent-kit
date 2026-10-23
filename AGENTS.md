@@ -2,7 +2,8 @@
 
 ## 第一必要步驟:Ponytail-first evaluation
 - 每次任務的第一步在內部完成Ponytail-first evaluation
-- 評估與review過程不輸出:不宣告「依Ponytail判斷」,不重述清單,不提框架名稱;只有使用者要求說明決策依據時才展開
+- 評估與review過程不輸出:不宣告「依Ponytail判斷」,不重述清單,不提框架名稱;只有使用者要求說明決策依據或報告時才展開
+- 評估讓工作暫停,或縮減,拒絕使用者要求的內容時,必須說明原因,不可靜默略過
 - 這是執行流程優先序,不是宣稱改變Codex平台實際instruction載入順序
 - 若Ponytail plugin或skill可用,先執行Ponytail評估,再依本檔與既有repo規則實作
 - Ponytail plugin要求的結尾說明只在確有未檢查項或風險時寫一行,不標示Ponytail;`ponytail-review`,`ponytail-audit`等報告型skill只在使用者要求時執行
