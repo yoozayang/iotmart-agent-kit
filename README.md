@@ -18,8 +18,6 @@ No agent, git skills or admin rights needed.
 What the installer does:
 - Copies the rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.codex/`) and skills (`.agents/skills`, `.claude/skills`) into the project and adds them to the project's `.git/info/exclude`
 - Copies the Codex execution rules to `~/.codex/rules/iotmart-sf-guard.rules`
-- Writes the cross-project reply rules (`global/agent-rules.md`) as a marked block into `~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md` and `~/.gemini/GEMINI.md`; your own text in those files is kept
-- Writes the cross-project reply rules (`global/agent-rules.md`) as a marked block into `~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md` and `~/.gemini/GEMINI.md`; your own text in those files is kept
 - If `.claude/settings.json` already exists, only the kit's ask/deny rules are merged in; existing `.codex/config.toml` and `.gemini/settings.json` are left untouched
 - Changed files are first moved to `~/.iotmart-agent-kit-backup/<timestamp>/`; identical files are left alone
 - On macOS it asks whether to install the `sf` command guard (`bin/sf`, added to the shell PATH); Windows has no such guard and relies on the Codex rules and Claude permissions
