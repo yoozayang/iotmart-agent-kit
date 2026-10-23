@@ -26,7 +26,7 @@
 - 禁止本地覆蓋org
 
 ## Deploy
-- 未取得使用者明確授權前,禁止執行任何deploy、validation、dry-run命令
+- Deploy、validation、dry-run需使用者明確授權；同一任務已授權的Target Org與操作範圍內不需重複詢問；Prod部署依`prod-validate.md`的單次Y/N流程
 - 優先:
   - `sf project deploy start -m`
   - `sf project deploy start -x`
