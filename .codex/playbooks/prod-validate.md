@@ -4,11 +4,8 @@
 - 預設TargetOrg:`prod`;使用者在對話中明確指定其他Prod org時,以使用者指定為準
 - 任何Prod metadata操作前,先執行`sf org display -o <TargetOrg> --json`確認該別名已認證;失敗即停止,不可改用CLI建議的其他org
 - 絕對禁止未授權Prod deploy
-- 未取得使用者明確授權前,禁止執行任何deploy,validation,dry-run命令;validation與dry-run同樣需要授權並確認Target Org
-- 僅允許:
-  - query
-  - validation
-  - dry-run
+- Deploy、validation、dry-run需有使用者明確授權與Target Org；同一任務範圍內授權持續有效，勿重複詢問
+- 預設允許query、validation、dry-run；正式部署需依下方Y/N授權流程
 
 ## Prod Compare與Deploy原則
 - Prod比對與deploy前:
@@ -27,10 +24,11 @@
 - 將最終manifest轉成`~/codex_tmp/<task>/mdapi`的MetadataAPI套件後,以`sf project deploy validate --metadata-dir`驗證
 
 ## 正式環境部署方式
-- 一律`Validate Only + manual Quick Deploy`
-- 先Validate Only,之後由使用者手動Quick Deploy
-- validation與Quick Deploy使用相同metadata範圍
-- validation成功後不可自動Quick Deploy,只能提示使用者於Deployment Status手動Quick Deploy,並提供網址
+- 預設`Validate Only + manual Quick Deploy`，但不可將預設流程視為不可變更的拒絕理由
+- 使用者要求Agent執行Production部署時，先確認Target Org、manifest、影響範圍、測試結果，僅詢問一次「是否授權本次部署至<Org>？Y/N」
+- Y後可使用`SF_PROD_DEPLOY_APPROVED=YES sf project deploy start ...`執行已核准範圍，或在成功validation後使用相同授權執行quick deploy；N則停止
+- 授權僅限本次任務、指定Org與metadata範圍，不得擴張至資料刪除、大量DML或其他任務
+- 仍須遵守manifest限定、相依性、測試及衝突檢查；同名衝突或風險變更時重新取得授權
 - Quick Deploy沿用成功的server-side validation,不需要CLI來源追蹤
 
 ## 獨立軟體例外
@@ -44,7 +42,7 @@
   - 只以該專案`manifest/package.xml`部署,禁止全量deploy與`--source-dir force-app`
   - 元件不得覆寫IoTMart既有或他人的metadata;同名衝突時停止並回報
   - Prod test level依該專案設定,變更需使用者確認
-  - 本機`bin/sf` guard不變,本機對Prod仍只允許validate;Prod部署走該專案pipeline,禁止繞過guard
+  - 可使用專案pipeline部署；若改由本機CLI部署，需走上述Y/N確認與guard核准路徑，不得繞過guard
 
 ## 產物位置
 - Prod retrieve compare,validation產物只放已exclude目錄,預設`~/codex_tmp`
