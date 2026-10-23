@@ -17,7 +17,9 @@ IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一�
 
 安裝程式會做的事:
 - 把規則(`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`.codex/`)與skill(`.agents/skills`,`.claude/skills`)複製進專案,並寫入專案`.git/info/exclude`
+- 把跨專案回覆規則(`global/agent-rules.md`)以標記區塊寫入`~/.codex/AGENTS.md`,`~/.claude/CLAUDE.md`,`~/.gemini/GEMINI.md`;檔案中你自己的內容會保留
 - 把Codex執行規則複製到`~/.codex/rules/iotmart-sf-guard.rules`
+- 把跨專案回覆規則(`global/agent-rules.md`)以標記區塊寫入`~/.codex/AGENTS.md`,`~/.claude/CLAUDE.md`,`~/.gemini/GEMINI.md`;檔案中你自己的內容會保留
 - `.claude/settings.json`已存在時只合併kit的ask/deny規則;`.codex/config.toml`,`.gemini/settings.json`已存在時保留原檔
 - 有變動的舊檔先移到`~/.iotmart-agent-kit-backup/<時間>/`,內容相同則不動
 - macOS會詢問是否安裝`sf`指令防護(`bin/sf`,加入shell PATH);Windows沒有此項,由Codex規則與Claude權限把關

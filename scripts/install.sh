@@ -92,6 +92,26 @@ merge_claude_settings() {
   INSTALLED+=("$label (合併kit權限)")
 }
 
+# install_block <src> <dst> <label>: keep the user's own text, replace only the kit's marked block
+BLOCK_BEGIN='<!-- iotmart-agent-kit:begin -->'
+BLOCK_END='<!-- iotmart-agent-kit:end -->'
+install_block() {
+  local src="$1" dst="$2" label="$3" bk own new
+  own=""
+  [ -f "$dst" ] && own="$(awk -v b="$BLOCK_BEGIN" -v e="$BLOCK_END" '$0==b{skip=1} !skip{print} $0==e{skip=0}' "$dst")"
+  new="${own:+$own
+
+}$BLOCK_BEGIN
+$(cat "$src")
+$BLOCK_END"
+  if [ -f "$dst" ] && [ "$new" = "$(cat "$dst")" ]; then KEPT+=("$label (已是最新)"); return 0; fi
+  if [ -f "$dst" ]; then
+    bk="$(backup_path "$label")"; mkdir -p "$(dirname "$bk")" && cp "$dst" "$bk" && BACKED+=("$label")
+  fi
+  mkdir -p "$(dirname "$dst")"
+  printf '%s\n' "$new" > "$dst"
+  INSTALLED+=("$label")
+}
 add_git_exclude() {
   local project="$1"; shift
   [ -d "$project/.git" ] || return 0
@@ -173,6 +193,11 @@ else
   done
   NOTES+=("只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾")
 fi
+
+# Global reply rules for every project, in each agent's user-level instruction file.
+install_block "$KIT/global/agent-rules.md" "$USER_HOME/.codex/AGENTS.md" "~/.codex/AGENTS.md"
+install_block "$KIT/global/agent-rules.md" "$USER_HOME/.claude/CLAUDE.md" "~/.claude/CLAUDE.md"
+install_block "$KIT/global/agent-rules.md" "$USER_HOME/.gemini/GEMINI.md" "~/.gemini/GEMINI.md"
 
 # Codex execution rules apply to every project, so they go to the user home in both modes.
 install_copy "$KIT/.codex/rules/sf-guard.rules" "$USER_HOME/.codex/rules/iotmart-sf-guard.rules" "~/.codex/rules/iotmart-sf-guard.rules"
