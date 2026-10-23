@@ -44,7 +44,8 @@
 ## Test
 - `RunSpecifiedTests`
 - 僅相關test
-- Dev UAT下僅相關模組test，不跑全部測試，prod應確認
+- Dev UAT下僅相關模組test，不跑全部測試
+- Prod test level:使用者已指定就照用;否則有相關test用`RunSpecifiedTests`,沒有則用`RunLocalTests`,列入validation結果與Y/N摘要,不另外詢問
 - dry-run與正式deploy使用相同範圍
 
 ## Sandbox

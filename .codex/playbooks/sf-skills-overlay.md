@@ -11,7 +11,7 @@
 | `platform-metadata-api-context-get` | 寫或改`*-meta.xml`,retrieve前確認型別、成員命名、目錄 | 本地查閱 |
 | `platform-data-and-tooling-api-context-get` | 寫SOQL前確認標準物件與Tooling物件欄位 | 本地查閱 |
 | `platform-metadata-retrieve` | retrieve指令模式與flag | 依本檔Retrieve規則 |
-| `platform-metadata-deploy` | deploy,validate的flag,manifest,錯誤排除 | 僅知識參考,agent不可自行執行 |
+| `platform-metadata-deploy` | deploy,validate的flag,manifest,錯誤排除 | flag參考;執行依下方Deploy規則的授權流程 |
 | `platform-soql-query` | SOQL寫法與查詢指令 | 唯讀 |
 | `platform-apex-test-run` | 測試執行與覆蓋率解析 | 依本檔Test規則 |
 
@@ -44,9 +44,9 @@
   - `sf project deploy start --dry-run --source-dir force-app`
   - `references/deploy.sh`以目錄為單位的部署
 - 一律依`.codex/playbooks/salesforce-deploy.md`與`.codex/playbooks/prod-validate.md`:
-  - 未取得使用者明確授權前,禁止deploy,validation,dry-run
+  - 未取得使用者明確授權前,禁止deploy,validation,dry-run;同一任務已授權不重問
   - 僅`-m`、`-x package.xml`或由最終`package.xml`轉出的`--metadata-dir`差異部署
-  - Prod一律Validate Only+手動Quick Deploy;獨立軟體例外見`.codex/playbooks/prod-validate.md`
+  - Prod預設Validate Only+手動Quick Deploy;使用者要求Agent部署時依`.codex/playbooks/prod-validate.md`授權流程,以`--prod-approved <Org>`執行
 - 部署範圍:
   - `origin/Dev...HEAD`只是候選清單
   - 需與目標org實際檔案比對後定案
@@ -54,7 +54,7 @@
 ## Test規則
 - test level依`.codex/playbooks/salesforce-deploy.md`
 - Dev,UAT僅跑相關test,不跑全部
-- Prod test level需與使用者確認
+- Prod test level:使用者已指定就照用;否則有相關test用`RunSpecifiedTests`,沒有則用`RunLocalTests`,列入validation結果與Y/N摘要,不另外詢問
 
 ## Repo補強規則
 - SOQL前確認自訂物件欄位:
@@ -79,14 +79,15 @@
 ## 執行層防護
 | 層 | 位置 | 作用 | 適用 |
 | --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf`,經shell設定檔放在PATH最前 | 寫入org的指令必須明確`-o`;Prod只允許`deploy validate`;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
+| `sf` wrapper | `bin/sf`,經shell設定檔放在PATH最前 | 寫入org的指令必須明確`-o`;Prod的`deploy start`/`quick`需`--prod-approved <同-o的Org>`,否則只允許validate與dry-run;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
 | `sfdx` blocker | `bin/sfdx` | 一律阻擋 | 同上 |
 | Codex rules | `.codex/rules/sf-guard.rules`,連結到`~/.codex/rules/iotmart-sf-guard.rules` | 寫入org的指令一律prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先,蓋過`default.rules`的allow | Codex |
 | Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
 | MCP | `.codex/config.toml`,`.gemini/settings.json`,`~/.claude.json` | Salesforce DX MCP不啟用`metadata` toolset | 三者 |
 
 - 被guard阻擋時:
-  - 停止並回報使用者阻擋原因
+  - 缺少Prod部署授權:依`.codex/playbooks/prod-validate.md`問一次Y/N,Y後加`--prod-approved <Org>`
+  - 其他阻擋:停止並回報使用者阻擋原因
   - 禁止以`SF_GUARD_BYPASS=1`,真實`sf`絕對路徑,MCP或其他方式繞過
 - `SF_GUARD_BYPASS=1`僅限使用者本人在終端機使用
 
