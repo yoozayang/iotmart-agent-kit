@@ -13,7 +13,7 @@
 | Prod | `prod` | Production(DevHub) | `00D280000017Eo3EAE` | `https://adv.my.salesforce.com` |
 
 - 使用者指定的org直接沿用,本表僅作參考,不另行比對或重複確認(見`AGENTS.md` Target Org)
-- Prod僅可做唯讀查詢;validation,dry-run,deploy依`.codex/playbooks/prod-validate.md`
+- Prod查詢不需授權;validation,dry-run,deploy依`.codex/playbooks/prod-validate.md`
 
 ## Experience Cloud / Site Domain
 | 環境 | my.site.com | salesforce-sites.com |

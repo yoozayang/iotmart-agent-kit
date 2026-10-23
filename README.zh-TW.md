@@ -132,6 +132,7 @@ git status --short                      # 不應出現agent檔案
 ls -la AGENTS.md .codex .agents .claude/skills
 command -v sf                           # 應為~/Development/iotmart-agent-kit/bin/sf
 codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart-sf-guard.rules -- sf project deploy start   # 應為prompt
+~/Development/iotmart-agent-kit/tests/sf-guard.test.sh   # guard與規則文字檢查,不需連org
 ```
 
 ## 三個環境如何讀取
@@ -155,7 +156,7 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 | `platform-metadata-api-context-get` | forcedotcom/sf-skills | 604種Metadata API型別的欄位,目錄,命名,範例XML |
 | `platform-data-and-tooling-api-context-get` | forcedotcom/sf-skills | 2130個標準物件與Tooling物件的欄位定義 |
 | `platform-metadata-retrieve` | forcedotcom/sf-skills | retrieve指令模式與flag |
-| `platform-metadata-deploy` | forcedotcom/sf-skills | deploy,validate知識參考,agent不可自行執行 |
+| `platform-metadata-deploy` | forcedotcom/sf-skills | deploy,validate flag參考;agent只依playbook授權流程部署 |
 | `platform-soql-query` | forcedotcom/sf-skills | SOQL寫法與查詢 |
 | `platform-apex-test-run` | forcedotcom/sf-skills | Apex測試執行與覆蓋率 |
 
@@ -224,7 +225,7 @@ npx skills update -p -y                                     # 更新
 
 | 層 | 位置 | 作用 | 涵蓋 |
 | --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf` | 寫入org的指令必須明確`-o`;Prod只允許`deploy validate`;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
+| `sf` wrapper | `bin/sf` | 寫入org的指令必須明確`-o`;Prod的`deploy start`/`quick`需使用者授權後加`--prod-approved <同-o的Org>`,否則只允許validate與dry-run;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
 | `sfdx` blocker | `bin/sfdx` | 一律阻擋 | 同上 |
 | Codex rules | `.codex/rules/sf-guard.rules` | 寫入org的指令prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先 | Codex |
 | Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |

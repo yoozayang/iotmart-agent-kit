@@ -39,3 +39,8 @@ prefix_rule(
     decision="forbidden",
     justification="The bin/sf guard bypass is for humans only",
 )
+prefix_rule(
+    pattern=["SF_GUARD_BYPASS=1"],
+    decision="forbidden",
+    justification="The bin/sf guard bypass is for humans only",
+)

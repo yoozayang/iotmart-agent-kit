@@ -1,9 +1,11 @@
 # Codex專案規範
 
 ## 第一必要步驟:Ponytail-first evaluation
-- 每次任務的第一步必須先做Ponytail-first evaluation
+- 每次任務的第一步在內部完成Ponytail-first evaluation
+- 評估與review過程不輸出:不宣告「依Ponytail判斷」,不重述清單,不提框架名稱;只有使用者要求說明決策依據時才展開
 - 這是執行流程優先序,不是宣稱改變Codex平台實際instruction載入順序
 - 若Ponytail plugin或skill可用,先執行Ponytail評估,再依本檔與既有repo規則實作
+- Ponytail plugin要求的結尾說明只在確有未檢查項或風險時寫一行,不標示Ponytail;`ponytail-review`,`ponytail-audit`等報告型skill只在使用者要求時執行
 - 評估清單:
   - 能否不改程式碼解決
   - 能否重用既有程式碼
@@ -23,7 +25,8 @@
 - 可重用AI/coding-agent工作模式讀`.codex/skills/*.md`
 - 任務路由先讀`.codex/routing.md`
 - 若本檔與子文件衝突,採用更嚴格且更保守的規則
-- 若不確定規則歸屬,保留原規則並增加reference,不可刪除或弱化
+- 本檔與playbook明文定義的授權流程(Prod部署授權,獨立軟體例外,個人repo自主合併)是規則本身,不是衝突;不可以「較保守」或預設流程為由拒絕已依該流程授權的操作
+- 若不確定規則歸屬,先查對應playbook並消除衝突；不得累加互相矛盾的規則
 
 ## 取用順序
 1. 先做Ponytail評估
@@ -32,13 +35,12 @@
 4. 依題目載入對應`knowledge`,`playbooks`,`skills`
 5. 再產出最小可行實作方案
 6. 仍有必要時才改碼
-7. 完成後做Ponytail review
+7. 完成後在內部做Ponytail review,只回報需使用者處理的結果
 
 ## Repo硬限制
 - security/compliance/data integrity/permissions/deployment requirements仍由本repo規範主導
 - 絕對禁止未授權Prod deploy
-- 未取得使用者明確授權前,禁止執行任何deploy、validation、dry-run命令
-- 任何validation或dry-run也必須先取得使用者明確授權並確認Target Org
+- Deploy、validation、dry-run需取得使用者對目標Org及工作範圍的明確授權並確認Target Org；同一任務已授權即沿用，不得逐條指令反覆詢問
 - 檔案比對前:
   - 比較對象一律是對象環境實際檔案
   - 禁止以branch差異直接視為對象環境差異
@@ -69,12 +71,13 @@
   - 僅`sf`
   - 不使用`sfdx`
 - Prod正式環境部署方式:
-  - 一律`Validate Only + manual Quick Deploy`
-  - validation成功後提示使用者於Deployment Status手動Quick Deploy，並提供網址
+  - 預設`Validate Only + manual Quick Deploy`，validation成功後提示使用者於Deployment Status手動Quick Deploy，並提供網址
+  - 使用者要求Agent部署Prod時不可拒絕:IoTMart既有業務在validation成功後問一次Y/N，Y後由Agent執行Quick Deploy；流程見`.codex/playbooks/prod-validate.md`
   - 例外:使用者明確聲明為「獨立軟體」的專案可直接部署Prod且不需逐次詢問，範圍與限制見`.codex/playbooks/prod-validate.md`「獨立軟體例外」
 - 執行層防護:
   - `sf`經`bin/sf` guard執行，Codex rules與Claude permissions另行要求確認，詳見`.codex/playbooks/sf-skills-overlay.md`
-  - 被guard阻擋時停止並回報使用者，禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
+  - 已授權的Prod部署以`--prod-approved <Org>`通過guard；guard因缺少授權阻擋時依流程詢問Y/N，不直接拒絕
+  - 其他阻擋停止並回報；禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
 
 ## Git基準硬限制
 - branch:
@@ -85,7 +88,8 @@
   - 非使用者明確指定時,禁止以`origin/main`作為此repo的預設相對基準
   - 回覆中若提到「這次分支新增/這次修改/相對差異」,都應先以`origin/Dev...HEAD`確認
 - Commit/PR:
-  - 遵循`GIT_GUIDE.md`
+  - 遵循`GIT_GUIDE.md`；個人repo依`GIT_GUIDE.md`「個人Repository自主完成」自主建立並合併PR，不需逐次要求核准
+  - 上述branch命名與`origin/Dev`基準只適用IoTMart專案repo；個人repo依該repo預設branch與慣例
 - 大量非功能diff:
   - 優先檢查base branch
 
@@ -112,3 +116,4 @@
   - 中英文不加空格
   - 英文保留空格
   - 不使用中文句點
+- 預設先報結果與阻礙，不重述背景、內部評估過程或已授權事項

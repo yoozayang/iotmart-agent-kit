@@ -134,6 +134,7 @@ git status --short                      # no agent files should appear
 ls -la AGENTS.md .codex .agents .claude/skills
 command -v sf                           # should be ~/Development/iotmart-agent-kit/bin/sf
 codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart-sf-guard.rules -- sf project deploy start   # should be prompt
+~/Development/iotmart-agent-kit/tests/sf-guard.test.sh   # guard and rule-text checks, no org needed
 ```
 
 ## How each environment reads the kit
@@ -157,7 +158,7 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 | `platform-metadata-api-context-get` | forcedotcom/sf-skills | fields, directories, naming and sample XML for 604 Metadata API types |
 | `platform-data-and-tooling-api-context-get` | forcedotcom/sf-skills | field definitions for 2130 standard and Tooling objects |
 | `platform-metadata-retrieve` | forcedotcom/sf-skills | retrieve command patterns and flags |
-| `platform-metadata-deploy` | forcedotcom/sf-skills | deploy/validate reference knowledge; agents must not run deployments on their own |
+| `platform-metadata-deploy` | forcedotcom/sf-skills | deploy/validate flag reference; agents deploy only through the playbook authorization flow |
 | `platform-soql-query` | forcedotcom/sf-skills | writing and running SOQL |
 | `platform-apex-test-run` | forcedotcom/sf-skills | Apex test execution and coverage |
 
@@ -226,7 +227,7 @@ Text rules depend on how well a model follows them, so dangerous operations are 
 
 | Layer | Location | Effect | Covers |
 | --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf` | org-writing commands need an explicit `-o`; Prod allows only `deploy validate`; blocks directory deploys, unscoped deploys and `--ignore-conflicts`; blocks Prod data writes, anonymous Apex and `delete source`; blocks `org delete` | Codex, Claude Code, Gemini, terminal (macOS/Linux) |
+| `sf` wrapper | `bin/sf` | org-writing commands need an explicit `-o`; Prod `deploy start`/`quick` need `--prod-approved <same org as -o>` after the user's approval, otherwise only validate and dry-run; blocks directory deploys, unscoped deploys and `--ignore-conflicts`; blocks Prod data writes, anonymous Apex and `delete source`; blocks `org delete` | Codex, Claude Code, Gemini, terminal (macOS/Linux) |
 | `sfdx` blocker | `bin/sfdx` | always blocked | same |
 | Codex rules | `.codex/rules/sf-guard.rules` | org-writing commands prompt; `sfdx`, `sf org delete` and bypass are forbidden; the most restrictive rule wins | Codex |
 | Claude permissions | `.claude/settings.json` | org-writing commands ask; `sfdx`, `sf org delete`, bypass and MCP `deploy_metadata` / `delete_org` are denied | Claude Code |

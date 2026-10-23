@@ -2,8 +2,8 @@
 # sf guard: thin wrapper in front of the real Salesforce CLI.
 # Enforces at execution time what AGENTS.md only states in text:
 #   - org-writing commands must name the Target Org explicitly (-o/--target-org)
-#   - Prod: only `project deploy validate` (+ resume/report); no deploy start,
-#     quick deploy, data writes, anonymous Apex, or source delete
+#   - Prod: validate/dry-run only, unless the user approved this deploy and the command
+#     carries --prod-approved <same org as -o>; never data writes, anonymous Apex, or source delete
 #   - deploy/validate scope must be -m, -x, --metadata-dir, or individual files;
 #     never a directory such as force-app, never "all local changes"
 #   - no --ignore-conflicts on deploy (would overwrite other people's org changes)
@@ -67,7 +67,10 @@ target_org=""
 has_scope=0
 dir_scope=""
 ignore_conflicts=0
+dry_run=0
+prod_approved=""
 args=("$@")
+pass=()  # args for the real sf, without the guard-only --prod-approved flag
 n=${#args[@]}
 i=0
 while [ "$i" -lt "$n" ]; do
@@ -79,6 +82,9 @@ while [ "$i" -lt "$n" ]; do
     -m|--metadata|-x|--manifest|--metadata-dir) has_scope=1 ;;
     --metadata=*|--manifest=*|--metadata-dir=*) has_scope=1 ;;
     --ignore-conflicts|-c) ignore_conflicts=1 ;;
+    --dry-run) dry_run=1 ;;
+    --prod-approved) prod_approved="${args[$((i+1))]:-}"; i=$((i+2)); continue ;;
+    --prod-approved=*) prod_approved="${a#--prod-approved=}"; i=$((i+1)); continue ;;
     -d|--source-dir|--source-dir=*)
       has_scope=1
       if [ "${a#--source-dir=}" != "$a" ]; then
@@ -94,6 +100,14 @@ while [ "$i" -lt "$n" ]; do
   esac
   i=$((i+1))
 done
+for ((k = 0; k < n; k++)); do
+  case "${args[$k]}" in
+    --prod-approved) k=$((k+1)) ;;
+    --prod-approved=*) ;;
+    *) pass+=("${args[$k]}") ;;
+  esac
+done
+set -- ${pass[@]+"${pass[@]}"}
 
 [ -n "$target_org" ] || block "$w0 $w1 $w2 needs an explicit -o/--target-org (confirm the Target Org with the user first)"
 
@@ -107,8 +121,12 @@ case "$instance_url" in *.sandbox.my.salesforce.com*|*.scratch.my.salesforce.com
 if [ "$is_prod" -eq 1 ]; then
   case "$kind" in
     deploy-validate|deploy-resume) ;;
-    deploy-start)  block "Prod ($instance_url): deploy start is not allowed. Use 'sf project deploy validate' then Quick Deploy manually in Setup > Deployment Status" ;;
-    deploy-quick)  block "Prod ($instance_url): Quick Deploy is done manually in Setup > Deployment Status" ;;
+    deploy-start|deploy-quick)
+      # deploy start --dry-run is check-only, same as validate
+      if [ "$kind" = "deploy-start" ] && [ "$dry_run" -eq 1 ]; then :
+      elif [ "$prod_approved" != "$target_org" ]; then
+        block "Prod ($instance_url): $kind needs the user's approval for this deploy (one Y/N, see prod-validate.md), then add --prod-approved $target_org"
+      fi ;;
     *)             block "Prod ($instance_url): $kind is not allowed" ;;
   esac
 fi
