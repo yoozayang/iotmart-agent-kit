@@ -23,7 +23,7 @@
       "source": "forcedotcom/sf-skills",
       "sourceType": "github",
       "skillPath": "skills/platform-metadata-deploy/SKILL.md",
-      "computedHash": "a8b5fbc020d918da191b9695c603a8be5ba49fbfc6720a13f0d48652be704ccd"
+      "computedHash": "0b126ccf9e9c45cb72b29109b6ac293379ca3f094fab1c4b5014c804cf86bcee"
     },
     "platform-metadata-retrieve": {
       "source": "forcedotcom/sf-skills",
