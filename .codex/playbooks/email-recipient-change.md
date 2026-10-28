@@ -36,3 +36,4 @@
 - 目標記錄不存在時不自行新增,回報缺漏並轉為開發需求
 - Email Alert的CC異動後,`EmailDeliveryCatalog.json`的寄送監控快照不會自動更新;回報時提醒
 - 不使用匿名Apex或資料寫入改設定;Custom Metadata一律走metadata部署
+- Agent以metadata部署修改時不會產生面板的異動紀錄快照;回報時務必列出修改前後的值與原因,作為紀錄
