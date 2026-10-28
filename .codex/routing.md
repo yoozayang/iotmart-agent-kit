@@ -31,6 +31,7 @@
 | Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
 | Investigation,repository/system discovery,or task documentation | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
 | Git baseline,branch diff,PR scope | `.codex/playbooks/git-baseline.md` |
+| Email通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`,`.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
 | SAP/SIS task | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
 | Product/pricing/cart/order | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
 | UI/template/content | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
