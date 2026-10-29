@@ -18,17 +18,16 @@
 - Testing：記錄測試場景、預期結果與驗證人。
 - SPEC & WI：更新AzureDevOps工作項狀態。PR合併後，必須將此描述貼回對應WI摘要。
 
-## [個人Repository自主完成]
-- 判定(任一不符即視為團隊repo,依上方PR規範與既有review流程):
-  - GitHub:repo owner是使用者本人帳號(`gh repo view --json owner`等於`gh api user`的login),不是organization,且collaborators只有本人
-  - Azure DevOps:沒有個人owner概念,只有使用者聲明為個人專案才適用;公司organization下的專案(如`IoTMart 3.0`)一律視為團隊repo
-  - 不因具有write或admin權限就推定為個人repo
-- 流程:使用者要求完成修改即授權Agent自主完成,不在PR建立後等待手動merge,也不逐次詢問merge
+## [使用者核准即可合併的Repository自主完成]
+- 判定:目標分支的實際branch policy與PR必須只要求目前使用者核准，不要求其他人核准。GitHub與Azure DevOps均以此為準，不以repo owner、organization或write/admin權限推定
+- 每次合併前必須讀取PR的required reviewers與policy狀態。無法證實僅需目前使用者核准、存在其他人required review或有未通過policy時，視為團隊repo並依上方PR規範處理
+- 流程:使用者要求完成修改即授權Agent以目前使用者身分自主完成，不在PR建立後等待手動核准或手動merge
   1. 從預設branch建立branch,commit,push,建立PR
   2. 執行repo既有測試或CI;沒有CI時在本機執行該repo的測試腳本並寫入PR描述
-  3. 檢查通過且無衝突後merge:
-     - GitHub:`gh pr checks <PR> --watch`通過後`gh pr merge <PR> --squash --delete-branch`;沒有checks時以步驟2的本機測試結果為準;repo未開啟auto-merge時不用`--auto`
-     - Azure DevOps:`az repos pr create ... --auto-complete true --squash true --delete-source-branch true`,或對既有PR`az repos pr update --id <PR> --auto-complete true`
-- 只在下列情況停下詢問:測試或CI失敗且無法在任務範圍內修正,merge衝突語意不明,平台權限或branch protection要求他人review,所有權不明,或合併會觸發未授權的部署
-- 禁止:`gh pr merge --admin`,`az repos pr ... --bypass-policy`,偽造或自我approve繞過必要review,關閉branch protection
+  3. 檢查通過且無衝突後由Agent核准並merge:
+     - GitHub:核准PR後`gh pr merge <PR> --squash --delete-branch`;沒有checks時以步驟2的本機測試結果為準;repo未開啟auto-merge時不用`--auto`
+     - Azure DevOps:核准PR後使用`az repos pr update --id <PR> --auto-complete true --squash true --delete-source-branch true`
+  4. 合併後，若該任務已取得明確Target Org與範圍授權，Agent執行對應deploy流程
+- 只在下列情況停下詢問:測試或CI失敗且無法在任務範圍內修正,merge衝突語意不明,required review或policy需要其他人,或deploy尚未取得明確Target Org與範圍授權
+- 禁止:`gh pr merge --admin`,`az repos pr ... --bypass-policy`,關閉branch protection或以其他方式繞過未通過policy
 - PR合併後若對應的sf或pipeline部署需要授權,仍依`AGENTS.md`與deploy playbook處理
