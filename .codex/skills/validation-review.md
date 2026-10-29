@@ -13,7 +13,7 @@
 - Change Summary
 - Test results or manual validation evidence
 - Changed files or deployment scope
-- Relevant Minimum Spec or Minimum SDD
+- Relevant Minimum SDD
 - Relevant deployment or compare playbook
 
 ## Expected Outputs
