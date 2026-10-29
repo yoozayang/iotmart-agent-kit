@@ -16,6 +16,7 @@
 | Task type | Required files |
 | --- | --- |
 | Requirement unclear | `.codex/skills/requirement-review.md`,`.codex/skills/minimum-spec.md` |
+| Read an Azure DevOps work item,create a task record,or update a task record in Notion | `.codex/skills/task-notion-record.md`,`.codex/skills/requirement-review.md` |
 | Before implementation | `.codex/skills/minimum-sdd.md` |
 | During implementation | Relevant knowledge/playbook from this table,plus`.codex/skills/minimum-sdd.md` |
 | Before handover | `.codex/skills/test-case-generation.md`,`.codex/skills/validation-review.md` |
