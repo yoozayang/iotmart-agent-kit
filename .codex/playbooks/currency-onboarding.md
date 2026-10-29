@@ -60,6 +60,7 @@
 | `RESTOutBound_SAP_Order_ANA_Model.CurrencyItemReplace`,`RESTOutBound_SAP_Account_ANA_Model.Currency_Replace` | 寫死USD;en_us收非USD時改 |
 | `RESTOutBound_SAP_Account_EU_Model` | 電匯EUR=01,GBP=07;eu新幣別開電匯時改 |
 | `PaymentGatewayStrategy_{en,us,eu,kr}` | 確認Gateway支援;en:TWD走CTBC3Ds其他Stripe,us:AuthorizeNet,eu:Stripe,kr:TossPay |
+| AI Search `CC_AISearchService`,`CC_Batch_ReBuildAISearchIndex` | 索引以store_PB_商品_幣別建立;新幣別entry同步後重建索引 |
 | `lwcPricingFormat`,通知信`priceFormat`,`Lib_Number` | 小數位非2時改 |
 | en_us LWC `enusInYourCart`,`lwcOrderPrintAna`,`enusCheckoutOrderSummary` | 寫死USD或`$`;en_us LWC收非USD時改 |
 
@@ -97,4 +98,4 @@
 - Custom Metadata走metadata部署,不以資料寫入修改
 - SFCC依`.codex/playbooks/salesforce-deploy.md`,Prod依`.codex/playbooks/prod-validate.md`;Magnolia依`.codex/playbooks/magnolia-flow.md`
 - SAP,SIS,Payment,Shipping API只列工項與窗口,不由Agent操作
-- 盤點結果寫入Notion時,task頁開在個人待辦看板,通用調整寫回上述統合頁
+- 盤點結果寫入Notion時,task頁依`.codex/skills/task-notion-record.md`建立;通用調整寫回上述統合頁
