@@ -57,7 +57,7 @@ iotmart-agent-kit/
 │   ├── routing.md             任務類型→要讀的檔案
 │   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊
 │   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay
-│   └── skills/                requirement-review,minimum-spec,minimum-sdd,test-case-generation,validation-review,deployment-package
+│   └── skills/                requirement-review,minimum-sdd,test-case-generation,validation-review,deployment-package
 ├── .agents/skills/            agent skill(自有+第三方)
 ├── .claude/settings.json      Claude Code權限:寫入org的指令需確認
 ├── bin/sf,bin/sfdx            sf guard wrapper,三個agent共用的執行層防護

@@ -59,7 +59,7 @@ iotmart-agent-kit/
 │   ├── routing.md             task type -> files to read
 │   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay
-│   └── skills/                requirement-review, minimum-spec, minimum-sdd, test-case-generation, validation-review, deployment-package
+│   └── skills/                requirement-review, minimum-sdd, test-case-generation, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)
 ├── .claude/settings.json      Claude Code permissions: org-writing commands need confirmation
 ├── bin/sf, bin/sfdx           sf guard wrapper, execution-layer guard shared by all three agents
@@ -88,7 +88,7 @@ iotmart-agent-kit/
 | Routing | `.codex/routing.md` | which files to read per task type and layer baseline | rule bodies |
 | Knowledge | `.codex/knowledge/*.md` | market architecture, system responsibility boundaries, domain background | operating steps |
 | Procedures | `.codex/playbooks/*.md` | deploy, validate, compare, MCP usage and other executable procedures and guardrails | background explanations |
-| Work patterns | `.codex/skills/*.md` | output formats for requirement review, minimum spec, SDD, test cases, validation review, deployment package | environment operations |
+| Work patterns | `.codex/skills/*.md` | output formats for requirement review, SDD, test cases, validation review, deployment package | environment operations |
 | Agent skills | `.agents/skills/*/SKILL.md` | own skills and third-party official skills | edits to third-party files |
 
 ## Maintainer install (symlink mode)

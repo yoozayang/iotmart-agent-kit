@@ -10,7 +10,7 @@
 - When multiple systems,metadata types,or deployment constraints are involved
 
 ## Required Inputs
-- Requirement Summary or Minimum Spec
+- Requirement Summary
 - Relevant routing decision from`.codex/routing.md`
 - Relevant knowledge/playbook files
 - Current code or metadata inspection results
