@@ -34,6 +34,7 @@
 | Email通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`,`.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
 | SAP/SIS task | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
 | Product/pricing/cart/order | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
+| 新增幣別或幣別工項盤點 | `.codex/playbooks/currency-onboarding.md`,`.codex/knowledge/market-architecture.md`,`.codex/knowledge/system-landscape.md` |
 | UI/template/content | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
 | Salesforce official skill usage(retrieve,deploy,SOQL,metadata XML,Apex test) | `.codex/playbooks/sf-skills-overlay.md`,then matching`.agents/skills/platform-*/SKILL.md` |
 | Multi-agent platform collaboration (Buzz, Nostr) | `.agents/skills/buzz-collaboration/SKILL.md` |
