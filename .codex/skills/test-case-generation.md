@@ -11,7 +11,6 @@
 
 ## Required Inputs
 - User task
-- Minimum Spec if available
 - Minimum SDD if available
 - Changed files or planned changed files
 - Relevant platform knowledge/playbooks
