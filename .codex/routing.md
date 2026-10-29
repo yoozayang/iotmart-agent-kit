@@ -40,6 +40,5 @@
 | Multi-agent platform collaboration (Buzz, Nostr) | `.agents/skills/buzz-collaboration/SKILL.md` |
 
 ## 正式基準
-- 全域硬限制與Ponytail-first以`AGENTS.md`為準
 - 任務載入以Task Routing Table為準,各文件本文是其主題的正式程序或知識
 - 官方skill保持原樣,與repo規則衝突或官方未涵蓋的補強以`.codex/playbooks/sf-skills-overlay.md`為準
