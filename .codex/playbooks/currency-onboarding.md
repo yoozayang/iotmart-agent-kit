@@ -6,7 +6,9 @@
   - SFCC架構(EN,舊北美en_us,前台LWC):A~F,略過G
   - Magnolia+SFCC架構(EU,KR,JP,北美新站en-us):A~G,略過LWC前台項目
 - 業務決策(見「待確認決策」)不自行假設,列為待確認
-- 說明,流程圖與介入點:Notion「新增幣別統合調整項(SFCC/Magnolia+SFCC)」,位於「幣別同步議題」下
+- 操作步驟,截圖與價格機制:Notion「幣別新增作業手冊」
+  - https://app.notion.com/p/40849fae4480817780f6f787f0e1f111
+- 流程圖,介入點與工項清單:其子頁「新增幣別統合調整項(SFCC/Magnolia+SFCC)」
   - https://app.notion.com/p/40849fae448081a3bdf5fc0601e94bf3
   - 盤點範例:47576 CAD https://app.notion.com/p/40849fae448081f09922f6e725b2bacf
 
