@@ -4,7 +4,7 @@
 - 預設TargetOrg:`prod`;使用者在對話中明確指定其他Prod org時,以使用者指定為準
 - 任何Prod metadata操作前,先執行`sf org display -o <TargetOrg> --json`確認該別名已認證;失敗即停止,不可改用CLI建議的其他org
 - 絕對禁止未授權Prod deploy
-- Query不需授權;validation,dry-run需使用者授權並確認Target Org;正式部署依下方授權流程
+- Query不需授權;正式部署依下方授權流程
 - 同一任務內授權持續有效,不逐條指令重問
 
 ## Prod Compare與Deploy原則

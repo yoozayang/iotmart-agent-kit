@@ -15,7 +15,7 @@
 ## Task Routing Table
 | Task type | Required files |
 | --- | --- |
-| Requirement unclear | `.codex/skills/requirement-review.md`,`.codex/skills/minimum-spec.md` |
+| Requirement unclear | `.codex/skills/requirement-review.md`,`.codex/skills/minimum-sdd.md` |
 | Read an Azure Board work item,create a task record,or update a task record in Notion | `.codex/skills/task-notion-record.md`,`.codex/skills/requirement-review.md` |
 | Before implementation | `.codex/skills/minimum-sdd.md` |
 | During implementation | Relevant knowledge/playbook from this table,plus`.codex/skills/minimum-sdd.md` |
@@ -35,11 +35,11 @@
 | Email通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`,`.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
 | SAP/SIS task | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
 | Product/pricing/cart/order | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
+| 新增幣別或幣別工項盤點 | `.codex/playbooks/currency-onboarding.md`,`.codex/knowledge/market-architecture.md`,`.codex/knowledge/system-landscape.md` |
 | UI/template/content | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
 | Salesforce official skill usage(retrieve,deploy,SOQL,metadata XML,Apex test) | `.codex/playbooks/sf-skills-overlay.md`,then matching`.agents/skills/platform-*/SKILL.md` |
 | Multi-agent platform collaboration (Buzz, Nostr) | `.agents/skills/buzz-collaboration/SKILL.md` |
 
 ## 正式基準
-- 全域硬限制與Ponytail-first以`AGENTS.md`為準
 - 任務載入以Task Routing Table為準,各文件本文是其主題的正式程序或知識
 - 官方skill保持原樣,與repo規則衝突或官方未涵蓋的補強以`.codex/playbooks/sf-skills-overlay.md`為準

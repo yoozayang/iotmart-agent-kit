@@ -5,6 +5,7 @@
 - 預設涵蓋:
   - UAT
   - Dev
+  - 其他測試環境
 - target org是Dev或UAT都套用同一套收斂原則
 - 若是Prod比對,改走`.codex/playbooks/prod-validate.md`
 
