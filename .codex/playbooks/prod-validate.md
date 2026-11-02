@@ -44,7 +44,7 @@
 ## 獨立軟體例外
 - 定義:使用者明確聲明為「獨立軟體」的專案;有自己的repo與部署pipeline,只部署自身元件,不修改IoTMart既有metadata
 - 已聲明:
-  - `IoTMart.ArchitectureViewer`(Azure DevOps`IoTMart 3.0`專案)
+  - `IoTMart.ArchitectureViewer`(Azure`IoTMart 3.0`專案)
   - 使用者在對話中聲明為獨立軟體且符合上述定義的其他專案,於該任務適用
 - 允許:
   - 由該專案pipeline在推送`main`後直接部署Prod,不需Validate Only與手動Quick Deploy
