@@ -1,16 +1,20 @@
 # Task Notion Record Skill
 
+## Terminology
+- `Azure`means the platform,organization,or project context
+- `Azure Board`means work items,boards,and their discussion records
+
 ## Purpose
-- Read an Azure DevOps work item and prepare a durable task record only when the user wants one
+- Read an Azure Board work item and prepare a durable task record only when the user wants one
 - Keep the original requirement,discussion-derived decisions,technical evidence,and user notes in distinct sections
 
 ## When To Use
-- User provides an Azure DevOps work item URL or ID
+- User provides an Azure Board work item URL or ID
 - User asks to create or update a Notion task record
 - An implementation task needs a traceable record before or during discussion
 
 ## Required Inputs
-- Azure DevOps work item URL or ID
+- Azure Board work item URL or ID
 - Current repository context when technical points or SDD are requested
 - `.notion-links.json` task record parent when a Notion page is to be created
 
@@ -42,7 +46,7 @@
 
 ## 需求
 
-- Azure DevOps：[<編號> <標題>](<task URL>)
+- Azure Board：[<編號> <標題>](<task URL>)
 - 需求摘要：
 - 驗收條件：
 - 範圍／待確認事項：
@@ -65,7 +69,7 @@
 - Update only `需求`,`SDD`,`討論更新項`,and`技術點記錄`; use a targeted insertion or exact replacement after fetching the latest page
 - Never modify,delete,or reorder `我的記錄區`,including when it is empty
 - Do not overwrite existing user-authored text in any section. Add a dated update or preserve superseded content with strikethrough when replacement is necessary
-- Keep the Azure DevOps URL and discussion date with every material update so later discussion can trace its source
+- Keep the Azure Board URL and discussion date with every material update so later discussion can trace its source
 - If the Notion parent is absent,ambiguous,or inaccessible,ask the user for the target instead of creating a private root page
 
 ## Guardrails
