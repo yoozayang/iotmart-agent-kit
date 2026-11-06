@@ -107,6 +107,9 @@ scripts/link.sh ~/Development/IoTMart3.0 --replace
 
 # also expose own skills to other projects (links into ~/.agents/skills/)
 scripts/link.sh ~/Development/IoTMart3.0 --user-links
+
+# also link every existing worktree, and auto-link worktrees created later
+scripts/link.sh ~/Development/IoTMart3.0 --all-worktrees --hook
 ```
 
 `link.sh`:
@@ -114,6 +117,8 @@ scripts/link.sh ~/Development/IoTMart3.0 --user-links
 - creates `.claude/skills` -> `../.agents/skills` so Claude Code loads the skills natively
 - adds those paths to the project's `.git/info/exclude`, so they never show up in the company repo's `git status`
 - can be re-run; correctly linked items print `ok`
+- `--all-worktrees` also links every existing worktree of the project; a worktree blocked by real files is reported and the others are still linked
+- `--hook` installs a `post-checkout` hook in the project's repo, so a worktree created with `git worktree add` (including by an agent) is linked automatically; it is skipped when `core.hooksPath` is set or another `post-checkout` hook already exists
 
 Execution-layer guard setup (once per machine):
 
