@@ -105,6 +105,9 @@ scripts/link.sh ~/Development/IoTMart3.0 --replace
 
 # 讓其他專案也能用自有skill(連結到~/.agents/skills/)
 scripts/link.sh ~/Development/IoTMart3.0 --user-links
+
+# 一併連結所有既有worktree,並讓之後新建的worktree自動連結
+scripts/link.sh ~/Development/IoTMart3.0 --all-worktrees --hook
 ```
 
 `link.sh`會:
@@ -112,6 +115,8 @@ scripts/link.sh ~/Development/IoTMart3.0 --user-links
 - 建立`.claude/skills`→`../.agents/skills`,讓Claude Code原生載入skill
 - 在專案的`.git/info/exclude`加入上述路徑,公司repo的`git status`不會出現這些連結
 - 可重複執行;已正確連結的項目顯示`ok`
+- `--all-worktrees`一併連結專案所有既有worktree;某個worktree因實體檔被擋時會列出,其他worktree照常連結
+- `--hook`在專案repo安裝`post-checkout` hook,之後以`git worktree add`新建的worktree(包含agent建立的)會自動連結;已設定`core.hooksPath`或已有其他`post-checkout` hook時略過
 
 執行層防護設定(每台機器一次):
 
