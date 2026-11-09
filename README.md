@@ -55,7 +55,7 @@ iotmart-agent-kit/
 ├── .codex/
 │   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
 │   ├── routing.md             task type -> files to read
-│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments
+│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments, Salesforce review standards
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay, code-review-overlay, wi-development-handoff
 │   └── skills/                requirement-review, minimum-sdd, test-case-generation, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)
@@ -144,6 +144,8 @@ SF Guard has been removed; agents use the native `sf` CLI. Prod and Target Org a
 | `platform-metadata-deploy` | forcedotcom/sf-skills | deploy/validate flag reference; agents deploy only through the playbook authorization flow |
 | `platform-soql-query` | forcedotcom/sf-skills | writing and running SOQL |
 | `platform-apex-test-run` | forcedotcom/sf-skills | Apex test execution and coverage |
+| `code-review` | mattpocock/skills | primary review framework: separate Spec and Standards axes |
+| `differential-review` | trailofbits/skills | security review, only for high-risk changes |
 
 The official sf-skills were chosen from error statistics of past agent sessions (wrong SOQL fields or objects, non-existent CLI flags, malformed metadata members, etc.); details are on the Notion page "官方Agent Skill整合計畫".
 
@@ -164,6 +166,8 @@ The official skills are written for general use, and parts of them conflict with
 - the default org is used when none is specified
 
 These conflicts are not fixed in the official files. They are written in `.codex/playbooks/sf-skills-overlay.md`; `AGENTS.md` and the Task Routing Table require it before an official Salesforce skill is used. `CLAUDE.md` and `GEMINI.md` bridge to that shared path. When the official skills are upgraded, only the overlay needs to be re-checked.
+
+Review skills follow the same pattern: `code-review` and `differential-review` stay unmodified, and IoTMart overrides (ADO WI as the spec, PR target or `origin/Dev` as the diff base, Salesforce standards and risk levels in `.codex/knowledge/salesforce-review-standards.md`, read-only output) live in `.codex/playbooks/code-review-overlay.md`. Reviews start from `iotmart-code-review`; `differential-review` runs only when the risk level is HIGH. `code-review-and-quality` (addyosmani/agent-skills) is kept as a source reference only. Pinned commits and tree SHAs are in `review-skill-sources.json`.
 
 ## Adding or updating skills
 

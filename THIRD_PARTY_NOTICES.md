@@ -1,9 +1,11 @@
 # Third-Party Notices
 
-本repo收錄下列第三方skill,檔案原樣保留,未經修改。repo專屬的行為調整寫在`.codex/playbooks/sf-skills-overlay.md`,不改動第三方檔案
+本repo收錄下列第三方skill,檔案原樣保留,未經修改。repo專屬的行為調整寫在`.codex/playbooks/sf-skills-overlay.md`(sf-skills)與`.codex/playbooks/code-review-overlay.md`(review skill),不改動第三方檔案
 
 | 來源 | 收錄skill | 授權 | 授權全文 |
 | --- | --- | --- | --- |
 | [forcedotcom/sf-skills](https://github.com/forcedotcom/sf-skills)(commit `d3088ed`,2026-10-23) | `platform-metadata-api-context-get`,`platform-data-and-tooling-api-context-get`,`platform-metadata-retrieve`,`platform-metadata-deploy`,`platform-soql-query`,`platform-apex-test-run` | Apache-2.0,Copyright (c) 2026 Salesforce, Inc. | [LICENSES/forcedotcom-sf-skills.txt](LICENSES/forcedotcom-sf-skills.txt) |
+| [mattpocock/skills](https://github.com/mattpocock/skills)(commit `4ae2317`,2026-10-31) | `code-review` | MIT,Copyright (c) 2026 Matt Pocock | [LICENSES/mattpocock-skills.txt](LICENSES/mattpocock-skills.txt) |
+| [trailofbits/skills](https://github.com/trailofbits/skills)(commit `e4dd0bb`,2026-11-06) | `differential-review` | CC-BY-SA-4.0,Trail of Bits | [LICENSES/trailofbits-skills.txt](LICENSES/trailofbits-skills.txt) |
 
-每個skill的來源路徑與內容hash記錄於`skills-lock.json`
+每個skill的來源路徑與內容hash記錄於`skills-lock.json`;review skill的pinned commit與tree SHA記錄於`review-skill-sources.json`

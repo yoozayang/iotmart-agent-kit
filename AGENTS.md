@@ -94,6 +94,7 @@
 - 來源:`forcedotcom/sf-skills`,原樣保留,來源與hash記錄於`skills-lock.json`
 - 位置:`.agents/skills/platform-*/`
 - 與repo規則衝突時以`.codex/playbooks/sf-skills-overlay.md`為準
+- Review skill:`code-review`(mattpocock/skills),`differential-review`(trailofbits/skills)原樣保留於`.agents/skills/`;review一律由`iotmart-code-review`進入,覆寫以`.codex/playbooks/code-review-overlay.md`為準
 
 ## 協作平台與多Agent環境原則（條件式）
 - 僅在運行於多Agent協作平台（如Buzz、多人頻道環境，或接收到協作中繼事件）時生效:

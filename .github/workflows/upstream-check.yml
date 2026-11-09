@@ -1,10 +1,11 @@
 name: Upstream check
 
-# Weekly update of the official sf-skills, applied without manual review:
+# Weekly update of vendored upstream skills (official sf-skills, review skills code-review and
+# differential-review), applied without manual review:
 # - updates are committed through a pull request that is merged automatically
-# - official skill files stay unmodified; repo hard constraints and Prod authorization come from
-#   AGENTS.md and .codex/playbooks/sf-skills-overlay.md, which take precedence over skill text
-# - the only gate is structural: changes must stay inside official skills, the lock file and notices;
+# - upstream skill files stay unmodified; repo hard constraints and Prod authorization come from
+#   AGENTS.md, .codex/playbooks/sf-skills-overlay.md and code-review-overlay.md, which take precedence
+# - the only gate is structural: changes must stay inside vendored skills, the lock file and notices;
 #   otherwise the job fails (GitHub notifies by email) and nothing is merged
 # Personal tools (caveman, Ponytail) are updated locally by scripts/autoupdate.sh.
 on:
@@ -23,7 +24,7 @@ concurrency:
 
 jobs:
   sf-skills:
-    name: Official sf-skills update PR
+    name: Upstream skills update PR
     runs-on: ubuntu-latest
     env:
       DO_NOT_TRACK: "1"
@@ -43,11 +44,11 @@ jobs:
           # The CLI may add per-agent copies or links (e.g. agent/, .claude/skills); the kit mounts
           # .agents/skills instead. Drop untracked CLI artifacts outside official skill folders,
           # then fail on any remaining change to tracked files outside the allowed paths.
-          git ls-files --others --exclude-standard --directory | grep -vE '^\.agents/skills/platform-' | while read -r p; do
+          git ls-files --others --exclude-standard --directory | grep -vE '^\.agents/skills/(platform-|code-review/|differential-review/)' | while read -r p; do
             echo "removing CLI artifact: $p"; rm -rf -- "$p"
           done
           git checkout -- .claude 2>/dev/null || true
-          unexpected="$(git status --porcelain | awk '{print $2}' | grep -vE '^(\.agents/skills/platform-|skills-lock\.json$)' || true)"
+          unexpected="$(git status --porcelain | awk '{print $2}' | grep -vE '^(\.agents/skills/(platform-|code-review/|differential-review/)|skills-lock\.json$)' || true)"
           if [ -n "$unexpected" ]; then
             echo "Unexpected changes outside official skills:"; echo "$unexpected"; exit 1
           fi
@@ -59,14 +60,35 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
           echo "changed=true" >> "$GITHUB_OUTPUT"
-          head="$(gh api repos/forcedotcom/sf-skills/commits/main --jq '.sha[0:7] + "," + .commit.committer.date[0:10]')"
-          sed -i -E "s/commit \`[0-9a-f]{7}\`,[0-9]{4}-[0-9]{2}-[0-9]{2}/commit \`${head%%,*}\`,${head#*,}/" THIRD_PARTY_NOTICES.md
+          : > "$RUNNER_TEMP/sources.md"
+          # note_update <repo> <paths...>: refresh that source's notice row and review-skill-sources.json
+          # entries only when its vendored files changed.
+          note_update() {
+            local repo="$1"; shift
+            [ -n "$(git status --porcelain -- "$@")" ] || return 0
+            local sha date name path tree blob
+            sha="$(gh api "repos/$repo/commits/main" --jq .sha)"
+            date="$(gh api "repos/$repo/commits/$sha" --jq '.commit.committer.date[0:10]')"
+            sed -i -E "\#\[$repo\]# s/commit \`[0-9a-f]{7}\`,[0-9]{4}-[0-9]{2}-[0-9]{2}/commit \`${sha:0:7}\`,$date/" THIRD_PARTY_NOTICES.md
+            echo "- 上游 [$repo](https://github.com/$repo) 有更新,最新commit \`${sha:0:7}\`($date)" >> "$RUNNER_TEMP/sources.md"
+            for name in $(jq -r --arg r "$repo" '.sources[] | select(.repository == $r and .status == "installed") | .name' review-skill-sources.json); do
+              path="$(jq -r --arg n "$name" '.sources[] | select(.name == $n) | .upstream_path | rtrimstr("/")' review-skill-sources.json)"
+              tree="$(gh api "repos/$repo/git/trees/$sha?recursive=1" --jq ".tree[] | select(.path == \"$path\") | .sha")"
+              blob="$(git hash-object ".agents/skills/$name/SKILL.md")"
+              jq --arg n "$name" --arg c "$sha" --arg t "$tree" --arg b "$blob" --arg d "$(date -u +%F)" \
+                '(.sources[] | select(.name == $n)) |= (.installed_commit = $c | .installed_tree = $t | .source_blob_sha = $b | .installed_at = $d)' \
+                review-skill-sources.json > "$RUNNER_TEMP/rs.json" && mv "$RUNNER_TEMP/rs.json" review-skill-sources.json
+            done
+          }
+          note_update forcedotcom/sf-skills .agents/skills/platform-*
+          note_update mattpocock/skills .agents/skills/code-review
+          note_update trailofbits/skills .agents/skills/differential-review
           {
-            echo "上游 [forcedotcom/sf-skills](https://github.com/forcedotcom/sf-skills) 有更新,上游最新commit \`${head%%,*}\`(${head#*,})"
+            cat "$RUNNER_TEMP/sources.md"
             echo
             echo "### 變更檔案"
             echo '```'
-            git add -A .agents/skills skills-lock.json THIRD_PARTY_NOTICES.md
+            git add -A .agents/skills skills-lock.json THIRD_PARTY_NOTICES.md review-skill-sources.json
             git diff --cached --stat -- . ':(exclude)*.json' | tail -40
             echo "JSON資產變更檔數: $(git diff --cached --name-only -- '*.json' | wc -l)"
             echo '```'
@@ -77,7 +99,7 @@ jobs:
             missing="$(grep -oE '\.agents/skills/platform-[^\`]+' .codex/playbooks/sf-skills-overlay.md | sort -u | while read -r f; do [ -e "$f" ] || echo "- \`$f\`"; done)"
             if [ -n "$missing" ]; then echo "overlay引用的下列路徑已不存在,需更新overlay:"; echo "$missing"; else echo "overlay引用的路徑皆存在"; fi
             echo
-            echo "此PR由workflow自動合併;官方skill原樣保留,repo硬限制與Prod授權以AGENTS.md與sf-skills-overlay.md為準"
+            echo "此PR由workflow自動合併;上游skill原樣保留,repo硬限制與Prod授權以AGENTS.md,sf-skills-overlay.md與code-review-overlay.md為準"
           } > "$RUNNER_TEMP/pr-body.md"
           git reset -q
 
@@ -92,21 +114,22 @@ jobs:
         with:
           branch: upstream/sf-skills
           delete-branch: true
-          title: "chore:更新官方sf-skills"
+          title: "chore:更新上游skill"
           commit-message: |
-            docs:更新官方sf-skills
+            docs:更新上游skill
 
-            由upstream-check workflow自動產生,合併前需對照sf-skills-overlay.md審查
+            由upstream-check workflow自動產生,合併前需對照sf-skills-overlay.md與code-review-overlay.md審查
           body-path: ${{ runner.temp }}/pr-body.md
           labels: upstream-update
           add-paths: |
             .agents/skills
             skills-lock.json
             THIRD_PARTY_NOTICES.md
+            review-skill-sources.json
 
       - name: Merge pull request
         if: steps.cpr.outputs.pull-request-number != ''
         run: |
           gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --squash --delete-branch \
-            --subject "docs:更新官方sf-skills" \
+            --subject "docs:更新上游skill" \
             --body "由upstream-check workflow自動更新並合併"
