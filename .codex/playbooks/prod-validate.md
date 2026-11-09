@@ -29,13 +29,8 @@
 - IoTMart既有業務:
   - 完成Prod retrieve比對,相依性,衝突檢查後先validation(test level依`.codex/playbooks/salesforce-deploy.md`,不另外詢問)
   - validation成功後只問一次:「是否授權將<manifest>部署至<Org>(validation <Job Id>,測試<結果>)?Y/N」
-  - Y:`sf project deploy quick --job-id <Job Id> -o <Org> --prod-approved <Org>`;N:停止並提供手動Quick Deploy網址
-- 獨立軟體(見下方例外):使用者在本任務要求部署至Prod即為授權,不另問Y/N,直接以`--prod-approved <Org>`執行
-- 執行層:
-  - `bin/sf`對Prod的`deploy start`/`deploy quick`只接受`--prod-approved <與-o相同的Org>`,不接受環境變數;此flag由guard移除後才交給真實`sf`
-  - Windows沒有`bin/sf` guard,真實`sf`不認得此flag,不加`--prod-approved`,授權確認只靠Y/N與Codex/Claude核准
-  - Codex rules與Claude permissions仍會對該指令跳出核准,這是同一次授權的執行確認;Y/N可在對話問,或直接以該核准視窗作為Y/N(執行前先列出Org,manifest,測試結果),兩者擇一,不重複詢問
-  - 對話中未取得Y,或核准視窗被拒,不可加`--prod-approved`
+  - Y:`sf project deploy quick --job-id <Job Id> -o <Org>`;N:停止並提供手動Quick Deploy網址
+- 獨立軟體(見下方例外):使用者在本任務要求部署至Prod即為授權,不另問Y/N,依該專案既有pipeline或原生`sf` CLI執行
 - 授權範圍:
   - 僅限本次任務,指定Org與該manifest;不延伸至資料寫入,刪除,匿名Apex或其他任務
   - manifest或Org變更,或發現同名衝突與未預期差異時,停止並重新取得授權
@@ -53,7 +48,6 @@
   - 只以該專案`manifest/package.xml`部署,禁止全量deploy與`--source-dir force-app`
   - 元件不得覆寫IoTMart既有或他人的metadata;同名衝突時停止並回報
   - Prod test level依該專案設定,變更需使用者確認
-  - 由本機CLI部署時以`--prod-approved <Org>`通過guard,不得以其他方式繞過guard
 
 ## 產物位置
 - Prod retrieve compare,validation產物只放已exclude目錄,預設`~/codex_tmp`
