@@ -15,7 +15,9 @@ Read `.codex/playbooks/code-review-overlay.md` before step 1; it overrides the v
 3. Resolve the implementation:
    - First the `Development Handoff` section in the WI Description (repository, branch, PR, head commit).
    - Otherwise WI relations named `Pull Request`: the URL ends with the PR ID (`vstfs:///Git/PullRequestId/<project>%2F<repo>%2F<id>`, case-insensitive `%2F`). Read each with `az repos pr show --id <id> --org https://dev.azure.com/advantech-curation` for repository, `sourceRefName`, `targetRefName`, status.
-   - Ignore abandoned PRs. One active PR: use it. Several active PRs or only completed ones without an obvious match: list them and ask which to review. Never guess a branch from the WI number alone.
+   - Ignore abandoned PRs. One active PR: use it. Several active PRs or only completed ones without an obvious match: list them and ask which to review.
+   - Otherwise a branch named in WI comments or elsewhere in the Description: verify it exists on the remote (`git ls-remote`) and carries the WI number before using it. Never guess a branch from the WI number alone.
+   - Fetch the resolved branch when it is not available locally.
 4. Diff base: merge-base with `origin/<targetRefName without refs/heads/>` when a PR is resolved, otherwise `origin/Dev`. Capture `git diff <base>...<head>` and `git log <base>..<head> --oneline` once; fail early on a bad ref or empty diff. Check uncommitted changes when reviewing local work.
 5. Load context through `.codex/routing.md` only for systems the diff touches. When the diff touches Salesforce code or metadata, read `.codex/knowledge/salesforce-review-standards.md`.
 

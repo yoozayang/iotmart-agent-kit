@@ -15,9 +15,7 @@
   - `_C`:`_A + new_uat`,使用於UAT環境部署
 
 ## Branch Naming
-- 建立任何branch前必須有task number；缺少時先詢問並停止
-- `Bug`使用`bugfix`，`Feature/Story`使用`feature`；其他類型先確認
-- 格式：`Matthew/<type>/<task-number>_<short-title>`
+- 命名依`.codex/playbooks/git-baseline.md`：`<名字>/<type>/<WI編號>_<簡述>`
 - 例：`Matthew/bugfix/40780_PromotionFix`
 
 ## `_A` Workflow

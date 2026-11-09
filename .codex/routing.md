@@ -17,7 +17,7 @@
 | --- | --- |
 | Requirement unclear | `.codex/skills/requirement-review.md`,`.codex/skills/minimum-sdd.md` |
 | Read an Azure Board work item,create a task record,or update a task record in Notion | `.codex/skills/task-notion-record.md`,`.codex/skills/requirement-review.md` |
-| Before implementation | `.codex/skills/minimum-sdd.md` |
+| Before implementation | `.codex/skills/minimum-sdd.md`;ADO WI開發時加`.codex/playbooks/git-baseline.md`(分支命名與自動建立) |
 | Development branch created or changed for an ADO work item | `.codex/skills/task-notion-record.md`,`.codex/playbooks/wi-development-handoff.md` |
 | During implementation | Relevant knowledge/playbook from this table,plus`.codex/skills/minimum-sdd.md` |
 | Code review, review request, ADO task ID/URL with implementation, PR review | `.agents/skills/iotmart-code-review/SKILL.md`,`.codex/playbooks/code-review-overlay.md`,`.codex/playbooks/git-baseline.md`,`.agents/skills/code-review/SKILL.md`;diff含Salesforce時加`.codex/knowledge/salesforce-review-standards.md`;風險HIGH時加`.agents/skills/differential-review/SKILL.md`;plus diff觸及系統的knowledge;命中本列時不疊加「Read an Azure Board work item」列(WI由`iotmart-code-review`讀取),也不載入deploy/validate類playbook |

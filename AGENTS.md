@@ -78,8 +78,9 @@
 
 ## Git基準硬限制
 - branch:
-  - `feature/*`
-  - `bugfix/*`
+  - `<名字>/feature/<WI編號>_<簡述>`
+  - `<名字>/bugfix/<WI編號>_<簡述>`
+  - 命名與自動建立規則見`.codex/playbooks/git-baseline.md`
 - 相對差異/新增/回歸判斷:
   - 預設以`origin/Dev`為比較基準
   - 非使用者明確指定時,禁止以`origin/main`作為此repo的預設相對基準

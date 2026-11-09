@@ -17,6 +17,7 @@
 - Actual Changes：區分Additions(新組件)與Updates(既有修改)。
 - Testing：記錄測試場景、預期結果與驗證人。
 - SPEC & WI：更新AzureDevOps工作項狀態。PR合併後，必須將此描述貼回對應WI摘要。
+- Development Handoff：建立PR後，依`.codex/playbooks/wi-development-handoff.md`更新WI Description的Pull Request與Head Commit
 
 ## [使用者核准即可合併的Repository自主完成]
 - 判定:目標分支的實際branch policy與PR必須只要求目前使用者核准，不要求其他人核准。GitHub與Azure DevOps均以此為準，不以repo owner、organization或write/admin權限推定
