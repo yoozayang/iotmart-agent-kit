@@ -30,7 +30,7 @@
   - 完成Prod retrieve比對,相依性,衝突檢查後先validation(test level依`.codex/playbooks/salesforce-deploy.md`,不另外詢問)
   - validation成功後只問一次:「是否授權將<manifest>部署至<Org>(validation <Job Id>,測試<結果>)?Y/N」
   - Y:`sf project deploy quick --job-id <Job Id> -o <Org>`;N:停止並提供手動Quick Deploy網址
-- 獨立軟體(見下方例外):使用者在本任務要求部署至Prod即為授權,不另問Y/N,直接以`--prod-approved <Org>`執行
+- 獨立軟體(見下方例外):使用者在本任務要求部署至Prod即為授權,不另問Y/N,依該專案既有pipeline或原生`sf` CLI執行
 - 授權範圍:
   - 僅限本次任務,指定Org與該manifest;不延伸至資料寫入,刪除,匿名Apex或其他任務
   - manifest或Org變更,或發現同名衝突與未預期差異時,停止並重新取得授權
