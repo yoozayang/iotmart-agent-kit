@@ -9,11 +9,14 @@ This is the IoTMart-specific override for third-party review skills. `AGENTS.md`
 - Read-only review is default. No silent deploy, data modification, Salesforce validation/dry-run, PR approval, or merge.
 - Keep existing `validation-review.md` for handover evidence assessment; code review does not replace it.
 
-## Upstream skill routing and provenance
-| Skill | Source repository | Upstream path | Role |
-| --- | --- | --- | --- |
-| code-review-and-quality | https://github.com/addyosmani/agent-skills | skills/code-review-and-quality/ | Primary five-axis review |
-| differential-review | https://github.com/trailofbits/skills | plugins/differential-review/skills/differential-review/ | Security-sensitive change analysis |
-| requesting-code-review | https://github.com/obra/superpowers | skills/requesting-code-review/ | Optional reviewer delegation |
+## Review skill selection
+- `code-review` (Matt Pocock): primary, separate WI spec and repository standards findings. IoTMart's ADO WI and `origin/Dev` baseline override the upstream skill's generic tracker/fixed-point assumptions. Run sequentially when subagents are unavailable.
+- `code-review-and-quality` (Addy Osmani): additional correctness, maintainability and quality checks; avoid duplicating primary findings.
+- `differential-review` (Trail of Bits): only for security-sensitive, authorization, data-access, API, integration, or high-blast-radius changes.
+- Keep the three upstream names unchanged; the IoTMart wrapper remains `iotmart-code-review`.
+- These are selected upstream references, not installed copies. Never claim they ran unless the files/tools are actually available. The wrapper must still perform its baseline review.
 
-These are upstream references, not claims that the skills are already installed. For any vendored copy, record source repository, exact upstream path, commit SHA, license, content hash, and local changes in `review-skill-sources.json` and `THIRD_PARTY_NOTICES.md`. Do not edit upstream files in place. Update from upstream by re-importing a pinned revision and comparing changes; rebase is optional, not required. Update the local overlay separately. Never claim automatic updates unless the workflow actually covers the new skill.
+## Maintenance-only source registry
+For exact upstream repository URLs, skill paths, source file blob SHAs, installation status, and update procedures, read `review-skill-sources.json` **only when installing, auditing provenance, or checking/updating review skills**. Do not load it for ordinary WI reviews.
+
+When installing, preserve each original skill name and directory under `.agents/skills/`, keep vendor content unmodified, verify license and dependencies, and record exact pinned commit, hash, license and notices in the existing skills lock/notice mechanism. Update via pinned upstream re-import and diff; no rebase requirement. Existing `upstream-check.yml` currently excludes these names: extend its allowlist and checks before claiming automated updates. Treat executable or safety-relevant upstream changes as requiring review, not silent auto-merge.

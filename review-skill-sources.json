@@ -1,30 +1,42 @@
 {
-  "version": 1,
-  "policy": "Upstream sources are references until installed. Record exact commit, license and content hash before vendoring; do not infer tracking from this file.",
+  "version": 2,
+  "policy": "Read only for review-skill maintenance or upstream checks, not routine code review. Entries are source references until installed; source_blob_sha is not a pinned repository commit. On installation record commit, content hash and license in skills-lock.json and notices.",
   "sources": [
     {
-      "name": "code-review-and-quality",
-      "repository": "addyosmani/agent-skills",
-      "path": "skills/code-review-and-quality/",
+      "name": "code-review",
+      "role": "primary-spec-and-standards",
+      "repository": "mattpocock/skills",
+      "upstream_path": "skills/engineering/code-review/",
+      "upstream_skill_file": "skills/engineering/code-review/SKILL.md",
+      "upstream_url": "https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review",
+      "source_blob_sha": "83183e0ad36fd0eef25d37c7e483284b7e34c1f0",
       "status": "reference-only",
-      "commit": null,
-      "hash": null
+      "installed_commit": null,
+      "installed_hash": null
+    },
+    {
+      "name": "code-review-and-quality",
+      "role": "quality",
+      "repository": "addyosmani/agent-skills",
+      "upstream_path": "skills/code-review-and-quality/",
+      "upstream_skill_file": "skills/code-review-and-quality/SKILL.md",
+      "upstream_url": "https://github.com/addyosmani/agent-skills/tree/main/skills/code-review-and-quality",
+      "source_blob_sha": "15ea44c93c61dcec705720342c1fd78755702f85",
+      "status": "reference-only",
+      "installed_commit": null,
+      "installed_hash": null
     },
     {
       "name": "differential-review",
+      "role": "conditional-security",
       "repository": "trailofbits/skills",
-      "path": "plugins/differential-review/skills/differential-review/",
+      "upstream_path": "plugins/differential-review/skills/differential-review/",
+      "upstream_skill_file": "plugins/differential-review/skills/differential-review/SKILL.md",
+      "upstream_url": "https://github.com/trailofbits/skills/tree/main/plugins/differential-review/skills/differential-review",
+      "source_blob_sha": "536e9258092876017b098f1712a92e7d06bb1480",
       "status": "reference-only",
-      "commit": null,
-      "hash": null
-    },
-    {
-      "name": "requesting-code-review",
-      "repository": "obra/superpowers",
-      "path": "skills/requesting-code-review/",
-      "status": "reference-only",
-      "commit": null,
-      "hash": null
+      "installed_commit": null,
+      "installed_hash": null
     }
   ]
 }
