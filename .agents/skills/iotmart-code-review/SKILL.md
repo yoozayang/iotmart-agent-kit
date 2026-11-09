@@ -23,7 +23,7 @@ Read `.codex/playbooks/code-review-overlay.md` before step 1; it overrides the v
 Run the vendored `code-review` skill (`.agents/skills/code-review/SKILL.md`) with the overlay overrides: Spec axis against the WI; Standards axis against the Salesforce standards and repo docs. Keep the two axes separate.
 
 ## 3. Risk classification and Security (`differential-review`)
-Classify the diff with the risk table in `salesforce-review-standards.md`. HIGH: run the vendored `differential-review` skill (`.agents/skills/differential-review/SKILL.md`) with the overlay overrides. MEDIUM or LOW: do not load it; record the level and the reason.
+Classify Salesforce changes with the risk table in `salesforce-review-standards.md`. Classify changes in other systems (Magnolia, SAP/SIS, scripts) with the upstream `differential-review` Risk Level Triggers, without loading that skill: HIGH = auth or permissions, crypto or secrets, external calls or integrations, value transfer (price, currency, payment), removed validation or error handling; MEDIUM = business logic, state changes, new public APIs; LOW = comments, tests, UI text, logging. Any HIGH makes the whole diff HIGH. HIGH: run the vendored `differential-review` skill (`.agents/skills/differential-review/SKILL.md`) with the overlay overrides. MEDIUM or LOW: do not load it; record the level and the reason.
 
 ## Rules
 - Read-only. Do not deploy, retrieve, write data, edit code, post ADO/GitHub comments, or approve/merge a PR without the relevant authorization. Running tests or org operations follows existing playbooks and target-org authorization.
