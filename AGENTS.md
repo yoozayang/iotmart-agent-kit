@@ -75,10 +75,6 @@
   - 預設`Validate Only + manual Quick Deploy`，validation成功後提示使用者於Deployment Status手動Quick Deploy，並提供網址
   - 使用者要求Agent部署Prod時不可拒絕:IoTMart既有業務在validation成功後問一次Y/N，Y後由Agent執行Quick Deploy；流程見`.codex/playbooks/prod-validate.md`
   - 例外:使用者明確聲明為「獨立軟體」的專案可直接部署Prod且不需逐次詢問，範圍與限制見`.codex/playbooks/prod-validate.md`「獨立軟體例外」
-- 執行層防護:
-  - `sf`經`bin/sf` guard執行，Codex rules與Claude permissions另行要求確認，詳見`.codex/playbooks/sf-skills-overlay.md`
-  - 已授權的Prod部署以`--prod-approved <Org>`通過guard；guard因缺少授權阻擋時依流程詢問Y/N，不直接拒絕
-  - 其他阻擋停止並回報；禁止以`SF_GUARD_BYPASS`、真實`sf`絕對路徑、MCP或其他方式繞過
 
 ## Git基準硬限制
 - branch:
