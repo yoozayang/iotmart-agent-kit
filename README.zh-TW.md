@@ -17,10 +17,9 @@ IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一�
 
 安裝程式會做的事:
 - 把規則(`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`.codex/`)與skill(`.agents/skills`,`.claude/skills`)複製進專案,並寫入專案`.git/info/exclude`
-- 把Codex執行規則複製到`~/.codex/rules/iotmart-sf-guard.rules`
-- `.claude/settings.json`已存在時只合併kit的ask/deny規則;`.codex/config.toml`,`.gemini/settings.json`已存在時保留原檔
+- `.codex/config.toml`,`.gemini/settings.json`已存在時保留原檔
 - 有變動的舊檔先移到`~/.iotmart-agent-kit-backup/<時間>/`,內容相同則不動
-- macOS會詢問是否安裝`sf`指令防護(`bin/sf`,加入shell PATH);Windows沒有此項,由Codex規則與Claude權限把關
+- 移除舊版安裝的SF Guard:shell設定檔中`# iotmart-agent-kit sf guard`的PATH行,`~/.codex/rules/iotmart-sf-guard.rules`,`~/.iotmart-agent-kit/bin`與專案的`.codex/rules/sf-guard.rules`
 
 更新:`git pull`(或重新下載ZIP)後再雙擊一次安裝檔。操作說明也放在根目錄`INSTALL.txt`
 
@@ -51,16 +50,14 @@ iotmart-agent-kit/
 ├── GEMINI.md                  Gemini橋接
 ├── GIT_GUIDE.md               Commit與PR規範
 ├── skills-lock.json           skill來源與內容hash
+├── review-skill-sources.json  review skill的上游來源(僅維護時讀取)
 ├── .codex/
 │   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion)
-│   ├── rules/sf-guard.rules   Codex執行規則:寫入org的指令需確認
 │   ├── routing.md             任務類型→要讀的檔案
-│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊
-│   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay
+│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
+│   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay,code-review-overlay,wi-development-handoff
 │   └── skills/                requirement-review,minimum-sdd,test-case-generation,validation-review,deployment-package
 ├── .agents/skills/            agent skill(自有+第三方)
-├── .claude/settings.json      Claude Code權限:寫入org的指令需確認
-├── bin/sf,bin/sfdx            sf guard wrapper,三個agent共用的執行層防護
 ├── .gemini/                   Gemini MCP設定與code review風格
 ├── .mcp.json                  Claude Code專案MCP設定
 ├── salesforce-mcp-config.json Salesforce hosted MCP端點
@@ -111,34 +108,15 @@ scripts/link.sh ~/Development/IoTMart3.0 --all-worktrees --hook
 ```
 
 `link.sh`會:
-- 在專案根目錄建立`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`GIT_GUIDE.md`,`skills-lock.json`,`.mcp.json`,`salesforce-mcp-config.json`,`.codex`,`.agents`,`.gemini`,`.claude/settings.json`的symlink
+- 在專案根目錄建立`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`GIT_GUIDE.md`,`skills-lock.json`,`.mcp.json`,`salesforce-mcp-config.json`,`.codex`,`.agents`,`.gemini`的symlink
+- 清除SF Guard移除後留下的`.claude/settings.json`失效連結
 - 建立`.claude/skills`→`../.agents/skills`,讓Claude Code原生載入skill
 - 在專案的`.git/info/exclude`加入上述路徑,公司repo的`git status`不會出現這些連結
 - 可重複執行;已正確連結的項目顯示`ok`
 - `--all-worktrees`一併連結專案所有既有worktree;某個worktree因實體檔被擋時會列出,其他worktree照常連結
 - `--hook`在專案repo安裝`post-checkout` hook,之後以`git worktree add`新建的worktree(包含agent建立的)會自動連結;已設定`core.hooksPath`或已有其他`post-checkout` hook時略過
 
-執行層防護設定(每台機器一次):
-
-```bash
-# 1. 讓所有shell優先使用bin/sf guard;加在~/.zprofile與~/.zshrc最後一行(在brew shellenv等PATH設定之後),
-#    並加入~/.zshenv與~/.bashrc以涵蓋非互動shell
-[ -d "$HOME/Development/iotmart-agent-kit/bin" ] && export PATH="$HOME/Development/iotmart-agent-kit/bin:$PATH"  # iotmart-agent-kit sf guard
-
-# 2. 讓Codex載入guard規則
-ln -s ~/Development/iotmart-agent-kit/.codex/rules/sf-guard.rules ~/.codex/rules/iotmart-sf-guard.rules
-```
-
-驗證:
-
-```bash
-cd ~/Development/IoTMart3.0
-git status --short                      # 不應出現agent檔案
-ls -la AGENTS.md .codex .agents .claude/skills
-command -v sf                           # 應為~/Development/iotmart-agent-kit/bin/sf
-codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart-sf-guard.rules -- sf project deploy start   # 應為prompt
-~/Development/iotmart-agent-kit/tests/sf-guard.test.sh   # guard與規則文字檢查,不需連org
-```
+SF Guard已移除,agent直接使用原生`sf` CLI;Prod與Target Org授權仍依`AGENTS.md`與`.codex/playbooks/prod-validate.md`;維護者機器清理方式:刪除shell設定檔中結尾為`# iotmart-agent-kit sf guard`的行,並移除`~/.codex/rules/iotmart-sf-guard.rules`;之後`command -v sf`應顯示原生CLI路徑
 
 ## 三個環境如何讀取
 
@@ -154,6 +132,7 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 | Skill | 用途 |
 | --- | --- |
 | `evidence-investigation-documentation` | 以證據為本的調查與文件化流程,含Notion安全更新規則 |
+| `iotmart-code-review` | 依ADO工作項,PR或branch審查實作的任務導向review |
 
 ### 第三方
 | Skill | 來源 | 用途 |
@@ -164,6 +143,8 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 | `platform-metadata-deploy` | forcedotcom/sf-skills | deploy,validate flag參考;agent只依playbook授權流程部署 |
 | `platform-soql-query` | forcedotcom/sf-skills | SOQL寫法與查詢 |
 | `platform-apex-test-run` | forcedotcom/sf-skills | Apex測試執行與覆蓋率 |
+| `code-review` | mattpocock/skills | 主要review框架:Spec與Standards分兩軸 |
+| `differential-review` | trailofbits/skills | Security review,只在高風險變更時執行 |
 
 官方sf-skills的選擇依據是過往agent session的錯誤統計(SOQL欄位或物件寫錯,CLI flag不存在,metadata成員格式錯誤等),細節見Notion「官方Agent Skill整合計畫」頁
 
@@ -184,6 +165,9 @@ codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart
 - 未指定org時使用預設org
 
 這些衝突不修改官方檔案,而是寫在`.codex/playbooks/sf-skills-overlay.md`;`AGENTS.md`與Task Routing Table要求使用官方Salesforce skill前先讀overlay,`CLAUDE.md`與`GEMINI.md`只橋接到這條共用路徑。官方skill升版時只需重新比對overlay一個檔案
+
+
+Review skill採相同方式:`code-review`與`differential-review`原樣保留,IoTMart覆寫(以ADO WI為spec,以PR目標分支或`origin/Dev`為diff基準,Salesforce標準與風險分級寫在`.codex/knowledge/salesforce-review-standards.md`,review唯讀)集中在`.codex/playbooks/code-review-overlay.md`;review一律由`iotmart-code-review`進入,只有風險HIGH時才執行`differential-review`;`code-review-and-quality`(addyosmani/agent-skills)只保留來源登錄;pinned commit與tree SHA記錄於`review-skill-sources.json`
 
 ## 新增或更新skill
 
@@ -207,7 +191,7 @@ npx skills update -p -y                                     # 更新
 
 ## 上游更新機制
 
-全自動,不需人工介入;危險操作由執行層防護攔截,不依賴人工審查skill內容
+全自動,不需人工介入;官方skill原樣保留,repo硬限制與Prod授權以`AGENTS.md`與`.codex/playbooks/sf-skills-overlay.md`為準
 
 | 對象 | 執行者 | 頻率 | 動作 |
 | --- | --- | --- | --- |
@@ -223,22 +207,6 @@ npx skills update -p -y                                     # 更新
 - 手動觸發:`gh workflow run upstream-check.yml`;`bash scripts/autoupdate.sh`
 - 安裝本機排程:`scripts/install-autoupdate.sh`;移除:`scripts/install-autoupdate.sh --remove`
 - Repo設定需允許GitHub Actions建立PR(Settings→Actions→General→Workflow permissions)
-
-## 執行層防護
-
-文字規則依模型遵循程度而定,因此對危險操作另加執行層防護:
-
-| 層 | 位置 | 作用 | 涵蓋 |
-| --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf` | 寫入org的指令必須明確`-o`;Prod的`deploy start`/`quick`需使用者授權後加`--prod-approved <同-o的Org>`,否則只允許validate與dry-run;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
-| `sfdx` blocker | `bin/sfdx` | 一律阻擋 | 同上 |
-| Codex rules | `.codex/rules/sf-guard.rules` | 寫入org的指令prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先 | Codex |
-| Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
-| MCP | `.codex/config.toml`,`.gemini/settings.json` | Salesforce DX MCP不啟用`metadata` toolset | Codex,Gemini |
-
-- 判定Prod的方式:`sf org display`的instanceUrl不是`*.sandbox.my.salesforce.com`即視為Prod;無法解析的org一律阻擋
-- `SF_GUARD_BYPASS=1 sf ...`僅供使用者本人在終端機使用,agent規則明確禁止
-- wrapper是護欄不是安全邊界:以真實`sf`絕對路徑呼叫可繞過
 
 ## 注意事項
 

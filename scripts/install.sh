@@ -5,7 +5,7 @@
 #
 #   --project <dir>   install rules + skills into this project (skips the folder dialog)
 #   --skills-only     install skills to the user home only
-#   --yes             no questions, no pause (for testing); the sf guard PATH step is skipped
+#   --yes             no questions, no pause (for testing); noninteractive mode
 set -u
 
 KIT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -71,27 +71,6 @@ install_if_missing() {
   INSTALLED+=("$label")
 }
 
-# merge_claude_settings <src> <dst> <label>: keep existing settings, add the kit's ask/deny rules
-merge_claude_settings() {
-  local src="$1" dst="$2" label="$3" merged bk
-  if [ ! -e "$dst" ] && [ ! -L "$dst" ]; then install_if_missing "$src" "$dst" "$label"; return 0; fi
-  if [ -L "$dst" ]; then KEPT+=("$label (是連結,維持原樣)"); return 0; fi
-  if ! command -v jq >/dev/null 2>&1 || ! merged="$(jq -s '
-      .[0] as $cur | .[1] as $kit
-      | $cur * {permissions: (($cur.permissions // {}) + {
-          ask:  ((($cur.permissions.ask  // []) + ($kit.permissions.ask  // [])) | unique),
-          deny: ((($cur.permissions.deny // []) + ($kit.permissions.deny // [])) | unique)})}' "$dst" "$src" 2>/dev/null)"; then
-    cp "$src" "$(dirname "$dst")/settings.iotmart.json"
-    NOTES+=("$label 無法自動合併;kit的權限設定另存為 settings.iotmart.json,請手動合併")
-    return 0
-  fi
-  if [ "$(printf '%s' "$merged" | jq -S .)" = "$(jq -S . "$dst")" ]; then KEPT+=("$label (權限已包含kit規則)"); return 0; fi
-  bk="$(backup_path "$label")"
-  mkdir -p "$(dirname "$bk")" && cp "$dst" "$bk" && BACKED+=("$label")
-  printf '%s\n' "$merged" > "$dst"
-  INSTALLED+=("$label (合併kit權限)")
-}
-
 add_git_exclude() {
   local project="$1"; shift
   [ -d "$project/.git" ] || return 0
@@ -150,7 +129,7 @@ if [ -n "$PROJECT" ]; then
   for f in AGENTS.md CLAUDE.md GEMINI.md GIT_GUIDE.md skills-lock.json salesforce-mcp-config.json; do
     install_copy "$KIT/$f" "$PROJECT/$f" "$f"
   done
-  for d in routing.md knowledge playbooks skills rules; do
+  for d in routing.md knowledge playbooks skills; do
     install_copy "$KIT/.codex/$d" "$PROJECT/.codex/$d" ".codex/$d"
   done
   install_if_missing "$KIT/.codex/config.toml" "$PROJECT/.codex/config.toml" ".codex/config.toml"
@@ -161,7 +140,6 @@ if [ -n "$PROJECT" ]; then
     install_copy "$s" "$PROJECT/.agents/skills/$n" ".agents/skills/$n"
     install_copy "$s" "$PROJECT/.claude/skills/$n" ".claude/skills/$n"
   done
-  merge_claude_settings "$KIT/.claude/settings.json" "$PROJECT/.claude/settings.json" ".claude/settings.json"
   add_git_exclude "$PROJECT" /AGENTS.md /CLAUDE.md /GEMINI.md /GIT_GUIDE.md /skills-lock.json \
     /salesforce-mcp-config.json /.codex /.agents /.gemini /.claude/skills /.claude/settings.json
 else
@@ -174,31 +152,32 @@ else
   NOTES+=("只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾")
 fi
 
-# Codex execution rules apply to every project, so they go to the user home in both modes.
-install_copy "$KIT/.codex/rules/sf-guard.rules" "$USER_HOME/.codex/rules/iotmart-sf-guard.rules" "~/.codex/rules/iotmart-sf-guard.rules"
-
-# sf guard wrapper: copy to the user home and put it first on PATH (asks first).
-MARK="# iotmart-agent-kit sf guard"
-GUARD_BIN="$USER_HOME/.iotmart-agent-kit/bin"
-if grep -qsF "$MARK" "$USER_HOME/.zshrc" "$USER_HOME/.zprofile" "$USER_HOME/.bash_profile"; then
-  KEPT+=("sf 防護 (shell 設定已存在)")
-  [ -d "$GUARD_BIN" ] && install_copy "$KIT/bin" "$GUARD_BIN" "~/.iotmart-agent-kit/bin"
-elif [ "$YES" -eq 0 ]; then
-  echo
-  say '要安裝 sf 指令防護嗎?(擋 Prod 部署、全量部署、未指定 org 等危險操作)'
-  printf '建議安裝,直接 Enter = 安裝,輸入 N = 略過:'; read -r ans
-  case "$ans" in
-    [Nn]*) NOTES+=("未安裝 sf 指令防護;之後可重新執行安裝檔加裝") ;;
-    *)
-      install_copy "$KIT/bin" "$GUARD_BIN" "~/.iotmart-agent-kit/bin"
-      chmod +x "$GUARD_BIN"/* 2>/dev/null
-      line="[ -d \"\$HOME/.iotmart-agent-kit/bin\" ] && export PATH=\"\$HOME/.iotmart-agent-kit/bin:\$PATH\"  $MARK"
-      for rc in .zshrc .zprofile .bash_profile; do
-        printf '\n%s\n' "$line" >> "$USER_HOME/$rc"
-      done
-      INSTALLED+=("sf 指令防護(~/.zshrc,~/.zprofile,~/.bash_profile 加入 PATH)")
-      ;;
-  esac
+# Legacy SF Guard cleanup for installations created by this kit (the guard was removed).
+# Only lines/files carrying the kit's own signature are touched; rc files are rewritten in place
+# so a symlinked dotfile stays a symlink.
+for rc in .zshrc .zprofile .zshenv .bashrc .bash_profile; do
+  file="$USER_HOME/$rc"
+  [ -f "$file" ] || continue
+  if grep -qF '# iotmart-agent-kit sf guard' "$file"; then
+    tmp="$(mktemp)" && sed '/# iotmart-agent-kit sf guard/d' "$file" > "$tmp" && cat "$tmp" > "$file" && rm -f "$tmp"
+    INSTALLED+=("~/$rc (移除舊 sf 指令防護 PATH)")
+  fi
+done
+legacy="$USER_HOME/.codex/rules/iotmart-sf-guard.rules"
+if [ -L "$legacy" ] && [ ! -e "$legacy" ]; then rm -f "$legacy"
+elif [ -f "$legacy" ] && grep -qF 'IoTMart Salesforce guard rules' "$legacy"; then rm -f "$legacy"; fi
+guard_bin="$USER_HOME/.iotmart-agent-kit/bin"
+if [ -f "$guard_bin/sf" ] && grep -qF 'sf guard: thin wrapper' "$guard_bin/sf"; then
+  rm -f "$guard_bin/sf" "$guard_bin/sfdx"
+  rmdir "$guard_bin" "$USER_HOME/.iotmart-agent-kit" 2>/dev/null
+fi
+if [ -n "$PROJECT" ]; then
+  rules="$PROJECT/.codex/rules/sf-guard.rules"
+  if [ -f "$rules" ] && [ ! -L "$PROJECT/.codex" ] && grep -qF 'IoTMart Salesforce guard rules' "$rules"; then
+    bk="$(backup_path ".codex/rules/sf-guard.rules")"
+    mkdir -p "$(dirname "$bk")" && mv "$rules" "$bk" && BACKED+=(".codex/rules/sf-guard.rules")
+    rmdir "$PROJECT/.codex/rules" 2>/dev/null
+  fi
 fi
 
 echo

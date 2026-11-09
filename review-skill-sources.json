@@ -1,0 +1,52 @@
+{
+  "version": 3,
+  "policy": "Read only for review-skill maintenance or upstream checks, not routine code review. Installed skills are vendored unmodified under .agents/skills/<name> via `npx skills add <repository> -s <name> -a codex -y`; skills-lock.json holds the content hash, THIRD_PARTY_NOTICES.md and LICENSES/ hold the license. IoTMart overrides live only in .codex/playbooks/code-review-overlay.md. upstream-check.yml updates installed skills and refreshes installed_commit/installed_tree here. To verify: compare `git hash-object` of each vendored file with the upstream tree at installed_tree.",
+  "sources": [
+    {
+      "name": "code-review",
+      "role": "primary-spec-and-standards",
+      "repository": "mattpocock/skills",
+      "upstream_path": "skills/engineering/code-review/",
+      "upstream_skill_file": "skills/engineering/code-review/SKILL.md",
+      "upstream_url": "https://github.com/mattpocock/skills/tree/main/skills/engineering/code-review",
+      "license": "MIT",
+      "license_file": "LICENSES/mattpocock-skills.txt",
+      "status": "installed",
+      "installed_path": ".agents/skills/code-review",
+      "installed_commit": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+      "installed_tree": "a8ef561571acbb611de8ff19ba6da75b197c63a8",
+      "source_blob_sha": "83183e0ad36fd0eef25d37c7e483284b7e34c1f0",
+      "installed_at": "2026-11-09"
+    },
+    {
+      "name": "code-review-and-quality",
+      "role": "methodology-reference",
+      "repository": "addyosmani/agent-skills",
+      "upstream_path": "skills/code-review-and-quality/",
+      "upstream_skill_file": "skills/code-review-and-quality/SKILL.md",
+      "upstream_url": "https://github.com/addyosmani/agent-skills/tree/main/skills/code-review-and-quality",
+      "license": "MIT",
+      "status": "reference-only",
+      "note": "Not installed and not loaded; overlaps with code-review Standards and differential-review.",
+      "source_blob_sha": "15ea44c93c61dcec705720342c1fd78755702f85",
+      "installed_commit": null,
+      "installed_tree": null
+    },
+    {
+      "name": "differential-review",
+      "role": "conditional-security",
+      "repository": "trailofbits/skills",
+      "upstream_path": "plugins/differential-review/skills/differential-review/",
+      "upstream_skill_file": "plugins/differential-review/skills/differential-review/SKILL.md",
+      "upstream_url": "https://github.com/trailofbits/skills/tree/main/plugins/differential-review/skills/differential-review",
+      "license": "CC-BY-SA-4.0",
+      "license_file": "LICENSES/trailofbits-skills.txt",
+      "status": "installed",
+      "installed_path": ".agents/skills/differential-review",
+      "installed_commit": "e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff",
+      "installed_tree": "09ff02c96f84ad4b98184bcd5efae5b218caa910",
+      "source_blob_sha": "536e9258092876017b098f1712a92e7d06bb1480",
+      "installed_at": "2026-11-09"
+    }
+  ]
+}

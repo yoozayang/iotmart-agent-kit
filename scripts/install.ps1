@@ -86,41 +86,6 @@ function Install-IfMissing([string]$src, [string]$dst, [string]$label) {
   $Installed.Add($label)
 }
 
-# Merge Claude permissions: keep everything already there, add the kit's ask/deny rules.
-function Merge-ClaudeSettings([string]$src, [string]$dst, [string]$label) {
-  if (-not (Test-Path -LiteralPath $dst)) { Install-IfMissing $src $dst $label; return }
-  if (Test-IsLink $dst) { $Kept.Add("$label (是連結,維持原樣)"); return }
-  try {
-    $cur = Get-Content -LiteralPath $dst -Raw -Encoding UTF8 | ConvertFrom-Json
-  } catch {
-    $alt = Join-Path (Split-Path -Parent $dst) 'settings.iotmart.json'
-    Copy-Item -LiteralPath $src -Destination $alt -Force
-    $Notes.Add("$label 格式無法讀取,未合併;kit的權限設定另存為 settings.iotmart.json,請手動合併")
-    return
-  }
-  $kit = Get-Content -LiteralPath $src -Raw -Encoding UTF8 | ConvertFrom-Json
-  if (-not $cur.PSObject.Properties['permissions']) {
-    $cur | Add-Member -NotePropertyName permissions -NotePropertyValue ([pscustomobject]@{})
-  }
-  $changed = $false
-  foreach ($key in 'ask', 'deny') {
-    $have = @()
-    if ($cur.permissions.PSObject.Properties[$key]) { $have = @($cur.permissions.$key) }
-    $merged = @($have + @($kit.permissions.$key) | Where-Object { $_ } | Select-Object -Unique)
-    if ($merged.Count -ne $have.Count) { $changed = $true }
-    if ($cur.permissions.PSObject.Properties[$key]) { $cur.permissions.$key = $merged }
-    else { $cur.permissions | Add-Member -NotePropertyName $key -NotePropertyValue $merged }
-  }
-  if (-not $changed) { $Kept.Add("$label (權限已包含kit規則)"); return }
-  $bk = Get-BackupPath $label
-  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $bk) | Out-Null
-  Copy-Item -LiteralPath $dst -Destination $bk -Force
-  $BackedUp.Add($label)
-  $json = $cur | ConvertTo-Json -Depth 20
-  [IO.File]::WriteAllText($dst, $json, (New-Object Text.UTF8Encoding($false)))
-  $Installed.Add("$label (合併kit權限)")
-}
-
 function Add-GitExclude([string]$project, [string[]]$entries) {
   $gitDir = Join-Path $project '.git'
   if (-not (Test-Path -LiteralPath $gitDir -PathType Container)) { return }
@@ -192,7 +157,7 @@ if ($ProjectPath) {
   foreach ($f in 'AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'GIT_GUIDE.md', 'skills-lock.json', 'salesforce-mcp-config.json') {
     Install-Copy (Join-Path $Kit $f) (Join-Path $ProjectPath $f) $f
   }
-  foreach ($d in 'routing.md', 'knowledge', 'playbooks', 'skills', 'rules') {
+  foreach ($d in 'routing.md', 'knowledge', 'playbooks', 'skills') {
     Install-Copy ([IO.Path]::Combine($Kit, '.codex', $d)) ([IO.Path]::Combine($ProjectPath, '.codex', $d)) ".codex/$d"
   }
   Install-IfMissing ([IO.Path]::Combine($Kit, '.codex', 'config.toml')) ([IO.Path]::Combine($ProjectPath, '.codex', 'config.toml')) '.codex/config.toml'
@@ -202,7 +167,6 @@ if ($ProjectPath) {
     Install-Copy $s.FullName ([IO.Path]::Combine($ProjectPath, '.agents', 'skills', $s.Name)) ".agents/skills/$($s.Name)"
     Install-Copy $s.FullName ([IO.Path]::Combine($ProjectPath, '.claude', 'skills', $s.Name)) ".claude/skills/$($s.Name)"
   }
-  Merge-ClaudeSettings ([IO.Path]::Combine($Kit, '.claude', 'settings.json')) ([IO.Path]::Combine($ProjectPath, '.claude', 'settings.json')) '.claude/settings.json'
   Add-GitExclude $ProjectPath @('/AGENTS.md', '/CLAUDE.md', '/GEMINI.md', '/GIT_GUIDE.md', '/skills-lock.json',
     '/salesforce-mcp-config.json', '/.codex', '/.agents', '/.gemini', '/.claude/skills', '/.claude/settings.json')
 } else {
@@ -214,11 +178,22 @@ if ($ProjectPath) {
   $Notes.Add('只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾')
 }
 
-# Codex execution rules apply to every project, so they go to the user profile in both modes.
-Install-Copy ([IO.Path]::Combine($Kit, '.codex', 'rules', 'sf-guard.rules')) ([IO.Path]::Combine($UserHome, '.codex', 'rules', 'iotmart-sf-guard.rules')) '~/.codex/rules/iotmart-sf-guard.rules'
-
-if ($OnWindows) {
-  $Notes.Add('Windows 沒有 sf 指令防護 wrapper(bin/sf 只支援 macOS/Linux);寫入 org 的指令由 Codex 規則與 Claude 權限要求確認')
+# Legacy SF Guard cleanup (the guard was removed). Only files carrying the kit's signature are touched.
+$legacyRule = [IO.Path]::Combine($UserHome, '.codex', 'rules', 'iotmart-sf-guard.rules')
+if (Test-Path -LiteralPath $legacyRule) {
+  if ((Get-Content -LiteralPath $legacyRule -Raw) -match 'IoTMart Salesforce guard rules') { Remove-Item -LiteralPath $legacyRule -Force }
+}
+if ($ProjectPath) {
+  $projectRule = [IO.Path]::Combine($ProjectPath, '.codex', 'rules', 'sf-guard.rules')
+  if ((Test-Path -LiteralPath $projectRule) -and -not (Test-IsLink ([IO.Path]::Combine($ProjectPath, '.codex'))) -and
+      ((Get-Content -LiteralPath $projectRule -Raw) -match 'IoTMart Salesforce guard rules')) {
+    $bk = Get-BackupPath '.codex/rules/sf-guard.rules'
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $bk) | Out-Null
+    Move-Item -LiteralPath $projectRule -Destination $bk -Force
+    $BackedUp.Add('.codex/rules/sf-guard.rules')
+    $rulesDir = Split-Path -Parent $projectRule
+    if (-not (Get-ChildItem -LiteralPath $rulesDir -Force)) { Remove-Item -LiteralPath $rulesDir -Force }
+  }
 }
 
 Say ''

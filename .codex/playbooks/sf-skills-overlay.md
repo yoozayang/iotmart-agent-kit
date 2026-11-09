@@ -46,7 +46,7 @@
 - 一律依`.codex/playbooks/salesforce-deploy.md`與`.codex/playbooks/prod-validate.md`:
   - 未取得使用者明確授權前,禁止deploy,validation,dry-run;同一任務已授權不重問
   - 僅`-m`、`-x package.xml`或由最終`package.xml`轉出的`--metadata-dir`差異部署
-  - Prod預設Validate Only+手動Quick Deploy;使用者要求Agent部署時依`.codex/playbooks/prod-validate.md`授權流程,以`--prod-approved <Org>`執行
+  - Prod預設Validate Only+手動Quick Deploy;使用者要求Agent部署時依`.codex/playbooks/prod-validate.md`授權流程,validation成功並取得Y後以原生`sf`執行Quick Deploy
 - 部署範圍:
   - `origin/Dev...HEAD`只是候選清單
   - 需與目標org實際檔案比對後定案
@@ -75,21 +75,6 @@
   - `DeployRequest`,`ApexCodeCoverage`等查詢需加`--use-tooling-api`
 - 非Metadata型別:
   - `OrgWideEmailAddress`等為sObject,不可當metadata retrieve,先查`platform-metadata-api-context-get`確認型別存在
-
-## 執行層防護
-| 層 | 位置 | 作用 | 適用 |
-| --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf`,經shell設定檔放在PATH最前 | 寫入org的指令必須明確`-o`;Prod的`deploy start`/`quick`需`--prod-approved <同-o的Org>`,否則只允許validate與dry-run;禁止目錄部署,無範圍部署,`--ignore-conflicts`;Prod禁止資料寫入,匿名Apex,`delete source`;禁止`org delete` | Codex,Claude Code,Gemini,終端機 |
-| `sfdx` blocker | `bin/sfdx` | 一律阻擋 | 同上 |
-| Codex rules | `.codex/rules/sf-guard.rules`,連結到`~/.codex/rules/iotmart-sf-guard.rules` | 寫入org的指令一律prompt;`sfdx`,`sf org delete`,bypass為forbidden;最嚴格者優先,蓋過`default.rules`的allow | Codex |
-| Claude permissions | `.claude/settings.json` | 寫入org的指令ask;`sfdx`,`sf org delete`,bypass,MCP `deploy_metadata`,`delete_org`為deny | Claude Code |
-| MCP | `.codex/config.toml`,`.gemini/settings.json`,`~/.claude.json` | Salesforce DX MCP不啟用`metadata` toolset | 三者 |
-
-- 被guard阻擋時:
-  - 缺少Prod部署授權:依`.codex/playbooks/prod-validate.md`問一次Y/N,Y後加`--prod-approved <Org>`
-  - 其他阻擋:停止並回報使用者阻擋原因
-  - 禁止以`SF_GUARD_BYPASS=1`,真實`sf`絕對路徑,MCP或其他方式繞過
-- `SF_GUARD_BYPASS=1`僅限使用者本人在終端機使用
 
 ## 上游更新
 - 以`npx skills update`或重新`npx skills add forcedotcom/sf-skills -s <skill> -a codex -y`更新

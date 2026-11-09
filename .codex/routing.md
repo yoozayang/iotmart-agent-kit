@@ -18,7 +18,9 @@
 | Requirement unclear | `.codex/skills/requirement-review.md`,`.codex/skills/minimum-sdd.md` |
 | Read an Azure Board work item,create a task record,or update a task record in Notion | `.codex/skills/task-notion-record.md`,`.codex/skills/requirement-review.md` |
 | Before implementation | `.codex/skills/minimum-sdd.md` |
+| Development branch created or changed for an ADO work item | `.codex/skills/task-notion-record.md`,`.codex/playbooks/wi-development-handoff.md` |
 | During implementation | Relevant knowledge/playbook from this table,plus`.codex/skills/minimum-sdd.md` |
+| Code review, review request, ADO task ID/URL with implementation, PR review | `.agents/skills/iotmart-code-review/SKILL.md`,`.codex/playbooks/code-review-overlay.md`,`.codex/playbooks/git-baseline.md`,`.agents/skills/code-review/SKILL.md`;diff含Salesforce時加`.codex/knowledge/salesforce-review-standards.md`;風險HIGH時加`.agents/skills/differential-review/SKILL.md`;plus task-specific knowledge/playbooks |
 | Before handover | `.codex/skills/test-case-generation.md`,`.codex/skills/validation-review.md` |
 | Before deployment task creation | `.codex/skills/deployment-package.md`,relevant deployment playbook |
 | Magnolia task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
