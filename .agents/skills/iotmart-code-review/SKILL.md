@@ -18,7 +18,7 @@ Read `.codex/playbooks/code-review-overlay.md` before step 1; it overrides the v
    - Ignore abandoned PRs. One active PR: use it. Several active PRs or only completed ones without an obvious match: list them and ask which to review.
    - Otherwise a branch named in WI comments or elsewhere in the Description: verify it exists on the remote (`git ls-remote`) and carries the WI number before using it. Never guess a branch from the WI number alone.
    - Fetch the resolved branch when it is not available locally.
-4. Diff base: merge-base with `origin/<targetRefName without refs/heads/>` when a PR is resolved, otherwise `origin/Dev`. Capture `git diff <base>...<head>` and `git log <base>..<head> --oneline` once; fail early on a bad ref or empty diff. Check uncommitted changes when reviewing local work.
+4. Diff base: merge-base with `origin/<targetRefName without refs/heads/>` when a PR is resolved, otherwise `origin/Dev`. Capture `git diff <base>...<head>` and `git log <base>..<head> --oneline` once; fail early on a bad ref or empty diff. Check uncommitted changes when reviewing local work. An empty diff with no PR means nothing is implemented yet: say so, skip steps 2 and 3, and review the WI with `.codex/skills/requirement-review.md` (differences first).
 5. Load context through `.codex/routing.md` only for systems the diff touches. When the diff touches Salesforce code or metadata, read `.codex/knowledge/salesforce-review-standards.md`.
 
 ## 2. Spec and Standards (`code-review`)

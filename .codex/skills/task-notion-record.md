@@ -71,6 +71,7 @@
 - Do not overwrite existing user-authored text in any section. Add a dated update or preserve superseded content with strikethrough when replacement is necessary
 - Keep the Azure Board URL and discussion date with every material update so later discussion can trace its source
 - If the Notion parent is absent,ambiguous,or inaccessible,ask the user for the target instead of creating a private root page
+- `需求`的範圍與`SDD`要分開已定案與`待確認事項`;開發agent只依已定案內容實作,待確認項目定案後才移入
 
 ## Guardrails
 - Notion creation requires the user's explicit request or the confirmation in this workflow

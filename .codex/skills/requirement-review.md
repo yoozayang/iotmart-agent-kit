@@ -19,12 +19,15 @@
 - Relevant knowledge/playbook files selected by routing
 
 ## Expected Outputs
-- Requirement Summary
-- Current Understanding
-- Missing Information
-- Open Questions
-- Potential Risks
-- Suggested Clarification Questions
+- 任務紀錄涵蓋:Requirement Summary,Current Understanding,Missing Information,Open Questions,Potential Risks,Suggested Clarification Questions
+- 對話先列差異,不重述使用者已知背景,也不重複已寫入紀錄的細節:
+  - 差異:WI,前期工項,目標環境現況之間的落差,每項附證據來源
+  - 需使用者決定的項目
+  - 需轉問PM的問題
+- 已驗證的事實與證據直接寫入任務紀錄,不在對話重複
+- 使用者追問時才用白話展開,不預設對方熟悉平台術語,自訂與內建物件或欄位要區分
+- 給PM的問題先寫前提與現況,再提問;有建議做法時附理由
+- 開發交接:討論定案後才更新任務紀錄的確定版;開發agent只依確定版實作,未定項目留在待確認,不作為開發依據
 
 ## Guardrails
 - Do not design or implement before identifying missing information and risks
