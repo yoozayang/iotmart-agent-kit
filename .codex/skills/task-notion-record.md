@@ -25,7 +25,7 @@
    - Use the work item's ID and `System.Title` as the record identity. Do not rely on a browser snapshot or infer content omitted from the work item
 2. Extract only confirmed content
    - Requirement: description,acceptance criteria,scope,priority,and linked work items
-   - Discussion updates: dated decisions,changed scope,commitments,blockers,and unresolved questions. Preserve source dates and do not treat a question as a decision
+   - Discussion updates: one line per dated decision or scope change with its source. Do not log process steps,questions asked,or intermediate states; open questions belong in `待確認事項`
    - Technical points: repository paths,actual behavior,dependencies,and evidence. Distinguish facts from inferences
    - SDD: generate a first version from the confirmed requirement,then revise it when development discussion produces concrete design decisions. Keep unresolved decisions under `待確認事項`
 3. Unless the user explicitly asks to create the page,show the concise task summary and ask `要建立Notion任務頁嗎？`
@@ -57,7 +57,7 @@
 
 ## 討論更新項
 
-- <日期>｜<來源>：<已確認的決定、變更或待確認事項>
+- <日期>｜<來源>：<已確認的決定或範圍變更>
 
 ## 技術點記錄
 
@@ -68,10 +68,11 @@
 ## Update Rules
 - Update only `需求`,`SDD`,`討論更新項`,and`技術點記錄`; use a targeted insertion or exact replacement after fetching the latest page
 - Never modify,delete,or reorder `我的記錄區`,including when it is empty
-- Do not overwrite existing user-authored text in any section. Add a dated update or preserve superseded content with strikethrough when replacement is necessary
+- Do not overwrite existing user-authored text in any section; ask before changing it
+- Agent-authored content shows the current state only: rewrite it in place when a decision is made,and remove superseded text instead of keeping strikethrough or history
 - Keep the Azure Board URL and discussion date with every material update so later discussion can trace its source
 - If the Notion parent is absent,ambiguous,or inaccessible,ask the user for the target instead of creating a private root page
-- `需求`的範圍與`SDD`要分開已定案與`待確認事項`;開發agent只依已定案內容實作,待確認項目定案後才移入
+- `需求`的範圍與`SDD`要分開已定案與`待確認事項`;開發agent只依已定案內容實作,待確認項目定案後移入已定案並從`待確認事項`刪除
 
 ## Guardrails
 - Notion creation requires the user's explicit request or the confirmation in this workflow

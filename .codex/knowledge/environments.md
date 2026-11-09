@@ -13,6 +13,7 @@
 | Prod | `prod` | Production(DevHub) | `00D280000017Eo3EAE` | `https://adv.my.salesforce.com` |
 
 - 使用者指定的org直接沿用,本表僅作參考,不另行比對或重複確認(見`AGENTS.md` Target Org)
+- `sf`指令的`-o`一律使用本表alias,alias區分大小寫,例如Prod用`-o prod`;「Prod」「UAT」是環境名稱,不是alias
 - Prod查詢不需授權;validation,dry-run,deploy依`.codex/playbooks/prod-validate.md`
 
 ## Experience Cloud / Site Domain
