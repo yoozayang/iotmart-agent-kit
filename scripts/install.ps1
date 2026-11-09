@@ -157,7 +157,7 @@ if ($ProjectPath) {
   foreach ($f in 'AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'GIT_GUIDE.md', 'skills-lock.json', 'salesforce-mcp-config.json') {
     Install-Copy (Join-Path $Kit $f) (Join-Path $ProjectPath $f) $f
   }
-  foreach ($d in 'routing.md', 'knowledge', 'playbooks', 'skills', 'rules') {
+  foreach ($d in 'routing.md', 'knowledge', 'playbooks', 'skills') {
     Install-Copy ([IO.Path]::Combine($Kit, '.codex', $d)) ([IO.Path]::Combine($ProjectPath, '.codex', $d)) ".codex/$d"
   }
   Install-IfMissing ([IO.Path]::Combine($Kit, '.codex', 'config.toml')) ([IO.Path]::Combine($ProjectPath, '.codex', 'config.toml')) '.codex/config.toml'
@@ -178,10 +178,22 @@ if ($ProjectPath) {
   $Notes.Add('只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾')
 }
 
-# Remove legacy kit-installed Codex SF Guard rule if it matches the kit signature.
+# Legacy SF Guard cleanup (the guard was removed). Only files carrying the kit's signature are touched.
 $legacyRule = [IO.Path]::Combine($UserHome, '.codex', 'rules', 'iotmart-sf-guard.rules')
-if (Test-Path $legacyRule) {
-  if ((Get-Content $legacyRule -Raw) -match 'IoTMart Salesforce guard rules') { Remove-Item $legacyRule -Force }
+if (Test-Path -LiteralPath $legacyRule) {
+  if ((Get-Content -LiteralPath $legacyRule -Raw) -match 'IoTMart Salesforce guard rules') { Remove-Item -LiteralPath $legacyRule -Force }
+}
+if ($ProjectPath) {
+  $projectRule = [IO.Path]::Combine($ProjectPath, '.codex', 'rules', 'sf-guard.rules')
+  if ((Test-Path -LiteralPath $projectRule) -and -not (Test-IsLink ([IO.Path]::Combine($ProjectPath, '.codex'))) -and
+      ((Get-Content -LiteralPath $projectRule -Raw) -match 'IoTMart Salesforce guard rules')) {
+    $bk = Get-BackupPath '.codex/rules/sf-guard.rules'
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $bk) | Out-Null
+    Move-Item -LiteralPath $projectRule -Destination $bk -Force
+    $BackedUp.Add('.codex/rules/sf-guard.rules')
+    $rulesDir = Split-Path -Parent $projectRule
+    if (-not (Get-ChildItem -LiteralPath $rulesDir -Force)) { Remove-Item -LiteralPath $rulesDir -Force }
+  }
 }
 
 Say ''

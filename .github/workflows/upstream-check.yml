@@ -2,8 +2,8 @@ name: Upstream check
 
 # Weekly update of the official sf-skills, applied without manual review:
 # - updates are committed through a pull request that is merged automatically
-# - safety does not rely on reading skill text: bin/sf, Codex rules and Claude permissions
-#   enforce the hard constraints at execution time
+# - official skill files stay unmodified; repo hard constraints and Prod authorization come from
+#   AGENTS.md and .codex/playbooks/sf-skills-overlay.md, which take precedence over skill text
 # - the only gate is structural: changes must stay inside official skills, the lock file and notices;
 #   otherwise the job fails (GitHub notifies by email) and nothing is merged
 # Personal tools (caveman, Ponytail) are updated locally by scripts/autoupdate.sh.
@@ -77,7 +77,7 @@ jobs:
             missing="$(grep -oE '\.agents/skills/platform-[^\`]+' .codex/playbooks/sf-skills-overlay.md | sort -u | while read -r f; do [ -e "$f" ] || echo "- \`$f\`"; done)"
             if [ -n "$missing" ]; then echo "overlay引用的下列路徑已不存在,需更新overlay:"; echo "$missing"; else echo "overlay引用的路徑皆存在"; fi
             echo
-            echo "此PR由workflow自動合併;執行層防護(bin/sf,Codex rules,Claude permissions)不受skill內容影響"
+            echo "此PR由workflow自動合併;官方skill原樣保留,repo硬限制與Prod授權以AGENTS.md與sf-skills-overlay.md為準"
           } > "$RUNNER_TEMP/pr-body.md"
           git reset -q
 

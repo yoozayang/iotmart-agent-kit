@@ -18,6 +18,7 @@ No agent, git skills or admin rights needed.
 What the installer does:
 - Copies the rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.codex/`) and skills (`.agents/skills`, `.claude/skills`) into the project and adds them to the project's `.git/info/exclude`
 - Changed files are first moved to `~/.iotmart-agent-kit-backup/<timestamp>/`; identical files are left alone
+- Removes the SF Guard installed by older versions: the `# iotmart-agent-kit sf guard` PATH lines in shell startup files, `~/.codex/rules/iotmart-sf-guard.rules`, `~/.iotmart-agent-kit/bin` and the project's `.codex/rules/sf-guard.rules`
 
 To update: `git pull` (or download the ZIP again) and double-click the installer again. The same steps are in `INSTALL.txt` at the repository root.
 
@@ -50,11 +51,12 @@ iotmart-agent-kit/
 ├── GEMINI.md                  Gemini bridge
 ├── GIT_GUIDE.md               commit and PR conventions
 ├── skills-lock.json           skill sources and content hashes
+├── review-skill-sources.json  upstream sources of the review skills (maintenance only)
 ├── .codex/
 │   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
 │   ├── routing.md             task type -> files to read
 │   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments
-│   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay
+│   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay, code-review-overlay, wi-development-handoff
 │   └── skills/                requirement-review, minimum-sdd, test-case-generation, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)
 ├── .gemini/                   Gemini MCP settings and code review style
@@ -107,14 +109,15 @@ scripts/link.sh ~/Development/IoTMart3.0 --all-worktrees --hook
 ```
 
 `link.sh`:
-- creates symlinks in the project root for `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GIT_GUIDE.md`, `skills-lock.json`, `.mcp.json`, `salesforce-mcp-config.json`, `.codex`, `.agents`, `.gemini`, `.claude/settings.json`
+- creates symlinks in the project root for `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GIT_GUIDE.md`, `skills-lock.json`, `.mcp.json`, `salesforce-mcp-config.json`, `.codex`, `.agents`, `.gemini`
+- removes stale `.claude/settings.json` links left by the removed SF Guard
 - creates `.claude/skills` -> `../.agents/skills` so Claude Code loads the skills natively
 - adds those paths to the project's `.git/info/exclude`, so they never show up in the company repo's `git status`
 - can be re-run; correctly linked items print `ok`
 - `--all-worktrees` also links every existing worktree of the project; a worktree blocked by real files is reported and the others are still linked
 - `--hook` installs a `post-checkout` hook in the project's repo, so a worktree created with `git worktree add` (including by an agent) is linked automatically; it is skipped when `core.hooksPath` is set or another `post-checkout` hook already exists
 
-SF Guard has been removed; use the native `sf` CLI and existing deployment authorization playbooks.
+SF Guard has been removed; agents use the native `sf` CLI. Prod and Target Org authorization still follow `AGENTS.md` and `.codex/playbooks/prod-validate.md`. To clean up a maintainer machine, delete the lines ending in `# iotmart-agent-kit sf guard` from the shell startup files and remove `~/.codex/rules/iotmart-sf-guard.rules`; `command -v sf` should then print the native CLI path.
 
 ## How each environment reads the kit
 
@@ -130,6 +133,7 @@ SF Guard has been removed; use the native `sf` CLI and existing deployment autho
 | Skill | Purpose |
 | --- | --- |
 | `evidence-investigation-documentation` | evidence-led investigation and documentation workflow, including safe Notion update rules |
+| `iotmart-code-review` | task-aware review of an implementation against its ADO work item, PR or branch |
 
 ### Third party
 | Skill | Source | Purpose |
@@ -183,6 +187,7 @@ Own rules:
 
 ## Upstream updates
 
+Fully automatic, no manual step. Official skill files stay unmodified; repo hard constraints and Prod authorization come from `AGENTS.md` and `.codex/playbooks/sf-skills-overlay.md`.
 
 | Target | Runner | Frequency | Action |
 | --- | --- | --- | --- |

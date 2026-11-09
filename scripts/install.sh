@@ -129,7 +129,7 @@ if [ -n "$PROJECT" ]; then
   for f in AGENTS.md CLAUDE.md GEMINI.md GIT_GUIDE.md skills-lock.json salesforce-mcp-config.json; do
     install_copy "$KIT/$f" "$PROJECT/$f" "$f"
   done
-  for d in routing.md knowledge playbooks skills rules; do
+  for d in routing.md knowledge playbooks skills; do
     install_copy "$KIT/.codex/$d" "$PROJECT/.codex/$d" ".codex/$d"
   done
   install_if_missing "$KIT/.codex/config.toml" "$PROJECT/.codex/config.toml" ".codex/config.toml"
@@ -152,17 +152,33 @@ else
   NOTES+=("只裝了 skill:專案規則(AGENTS.md 等)與 sf-skills-overlay.md 沒有安裝;要完整功能請重新執行並選專案資料夾")
 fi
 
-# Legacy SF Guard cleanup for installations created by this kit.
-for rc in .zshrc .zprofile .bash_profile; do
+# Legacy SF Guard cleanup for installations created by this kit (the guard was removed).
+# Only lines/files carrying the kit's own signature are touched; rc files are rewritten in place
+# so a symlinked dotfile stays a symlink.
+for rc in .zshrc .zprofile .zshenv .bashrc .bash_profile; do
   file="$USER_HOME/$rc"
   [ -f "$file" ] || continue
   if grep -qF '# iotmart-agent-kit sf guard' "$file"; then
-    sed '/# iotmart-agent-kit sf guard/d' "$file" > "$file.tmp.$" && mv "$file.tmp.$" "$file"
+    tmp="$(mktemp)" && sed '/# iotmart-agent-kit sf guard/d' "$file" > "$tmp" && cat "$tmp" > "$file" && rm -f "$tmp"
+    INSTALLED+=("~/$rc (移除舊 sf 指令防護 PATH)")
   fi
 done
 legacy="$USER_HOME/.codex/rules/iotmart-sf-guard.rules"
-if [ -f "$legacy" ] && grep -qF 'IoTMart Salesforce guard rules' "$legacy"; then rm -f "$legacy"; fi
-if [ -d "$USER_HOME/.iotmart-agent-kit/bin" ] && [ -f "$USER_HOME/.iotmart-agent-kit/bin/sf" ] && grep -qF 'sf guard: thin wrapper' "$USER_HOME/.iotmart-agent-kit/bin/sf"; then rm -f "$USER_HOME/.iotmart-agent-kit/bin/sf" "$USER_HOME/.iotmart-agent-kit/bin/sfdx"; fi
+if [ -L "$legacy" ] && [ ! -e "$legacy" ]; then rm -f "$legacy"
+elif [ -f "$legacy" ] && grep -qF 'IoTMart Salesforce guard rules' "$legacy"; then rm -f "$legacy"; fi
+guard_bin="$USER_HOME/.iotmart-agent-kit/bin"
+if [ -f "$guard_bin/sf" ] && grep -qF 'sf guard: thin wrapper' "$guard_bin/sf"; then
+  rm -f "$guard_bin/sf" "$guard_bin/sfdx"
+  rmdir "$guard_bin" "$USER_HOME/.iotmart-agent-kit" 2>/dev/null
+fi
+if [ -n "$PROJECT" ]; then
+  rules="$PROJECT/.codex/rules/sf-guard.rules"
+  if [ -f "$rules" ] && [ ! -L "$PROJECT/.codex" ] && grep -qF 'IoTMart Salesforce guard rules' "$rules"; then
+    bk="$(backup_path ".codex/rules/sf-guard.rules")"
+    mkdir -p "$(dirname "$bk")" && mv "$rules" "$bk" && BACKED+=(".codex/rules/sf-guard.rules")
+    rmdir "$PROJECT/.codex/rules" 2>/dev/null
+  fi
+fi
 
 echo
 c 32 '=== 安裝完成 ==='

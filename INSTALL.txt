@@ -20,8 +20,7 @@
    (第一次需要這樣做,之後可以直接雙擊)
 3. 跳出「選擇資料夾」視窗時,選你的 IoTMart 專案資料夾
    按「取消」= 只安裝 skill
-4. 問到「要安裝 sf 指令防護嗎」時,直接按 Enter
-5. 看到「安裝完成」後按 Enter,重新開啟終端機與 Codex / Claude Code / Gemini
+4. 看到「安裝完成」後按 Enter,重新開啟終端機與 Codex / Claude Code / Gemini
 
 【更新】
 下載新版 zip,重複上面的步驟即可。
@@ -29,7 +28,7 @@
 
 【不會被覆蓋的個人設定】
 .codex/config.toml、.gemini/settings.json 已存在時會保留你的版本。
-.claude/settings.json 已存在時,只會加入 kit 的權限規則,其他設定不動。
+舊版安裝的 sf 指令防護會在更新時自動移除,改用原生 sf 指令。
 
 【遇到問題】
 把安裝視窗的畫面截圖,連同你的作業系統,傳給 kit 維護者。
@@ -59,8 +58,7 @@ change your code and needs no admin rights. Its on-screen messages are in Chines
    (needed the first time only; afterwards you can double-click it)
 3. In the folder picker, choose your IoTMart project folder
    Cancel = install the skills only
-4. When asked "要安裝 sf 指令防護嗎" (install the sf command guard?), just press Enter
-5. When "安裝完成" appears, press Enter, then restart your terminal and Codex / Claude Code / Gemini
+4. When "安裝完成" appears, press Enter, then restart your terminal and Codex / Claude Code / Gemini
 
 [Update]
 Run "git pull" (or download the new zip) and repeat the steps above.
@@ -68,7 +66,7 @@ Changed files are first backed up to the .iotmart-agent-kit-backup folder in you
 
 [Personal settings that are never overwritten]
 Existing .codex/config.toml and .gemini/settings.json are kept as they are.
-If .claude/settings.json exists, only the kit's permission rules are added.
+The sf command guard from older versions is removed automatically on update; the native sf CLI is used.
 
 [Problems]
 Take a screenshot of the installer window and send it, with your operating system,

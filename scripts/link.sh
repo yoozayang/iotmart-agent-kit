@@ -37,7 +37,9 @@ TARGET="$(cd "$TARGET" && pwd)"
 
 # Paths linked from the project root to the kit (same relative path on both sides).
 ITEMS=(AGENTS.md CLAUDE.md GEMINI.md GIT_GUIDE.md skills-lock.json .mcp.json
-       salesforce-mcp-config.json .codex .agents .gemini .claude/settings.json)
+       salesforce-mcp-config.json .codex .agents .gemini)
+# Links to kit files that no longer exist (removed SF Guard settings); dropped when relinking.
+STALE_ITEMS=(.claude/settings.json)
 # Own skills also exposed at user level with --user-links.
 OWN_SKILLS=(evidence-investigation-documentation)
 
@@ -86,6 +88,13 @@ link_project() {
   done
   # Claude Code discovers skills only under .claude/skills.
   link "$dir/.claude/skills" "../.agents/skills"
+  for item in "${STALE_ITEMS[@]}"; do
+    p="$dir/$item"
+    if [ -L "$p" ] && [ "$(readlink "$p")" = "$KIT/$item" ] && [ ! -e "$p" ]; then
+      rm "$p"
+      echo "removed $p (stale kit link)"
+    fi
+  done
 }
 
 TARGETS=("$TARGET")
