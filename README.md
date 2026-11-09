@@ -17,10 +17,7 @@ No agent, git skills or admin rights needed.
 
 What the installer does:
 - Copies the rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.codex/`) and skills (`.agents/skills`, `.claude/skills`) into the project and adds them to the project's `.git/info/exclude`
-- Copies the Codex execution rules to `~/.codex/rules/iotmart-sf-guard.rules`
-- If `.claude/settings.json` already exists, only the kit's ask/deny rules are merged in; existing `.codex/config.toml` and `.gemini/settings.json` are left untouched
 - Changed files are first moved to `~/.iotmart-agent-kit-backup/<timestamp>/`; identical files are left alone
-- On macOS it asks whether to install the `sf` command guard (`bin/sf`, added to the shell PATH); Windows has no such guard and relies on the Codex rules and Claude permissions
 
 To update: `git pull` (or download the ZIP again) and double-click the installer again. The same steps are in `INSTALL.txt` at the repository root.
 
@@ -55,14 +52,11 @@ iotmart-agent-kit/
 ├── skills-lock.json           skill sources and content hashes
 ├── .codex/
 │   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
-│   ├── rules/sf-guard.rules   Codex execution rules: org-writing commands need confirmation
 │   ├── routing.md             task type -> files to read
 │   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay
 │   └── skills/                requirement-review, minimum-sdd, test-case-generation, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)
-├── .claude/settings.json      Claude Code permissions: org-writing commands need confirmation
-├── bin/sf, bin/sfdx           sf guard wrapper, execution-layer guard shared by all three agents
 ├── .gemini/                   Gemini MCP settings and code review style
 ├── .mcp.json                  Claude Code project MCP settings
 ├── salesforce-mcp-config.json Salesforce hosted MCP endpoints
@@ -120,27 +114,7 @@ scripts/link.sh ~/Development/IoTMart3.0 --all-worktrees --hook
 - `--all-worktrees` also links every existing worktree of the project; a worktree blocked by real files is reported and the others are still linked
 - `--hook` installs a `post-checkout` hook in the project's repo, so a worktree created with `git worktree add` (including by an agent) is linked automatically; it is skipped when `core.hooksPath` is set or another `post-checkout` hook already exists
 
-Execution-layer guard setup (once per machine):
-
-```bash
-# 1. Put the bin/sf guard first on PATH in every shell: append to the end of ~/.zprofile and ~/.zshrc
-#    (after brew shellenv and other PATH settings), and to ~/.zshenv and ~/.bashrc for non-interactive shells
-[ -d "$HOME/Development/iotmart-agent-kit/bin" ] && export PATH="$HOME/Development/iotmart-agent-kit/bin:$PATH"  # iotmart-agent-kit sf guard
-
-# 2. Let Codex load the guard rules
-ln -s ~/Development/iotmart-agent-kit/.codex/rules/sf-guard.rules ~/.codex/rules/iotmart-sf-guard.rules
-```
-
-Verify:
-
-```bash
-cd ~/Development/IoTMart3.0
-git status --short                      # no agent files should appear
-ls -la AGENTS.md .codex .agents .claude/skills
-command -v sf                           # should be ~/Development/iotmart-agent-kit/bin/sf
-codex execpolicy check -r ~/.codex/rules/default.rules -r ~/.codex/rules/iotmart-sf-guard.rules -- sf project deploy start   # should be prompt
-~/Development/iotmart-agent-kit/tests/sf-guard.test.sh   # guard and rule-text checks, no org needed
-```
+SF Guard has been removed; use the native `sf` CLI and existing deployment authorization playbooks.
 
 ## How each environment reads the kit
 
@@ -209,7 +183,6 @@ Own rules:
 
 ## Upstream updates
 
-Fully automatic, no manual step. Dangerous operations are stopped by the execution-layer guard, not by manually reviewing skill text.
 
 | Target | Runner | Frequency | Action |
 | --- | --- | --- | --- |
@@ -225,22 +198,6 @@ Fully automatic, no manual step. Dangerous operations are stopped by the executi
 - Manual run: `gh workflow run upstream-check.yml`; `bash scripts/autoupdate.sh`
 - Install the local schedule: `scripts/install-autoupdate.sh`; remove: `scripts/install-autoupdate.sh --remove`
 - The repository must allow GitHub Actions to create pull requests (Settings → Actions → General → Workflow permissions)
-
-## Execution-layer guard
-
-Text rules depend on how well a model follows them, so dangerous operations are also blocked at execution time:
-
-| Layer | Location | Effect | Covers |
-| --- | --- | --- | --- |
-| `sf` wrapper | `bin/sf` | org-writing commands need an explicit `-o`; Prod `deploy start`/`quick` need `--prod-approved <same org as -o>` after the user's approval, otherwise only validate and dry-run; blocks directory deploys, unscoped deploys and `--ignore-conflicts`; blocks Prod data writes, anonymous Apex and `delete source`; blocks `org delete` | Codex, Claude Code, Gemini, terminal (macOS/Linux) |
-| `sfdx` blocker | `bin/sfdx` | always blocked | same |
-| Codex rules | `.codex/rules/sf-guard.rules` | org-writing commands prompt; `sfdx`, `sf org delete` and bypass are forbidden; the most restrictive rule wins | Codex |
-| Claude permissions | `.claude/settings.json` | org-writing commands ask; `sfdx`, `sf org delete`, bypass and MCP `deploy_metadata` / `delete_org` are denied | Claude Code |
-| MCP | `.codex/config.toml`, `.gemini/settings.json` | the Salesforce DX MCP does not enable the `metadata` toolset | Codex, Gemini |
-
-- Prod detection: any org whose `sf org display` instanceUrl is not `*.sandbox.my.salesforce.com` is treated as Prod; orgs that cannot be resolved are blocked
-- `SF_GUARD_BYPASS=1 sf ...` is for the user in a terminal only; agent rules explicitly forbid it
-- The wrapper is a guardrail, not a security boundary: calling the real `sf` by absolute path bypasses it
 
 ## Notes
 
