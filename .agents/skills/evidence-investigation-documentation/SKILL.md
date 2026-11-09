@@ -119,6 +119,7 @@ Classify before creating, moving, or duplicating documentation:
 - Split a finding that crosses those boundaries. Cross-link the pages instead of repeating the complete explanation in both places.
 - Put goal, change location, and verification steps in a How-to child page.
 - Keep unverified runtime behavior in Unknowns or a clearly labelled pending-verification area.
+- Write each item as one sentence stating the fact; prefer tables for comparisons. No lead-in, restatement, or process narration.
 
 For Notion child pages:
 

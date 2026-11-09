@@ -27,7 +27,7 @@
    - Requirement: description,acceptance criteria,scope,priority,and linked work items
    - Discussion updates: one line per dated decision or scope change with its source. Do not log process steps,questions asked,or intermediate states; open questions belong in `待確認事項`
    - Technical points: repository paths,actual behavior,dependencies,and evidence. Distinguish facts from inferences
-   - SDD: generate a first version from the confirmed requirement,then revise it when development discussion produces concrete design decisions. Keep unresolved decisions under `待確認事項`
+   - SDD: follow the format in `.codex/skills/minimum-sdd.md`; mark it `草稿` until decisions are confirmed,then `定案` with the date. Keep unresolved decisions under `待確認事項`
 3. Unless the user explicitly asks to create the page,show the concise task summary and ask `要建立Notion任務頁嗎？`
    - Do not create,update,or move a Notion page until the user confirms
    - An explicit request such as `建立Notion任務頁` authorizes the create after the work item has been read
@@ -51,9 +51,13 @@
 - 驗收條件：
 - 範圍／待確認事項：
 
-## SDD
+## SDD（草稿｜定案：<日期>）
 
-> 依目前需求產生第一版，開發討論後持續更新
+| 項目 | 做法 | 位置 |
+|---|---|---|
+
+驗收
+- <可檢查的結果>
 
 ## 討論更新項
 
@@ -69,6 +73,7 @@
 - Update only `需求`,`SDD`,`討論更新項`,and`技術點記錄`; use a targeted insertion or exact replacement after fetching the latest page
 - Never modify,delete,or reorder `我的記錄區`,including when it is empty
 - Do not overwrite existing user-authored text in any section; ask before changing it
+- Write each item as one sentence stating the fact or decision; no lead-in,restatement,or explanation of reasoning
 - Agent-authored content shows the current state only: rewrite it in place when a decision is made,and remove superseded text instead of keeping strikethrough or history
 - Keep the Azure Board URL and discussion date with every material update so later discussion can trace its source
 - If the Notion parent is absent,ambiguous,or inaccessible,ask the user for the target instead of creating a private root page
