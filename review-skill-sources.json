@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "policy": "Upstream sources are references until installed. Record exact commit, license and content hash before vendoring; do not infer tracking from this file.",
+  "sources": [
+    {
+      "name": "code-review-and-quality",
+      "repository": "addyosmani/agent-skills",
+      "path": "skills/code-review-and-quality/",
+      "status": "reference-only",
+      "commit": null,
+      "hash": null
+    },
+    {
+      "name": "differential-review",
+      "repository": "trailofbits/skills",
+      "path": "plugins/differential-review/skills/differential-review/",
+      "status": "reference-only",
+      "commit": null,
+      "hash": null
+    },
+    {
+      "name": "requesting-code-review",
+      "repository": "obra/superpowers",
+      "path": "skills/requesting-code-review/",
+      "status": "reference-only",
+      "commit": null,
+      "hash": null
+    }
+  ]
+}
