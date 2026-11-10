@@ -13,7 +13,7 @@ Use only for authorized Notion task-record creation/updates, not for reading a W
 ## Page format
 Title: `<編號>_<標題>`
 
-- `我的記錄區`: create a callout block; user-maintained, never edit/delete/reorder, even when empty
+- `我的記錄區`: create an empty callout, without labels or placeholder text; user-maintained, never edit/delete/reorder
 - `需求`: Azure Board URL, summary, acceptance criteria, confirmed scope, pending decisions
 - `SDD`: first version from current confirmed requirements; revise after development decisions
 - `討論更新項`: `<日期>｜<來源>:<已確認決定或範圍變更>`
