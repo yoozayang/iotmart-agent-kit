@@ -3,7 +3,7 @@
 - 先依本次操作選流程,再追加涉及系統的知識;多個明確操作可組合,不可僅因提到系統名稱載入其全部流程
 - 知識不授權寫入;進入測試,文件寫入,WI更新,環境操作或部署前才載入該操作規則
 - Review為唯讀模式:不疊加需求紀錄,Notion寫入,開發分支,部署或交付流程;另有明確操作要求時才切換並載入
-- 路徑以kit/project根目錄為準;下列入口自行指向必要細節,不要預讀所有參考文件
+- 下列入口自行指向必要細節,不要預讀未要求的參考文件
 
 ## 操作入口
 | 操作 | 必讀入口 |
@@ -37,5 +37,3 @@
 | Magnolia實作/Git/部署 | `.codex/playbooks/magnolia-flow.md`;純review不載入此操作流程 |
 | 幣別新增或工項盤點 | `.codex/playbooks/currency-onboarding.md` |
 | Salesforce review | `.codex/knowledge/salesforce-review-standards.md`;HIGH風險由review入口追加`differential-review` |
-
-第三方skill不手改;衝突依`AGENTS.md`與對應overlay處理

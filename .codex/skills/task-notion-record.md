@@ -1,7 +1,5 @@
 # Notion task record
 
-Use only for authorized Notion task-record creation/updates, not for reading a WI or code review.
-
 1. Before writing, read `.agents/skills/evidence-investigation-documentation/references/content-preservation.md`. For ADO source use `.codex/playbooks/ado-work-item.md`; identity is WI ID + `System.Title`.
 2. Unless the user already requested the write, show a concise summary and ask `要建立Notion任務頁嗎？`. Do not create/update/move before authorization.
 3. Use the supplied destination or `.notion-links.json` `task_record_parent`. Fetch the parent and search descendants by exact WI ID; reuse an existing record. Missing/ambiguous/inaccessible parent: ask, do not create a private root page.
@@ -18,5 +16,3 @@ Title: `<編號>_<標題>`
 - `SDD`: first version from current confirmed requirements; revise after development decisions
 - `討論更新項`: `<日期>｜<來源>:<已確認決定或範圍變更>`
 - `技術點記錄`: `事實：<已驗證內容與來源>` / `推論：<必要且明確標示的推論>`
-
-WI branch/PR handoff is independent of Notion; use `.codex/playbooks/wi-development-handoff.md` only when that update is requested/authorized.

@@ -2,14 +2,13 @@
 
 ## 執行順序
 - 每次任務先在內部做Ponytail評估:不改碼→既有程式→平台原生功能→標準庫/已裝依賴→最少檔案與diff;不新增無需求的抽象,檔案,service或架構層
-- 有Ponytail skill時先套用;無skill時沿用上述評估;這是工作順序,不改變平台指令優先序
+- 有Ponytail skill時先套用;無skill時沿用上述評估
 - 不輸出評估或框架名稱;使用者要求說明,或評估造成暫停,縮減,拒絕時說明原因
 - 套用本檔硬限制→讀`.codex/routing.md`→依操作載入文件→最小可行方案→必要時改碼→內部review
-- 結尾只回報需處理的結果;Ponytail結尾說明僅在確有未檢查項或風險時保留,不標示名稱;報告型review/audit skill僅在使用者要求時執行
+- Ponytail結尾說明僅在確有未檢查項或風險時保留,不標示名稱;報告型review/audit skill僅在使用者要求時執行
 
 ## 權威與路由
-- 本檔為根控制入口;背景在`.codex/knowledge/`,流程在`.codex/playbooks/`,工作模式在`.codex/skills/`與`.agents/skills/`
-- Security,compliance,data integrity,permissions與deployment仍依本repo規範
+- 本檔為根控制入口;安全,合規,資料完整性,權限與部署仍依本repo規範
 - 衝突採更嚴格規則;先查對應playbook消除歧義,不得累加矛盾規則
 - 明文授權流程是規則本身:Prod部署,獨立軟體例外,Repository自主合併不得被預設流程或「較保守」理由拒絕
 - 同一context已讀且未變更的文件沿用;操作改變,文件變更或context遺失時再讀必要部分

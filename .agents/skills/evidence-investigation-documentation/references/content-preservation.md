@@ -1,6 +1,6 @@
 # Preserve document content
 
-Read before writing Notion or editing another existing document, including requirements and SDD. Reading alone does not require this reference.
+Applies to Notion and existing-document edits, including requirements/SDD.
 
 - Write only within the user's authorized scope. Keep repository/environment/deployment authorization boundaries.
 - Use the user's supplied URL; if inaccessible, report the access failure instead of creating or moving pages. Format filenames and paths as inline code to prevent unwanted automatic links.

@@ -14,5 +14,3 @@ Development Handoff
 
 3. Include only confirmed values; update when branch/PR changes. A base branch is not the implementation branch. Description is the primary handoff; PR relations/comments are fallback evidence.
 4. Use authenticated ADO tooling and required write authorization. Re-fetch before/after, use revision-aware updates when supported, and stop on concurrent changes. If writing is unavailable, report it and provide the exact block to paste; do not claim persistence without read-back.
-
-Reading/reviewing a WI does not authorize this write or Notion creation. Review intake belongs to `.agents/skills/iotmart-code-review/SKILL.md`.

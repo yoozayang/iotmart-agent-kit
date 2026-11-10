@@ -1,6 +1,6 @@
 # Write investigation documentation
 
-Read only when the user requests documentation creation or updates. Before writing, read [content-preservation.md](content-preservation.md).
+Read [content-preservation.md](content-preservation.md) before writing.
 
 ## Location and structure
 - Reuse the page covering the same maintenance responsibility or How-to. Create a child only for a distinct, confirmed responsibility or independently actionable scenario; do not duplicate pages for individual directories/files.

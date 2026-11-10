@@ -16,7 +16,7 @@ Read `.codex/playbooks/code-review-overlay.md` first for baseline, authorization
 4. Load only affected-system knowledge from routing. Salesforce changes add `.codex/knowledge/salesforce-review-standards.md`; do not load deployment/Notion workflows for review.
 
 ## Review
-- Run `.agents/skills/code-review/SKILL.md` with overlay overrides; keep Spec and Standards separate.
+- Run `.agents/skills/code-review/SKILL.md` with overlay overrides.
 - Classify Salesforce risk using its standards table. Other systems: HIGH = auth/permissions, crypto/secrets, external integration, value transfer, removed validation/error handling; MEDIUM = business logic, state changes, new public APIs; LOW = comments, tests, UI text, logging. Any HIGH makes the diff HIGH.
 - HIGH: run `.agents/skills/differential-review/SKILL.md` with overlay overrides. Otherwise do not load it; report level/reason.
 - Verify findings against reachable callers, existing guards, and tests; distinguish introduced defects from pre-existing issues.
