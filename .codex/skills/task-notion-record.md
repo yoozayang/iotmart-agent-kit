@@ -66,13 +66,15 @@
 ```
 
 ## Update Rules
-- Update only `需求`,`SDD`,`討論更新項`,and`技術點記錄`; use a targeted insertion or exact replacement after fetching the latest page
+- Update only `需求`,`SDD`,`討論更新項`,and`技術點記錄`; fetch the latest page,retain superseded wording with strikethrough,and insert confirmed replacements immediately after it
 - Never modify,delete,or reorder `我的記錄區`,including when it is empty
 - Do not overwrite existing user-authored text in any section; ask before changing it
-- Agent-authored content shows the current state only: rewrite it in place when a decision is made,and remove superseded text instead of keeping strikethrough or history
+- Follow the general Notion preservation rule for both user-authored and agent-authored content: when correcting,replacing,simplifying,or retiring existing content,preserve the original wording with Notion strikethrough and add any confirmed replacement immediately after it; do not physically delete text or blocks unless the user explicitly authorizes permanent deletion
+- Current requirements and SDD are the confirmed,non-struck-through content; struck-through questions,assumptions,and superseded decisions are retained for reference only,not as implementation instructions
 - Keep the Azure Board URL and discussion date with every material update so later discussion can trace its source
 - If the Notion parent is absent,ambiguous,or inaccessible,ask the user for the target instead of creating a private root page
-- `需求`的範圍與`SDD`要分開已定案與`待確認事項`;開發agent只依已定案內容實作,待確認項目定案後移入已定案並從`待確認事項`刪除
+- `需求`的範圍與`SDD`要分開已定案與`待確認事項`;開發agent只依已定案且未加刪除線的內容實作,待確認項目定案後將結論寫入已定案,原待確認文字加刪除線保留,不再視為未解問題
+- Re-fetch after writing and verify existing wording is unchanged or retained with strikethrough,and confirmed replacements are present
 
 ## Guardrails
 - Notion creation requires the user's explicit request or the confirmation in this workflow
