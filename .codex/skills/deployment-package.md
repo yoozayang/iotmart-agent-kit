@@ -1,34 +1,7 @@
-# Deployment Package Skill
+# Deployment handoff
 
-## Purpose
-- Help the agent prepare deployment-ready handover information
-- Package change summary,test evidence,references,platform impacts,dependencies,sequence,and known risks
-
-## When To Use
-- Before deployment task creation
-- Before requesting validation authorization
-- When preparing handover for Salesforce,SFCC,Magnolia,or cross-platform deployment
-
-## Required Inputs
-- Change Summary
-- Changed file list or metadata list
-- Test evidence and validation review
-- Relevant deployment playbook
-- Target environment and Target Org when applicable
-- Known dependencies and sequencing constraints
-
-## Expected Outputs
-- Change Summary
-- Test Evidence
-- Deployment References
-- Platform Impacts
-- Deployment Dependencies / Sequence
-- Known Risks / Limitations
-
-## Guardrails
-- Do not execute deploy,validation,or dry-run commands from this skill
-- Deployment package must preserve the same scope intended for validation and deployment
-- Prod deployment defaults to`Validate Only + manual Quick Deploy`;agent-run Prod deploys follow the authorization flow and 獨立軟體例外 in`.codex/playbooks/prod-validate.md`
-- UAT或其他非正式環境結果只可作為測試證據,不可決定、增減或替代Prod最終範圍;Prod範圍只以Prod實際retrieve比對結果定案
-- For UAT/Sandbox,final deployment scope must trace back to`origin/Dev...HEAD`development file list or explicitly noted dependencies
-- If dependencies are unclear,list them as risks rather than expanding deployment scope silently
+Before deployment-task creation or a validation-authorization request:
+- Collect changed files/metadata, test evidence, dependencies, sequence, target environment/org, and relevant deployment procedures.
+- Report: change summary, test evidence, references, platform impact, dependencies/order, and risks/limits. Preparing this handoff does not execute deploy/validation/dry-run.
+- Preserve the intended validation/deploy scope. Prod scope comes from actual Prod retrieval, not UAT results; Sandbox scope traces to `origin/Dev...HEAD` or named necessary dependencies.
+- Unclear dependencies are risks, not permission to expand scope. Prod authorization and independent-software exceptions remain in `.codex/playbooks/prod-validate.md`; load it before the corresponding operation.

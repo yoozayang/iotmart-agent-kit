@@ -42,6 +42,12 @@ flowchart TD
 - Precedence: `AGENTS.md` > `.codex/playbooks` > official skills. When rules conflict, the stricter and more conservative one applies
 - Official skills only provide knowledge and operating patterns and are never edited by hand; IoTMart-specific constraints live in the overlay
 
+## Operation-scoped loading
+
+`AGENTS.md` keeps global constraints; `.codex/routing.md` selects the operation before system context. Reading a WI does not load Notion writing, and code review does not load deployment procedures. Tests, org operations, and writes load their rules before execution. Unchanged context is reused.
+
+WI reads use `.codex/playbooks/ado-work-item.md`. The investigation skill loads documentation references only for writing; its `references/content-preservation.md` is the shared retention rule for Notion and existing-document edits, including task requirements and SDD. Installed skill folders include these references in both copy and symlink modes.
+
 ## Directory layout
 
 ```text

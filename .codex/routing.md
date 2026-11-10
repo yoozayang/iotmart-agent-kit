@@ -1,47 +1,42 @@
-# Codex Routing
+# Task routing
 
-## 目的
-- 本檔是task-type routing table
-- 先套用`AGENTS.md`的Ponytail-first evaluation與硬限制
-- 再依本檔選擇要讀的knowledge,playbook,skill
-- 若任務同時符合多個類型,全部讀取
+- 先依本次操作選流程,再追加涉及系統的知識;多個明確操作可組合,不可僅因提到系統名稱載入其全部流程
+- 知識不授權寫入;進入測試,文件寫入,WI更新,環境操作或部署前才載入該操作規則
+- Review為唯讀模式:不疊加需求紀錄,Notion寫入,開發分支,部署或交付流程;另有明確操作要求時才切換並載入
+- 路徑以kit/project根目錄為準;下列入口自行指向必要細節,不要預讀所有參考文件
 
-## Layer Definition
-- `AGENTS.md`:全域硬限制,Ponytail-first與routing entry
-- `.codex/knowledge/*.md`:穩定背景,架構與系統責任邊界
-- `.codex/playbooks/*.md`:可執行流程與環境操作
-- `.codex/skills/*.md`與`.agents/skills/*/SKILL.md`:按需工作模式與agent skills;官方skill原樣保留,repo覆寫在`.codex/playbooks/sf-skills-overlay.md`
-
-## Task Routing Table
-| Task type | Required files |
+## 操作入口
+| 操作 | 必讀入口 |
 | --- | --- |
-| Requirement unclear | `.codex/skills/requirement-review.md`,`.codex/skills/minimum-sdd.md` |
-| Read an Azure Board work item,create a task record,or update a task record in Notion | `.codex/skills/task-notion-record.md`,`.codex/skills/requirement-review.md` |
-| Before implementation | `.codex/skills/minimum-sdd.md`;ADO WI開發時加`.codex/playbooks/git-baseline.md`(分支命名與自動建立) |
-| Development branch created or changed for an ADO work item | `.codex/skills/task-notion-record.md`,`.codex/playbooks/wi-development-handoff.md` |
-| During implementation | Relevant knowledge/playbook from this table,plus`.codex/skills/minimum-sdd.md` |
-| Code review, review request, ADO task ID/URL with implementation, PR review | `.agents/skills/iotmart-code-review/SKILL.md`,`.codex/playbooks/code-review-overlay.md`,`.codex/playbooks/git-baseline.md`,`.agents/skills/code-review/SKILL.md`;diff含Salesforce時加`.codex/knowledge/salesforce-review-standards.md`;風險HIGH時加`.agents/skills/differential-review/SKILL.md`;plus diff觸及系統的knowledge;命中本列時不疊加「Read an Azure Board work item」列(WI由`iotmart-code-review`讀取),也不載入deploy/validate類playbook |
-| Before handover | `.codex/skills/test-case-generation.md`,`.codex/skills/validation-review.md` |
-| Before deployment task creation | `.codex/skills/deployment-package.md`,relevant deployment playbook |
-| Magnolia task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
-| Salesforce/SFCC task | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md`,`.codex/playbooks/sf-skills-overlay.md` |
-| Cross-platform task | `.codex/knowledge/system-landscape.md`,`.codex/knowledge/market-architecture.md`,related playbooks,`.codex/skills/deployment-package.md` |
-| Prod validation | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
-| Prod compare | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/mcp-usage.md`,`.codex/knowledge/environments.md` |
-| Dev/UAT compare | `.codex/playbooks/uat-compare.md`,`.codex/knowledge/environments.md` |
-| UAT/Prod前台測試(Playwright,瀏覽器驗證),或需確認org alias,Org Id,前台網址,登入方式 | `.codex/knowledge/environments.md` |
-| Sandbox deploy scope | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/salesforce-deploy.md` |
-| Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
-| Investigation,repository/system discovery,or task documentation | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
-| Git baseline,branch diff,PR scope | `.codex/playbooks/git-baseline.md` |
-| Email通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`,`.codex/playbooks/prod-validate.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
-| SAP/SIS task | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
-| Product/pricing/cart/order | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/salesforce-deploy.md` |
-| 新增幣別或幣別工項盤點 | `.codex/playbooks/currency-onboarding.md`,`.codex/knowledge/market-architecture.md`,`.codex/knowledge/system-landscape.md` |
-| UI/template/content | `.codex/knowledge/market-architecture.md`,`.codex/playbooks/magnolia-flow.md` |
-| Salesforce official skill usage(retrieve,deploy,SOQL,metadata XML,Apex test) | `.codex/playbooks/sf-skills-overlay.md`,then matching`.agents/skills/platform-*/SKILL.md` |
-| Multi-agent platform collaboration (Buzz, Nostr) | `.agents/skills/buzz-collaboration/SKILL.md` |
+| 只讀ADO WI | `.codex/playbooks/ado-work-item.md` |
+| 需求釐清/落差分析 | `.codex/skills/requirement-review.md` |
+| 實作前/設計變更 | `.codex/skills/minimum-sdd.md`;IoTMart WI開發加`.codex/playbooks/git-baseline.md` |
+| Code review/PR/已實作WI | `.agents/skills/iotmart-code-review/SKILL.md` |
+| 建立/切換開發branch,Git基準/PR範圍 | `.codex/playbooks/git-baseline.md` |
+| 回寫WI開發交接 | `.codex/playbooks/wi-development-handoff.md` |
+| 建立/更新Notion任務紀錄 | `.codex/skills/task-notion-record.md` |
+| 任意Notion寫入 | `.agents/skills/evidence-investigation-documentation/references/content-preservation.md` |
+| 調查repo/系統,整理維運文件 | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
+| 設計驗證案例 | `.codex/skills/test-case-generation.md` |
+| 實作交付/檢查驗證證據 | `.codex/skills/validation-review.md`;缺少相關案例時加`.codex/skills/test-case-generation.md` |
+| 準備部署交付/授權摘要 | `.codex/skills/deployment-package.md` |
+| Salesforce query/retrieve/data/metadata/org操作 | `.codex/playbooks/mcp-usage.md`;用官方skill時先讀`.codex/playbooks/sf-skills-overlay.md`及對應`.agents/skills/platform-*/SKILL.md` |
+| 寫SOQL/SOSL,編輯metadata XML,執行Apex test | `.codex/playbooks/sf-skills-overlay.md`及對應官方skill;標準欄位未驗證時加`platform-data-and-tooling-api-context-get`,metadata XML加`platform-metadata-api-context-get`;本地查閱不授權org操作 |
+| Salesforce deploy/validation/dry-run | `.codex/playbooks/salesforce-deploy.md`;Prod加`.codex/playbooks/prod-validate.md`,Sandbox加`.codex/playbooks/uat-compare.md`;再載入前列org操作規則 |
+| Prod內容比對 | `.codex/playbooks/prod-validate.md`,`.codex/playbooks/mcp-usage.md` |
+| Dev/UAT/Sandbox內容比對 | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/mcp-usage.md` |
+| 查環境alias/Org Id/網址/登入,前台瀏覽器測試 | `.codex/knowledge/environments.md` |
+| 通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`;異動才追加deploy流程 |
+| Buzz協作平台事件 | `.agents/skills/buzz-collaboration/SKILL.md` |
 
-## 正式基準
-- 任務載入以Task Routing Table為準,各文件本文是其主題的正式程序或知識
-- 官方skill保持原樣,與repo規則衝突或官方未涵蓋的補強以`.codex/playbooks/sf-skills-overlay.md`為準
+## 系統知識與條件流程
+| 涉及範圍 | 追加 |
+| --- | --- |
+| Salesforce/SFCC/Magnolia/UI/商品/價格/購物車/訂單 | `.codex/knowledge/market-architecture.md` |
+| 跨系統整合/資料責任 | `.codex/knowledge/system-landscape.md` |
+| SAP/SIS | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
+| Magnolia實作/Git/部署 | `.codex/playbooks/magnolia-flow.md`;純review不載入此操作流程 |
+| 幣別新增或工項盤點 | `.codex/playbooks/currency-onboarding.md` |
+| Salesforce review | `.codex/knowledge/salesforce-review-standards.md`;HIGH風險由review入口追加`differential-review` |
+
+第三方skill不手改;衝突依`AGENTS.md`與對應overlay處理

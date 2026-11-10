@@ -41,6 +41,12 @@ flowchart TD
 - 優先序:`AGENTS.md`>`.codex/playbooks`>官方skill。規則衝突時採更嚴格,更保守的一方
 - 官方skill只提供知識與操作模式,不手改;IoTMart專屬限制一律寫在overlay
 
+## 依操作載入
+
+`AGENTS.md`保留全域限制,`.codex/routing.md`先選操作再加系統知識。只讀WI不載入Notion寫入,review不載入部署流程;測試,org操作與寫入前才讀對應規則,已讀且未變的context沿用
+
+WI讀取集中於`.codex/playbooks/ado-work-item.md`。調查skill只在寫文件時載入文件參考;其中`references/content-preservation.md`統一管理Notion與既有文件的原文保留,包含需求與SDD。複製與符號連結安裝都包含參考文件
+
 ## 目錄結構
 
 ```text
