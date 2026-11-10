@@ -4,7 +4,7 @@ Review starts at `iotmart-code-review`, including direct invocation of either up
 
 ## Baseline and permissions
 - Spec: ADO WI Description/acceptance criteria from intake, not PR prose or inferred intent. Skip upstream tracker setup, commit-message issue discovery, and asking for an already-read spec.
-- Diff: PR target merge-base when resolved; otherwise `origin/Dev`. Personal repos use their default branch. PR target counts as an explicit base. Check local uncommitted changes; verify refs and non-empty diff before review. Intake handles empty/unresolved cases.
+- Diff base: explicit user base > PR target > system default (Salesforce: `origin/Dev`; Magnolia: `origin/main`; personal repo: default branch). Identify the repository/system before choosing a base; compare from its merge-base with head. Check local uncommitted changes; verify refs and non-empty diff before review. Intake handles empty/unresolved cases.
 - Git diff does not establish target-org state.
 - Review is read-only: no code edits, retrieve, data writes, deploy/validation/dry-run, external comments, PR approval, or merge. Separately authorized tests/org operations first load their own rules. The HIGH report below is the only review write.
 

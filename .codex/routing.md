@@ -17,8 +17,7 @@
 | 建立/更新Notion任務紀錄 | `.codex/skills/task-notion-record.md` |
 | 任意Notion寫入 | `.agents/skills/evidence-investigation-documentation/references/content-preservation.md` |
 | 調查repo/系統,整理維運文件 | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
-| 設計驗證案例 | `.codex/skills/test-case-generation.md` |
-| 實作交付/檢查驗證證據 | `.codex/skills/validation-review.md`;缺少相關案例時加`.codex/skills/test-case-generation.md` |
+| 設計驗證案例/實作交付/檢查驗證證據 | `.codex/skills/validation-review.md` |
 | 準備部署交付/授權摘要 | `.codex/skills/deployment-package.md` |
 | Salesforce query/retrieve/data/metadata/org操作 | `.codex/playbooks/mcp-usage.md`;用官方skill時先讀`.codex/playbooks/sf-skills-overlay.md`及對應`.agents/skills/platform-*/SKILL.md` |
 | 寫SOQL/SOSL,編輯metadata XML,執行Apex test | `.codex/playbooks/sf-skills-overlay.md`及對應官方skill;標準欄位未驗證時加`platform-data-and-tooling-api-context-get`,metadata XML加`platform-metadata-api-context-get`;本地查閱不授權org操作 |

@@ -3,6 +3,7 @@
 Read before writing Notion or editing another existing document, including requirements and SDD. Reading alone does not require this reference.
 
 - Write only within the user's authorized scope. Keep repository/environment/deployment authorization boundaries.
+- Use the user's supplied URL; if inaccessible, report the access failure instead of creating or moving pages. Format filenames and paths as inline code to prevent unwanted automatic links.
 - Fetch the current target immediately before editing; retain affected content as the Before record.
 - Preserve existing sections, sentences, child-page URLs, and order. Make targeted insertions or replacements; leave unrelated content untouched.
 - Correct, combine, simplify, or retire wording by retaining the original with strikethrough and adding its replacement immediately after it. This applies to user- and agent-authored text, including old questions and assumptions.

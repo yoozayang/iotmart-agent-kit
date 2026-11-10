@@ -28,7 +28,7 @@
 
 ## Git硬限制
 - IoTMart開發branch:`<名字>/feature/<WI編號>_<簡述>`或`<名字>/bugfix/<WI編號>_<簡述>`;建立與沿用規則見`.codex/playbooks/git-baseline.md`
-- IoTMart相對差異預設以`origin/Dev...HEAD`確認;未經指定不可改以`origin/main`;大量非功能diff先查base
+- IoTMart Salesforce相對差異預設用`origin/Dev`,Magnolia用`origin/main`;使用者指定或PR目標優先;以`<base>...HEAD`確認,大量非功能diff先查base
 - 命名與基準不套用個人repo;依該repo預設branch與慣例
 - Commit/PR遵循`GIT_GUIDE.md`;符合其自主完成條件時自行建立並合併PR,不重複要求核准
 
@@ -38,6 +38,8 @@
 - 僅Buzz/多人頻道/協作中繼事件載入`buzz-collaboration`,公開發布調查,審查與交接狀態;本地IDE/CLI維持對話輸出,不執行平台發布
 
 ## 交付
+- 實作交付前依routing檢查驗證案例與證據
+- 調查／規格討論任務完成且未取得紀錄授權時,詢問一次是否建立Notion紀錄;已有授權沿用
 - 暫存輸出放`~/codex_tmp`;完成PR後更新本檔摘要
 - 依使用者語言回覆;不明時用台灣繁體中文;中文與英文不加空格,英文保留空格,不使用中文句點
 - 只輸出回答問題或接續工作所需的資訊，省略重複與過程交代

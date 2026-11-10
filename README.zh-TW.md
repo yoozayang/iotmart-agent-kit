@@ -47,6 +47,8 @@ flowchart TD
 
 WI讀取集中於`.codex/playbooks/ado-work-item.md`。調查skill只在寫文件時載入文件參考;其中`references/content-preservation.md`統一管理Notion與既有文件的原文保留,包含需求與SDD。複製與符號連結安裝都包含參考文件
 
+案例設計與證據檢查共用`.codex/skills/validation-review.md`;已有測試仍須在實作交付前確認情境覆蓋。調查／規格討論完成後,未有紀錄授權時詢問一次是否建立Notion紀錄
+
 ## 目錄結構
 
 ```text
@@ -62,7 +64,7 @@ iotmart-agent-kit/
 │   ├── routing.md             任務類型→要讀的檔案
 │   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
 │   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay,code-review-overlay,wi-development-handoff
-│   └── skills/                requirement-review,minimum-sdd,test-case-generation,validation-review,deployment-package
+│   └── skills/                requirement-review,minimum-sdd,validation-review,deployment-package
 ├── .agents/skills/            agent skill(自有+第三方)
 ├── .gemini/                   Gemini MCP設定與code review風格
 ├── .mcp.json                  Claude Code專案MCP設定
@@ -173,7 +175,7 @@ SF Guard已移除,agent直接使用原生`sf` CLI;Prod與Target Org授權仍依`
 這些衝突不修改官方檔案,而是寫在`.codex/playbooks/sf-skills-overlay.md`;`AGENTS.md`與Task Routing Table要求使用官方Salesforce skill前先讀overlay,`CLAUDE.md`與`GEMINI.md`只橋接到這條共用路徑。官方skill升版時只需重新比對overlay一個檔案
 
 
-Review skill採相同方式:`code-review`與`differential-review`原樣保留,IoTMart覆寫(以ADO WI為spec,以PR目標分支或`origin/Dev`為diff基準,Salesforce標準與風險分級寫在`.codex/knowledge/salesforce-review-standards.md`,review唯讀)集中在`.codex/playbooks/code-review-overlay.md`;review一律由`iotmart-code-review`進入,只有風險HIGH時才執行`differential-review`;`code-review-and-quality`(addyosmani/agent-skills)只保留來源登錄;pinned commit與tree SHA記錄於`review-skill-sources.json`
+Review skill採相同方式:`code-review`與`differential-review`原樣保留,IoTMart覆寫(以ADO WI為spec,以使用者指定或PR目標優先,否則Salesforce用`origin/Dev`、Magnolia用`origin/main`為diff基準,Salesforce標準與風險分級寫在`.codex/knowledge/salesforce-review-standards.md`,review唯讀)集中在`.codex/playbooks/code-review-overlay.md`;review一律由`iotmart-code-review`進入,只有風險HIGH時才執行`differential-review`;`code-review-and-quality`(addyosmani/agent-skills)只保留來源登錄;pinned commit與tree SHA記錄於`review-skill-sources.json`
 
 ## 新增或更新skill
 

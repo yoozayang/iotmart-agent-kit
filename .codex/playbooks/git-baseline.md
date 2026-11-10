@@ -15,9 +15,7 @@
 - 建立或切換後依`.codex/playbooks/wi-development-handoff.md`把Repository與Branch寫進WI Description
 
 ## 相對差異/新增/回歸判斷
-- 預設以`origin/Dev`為比較基準
-- 非使用者明確指定時,禁止以`origin/main`作為此repo的預設相對基準
-- 回覆中若提到「這次分支新增/這次修改/相對差異」,都應先以`origin/Dev...HEAD`確認
+- 基準依`AGENTS.md`的Git硬限制;相對差異以`<base>...HEAD`確認
 
 ## Commit/PR
 - 遵循`GIT_GUIDE.md`

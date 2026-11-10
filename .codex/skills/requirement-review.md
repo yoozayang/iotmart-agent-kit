@@ -7,4 +7,4 @@
 - Explain PM questions with the premise/current state and recommendation rationale. Expand platform terms when asked; distinguish custom from native objects/fields.
 - Handoff only confirmed scope for implementation. Keep unresolved decisions separate and specify how the developer should handle them.
 - Write Notion only when authorized, using `.codex/skills/task-notion-record.md`; analysis alone does not load writing rules. The current specification excludes struck-through history.
-- External access: prefer connected tools; Notion API fallback may use the configured `NOTION_API_KEY` without exposing it. Git access uses local SSH configuration; ADO WIT uses authenticated ADO tooling. Salesforce operations follow root Target Org/authorization rules and `.codex/playbooks/mcp-usage.md`.
+- Notion access: prefer connected tools; API fallback may use the configured `NOTION_API_KEY` without exposing it.
