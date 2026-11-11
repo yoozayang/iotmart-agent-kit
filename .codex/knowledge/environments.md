@@ -1,7 +1,7 @@
 # Environments
 
 ## 目的
-- 本檔是UAT(`ccdev01`),QA(`nqa`)與Prod環境識別資訊的正式基準位置
+- 本檔是UAT(`ccdev01`),US UAT(`USUAT`,sandbox名稱`ccdev06`),QA(`nqa`)與Prod環境識別資訊的正式基準位置
 - 只記錄非機密識別資訊;禁止寫入帳密,Token,Cookie,Session ID
 - 部署,比對,驗證規則仍以`.codex/playbooks/salesforce-deploy.md`,`.codex/playbooks/uat-compare.md`,`.codex/playbooks/prod-validate.md`為準
 
@@ -9,17 +9,20 @@
 | 環境 | 建議alias | Org類型 | Org Id | Instance URL |
 | --- | --- | --- | --- | --- |
 | UAT | `ccdev01` | Sandbox | `00Dfd000001gGz3EAE` | `https://adv--ccdev01.sandbox.my.salesforce.com` |
+| US UAT | `USUAT` | Sandbox | `00Dff000000xxwvEAA` | `https://adv--ccdev06.sandbox.my.salesforce.com` |
 | QA | `nqa` | Sandbox | `00DIm000000LNY3MAO` | `https://adv--iotmartnqa.sandbox.my.salesforce.com` |
 | Prod | `prod` | Production(DevHub) | `00D280000017Eo3EAE` | `https://adv.my.salesforce.com` |
 
 - 使用者指定的org直接沿用,本表僅作參考,不另行比對或重複確認(見`AGENTS.md` Target Org)
 - `sf`指令的`-o`一律使用本表alias,alias區分大小寫,例如Prod用`-o prod`;「Prod」「UAT」是環境名稱,不是alias
+- `USUAT`與`usuat`皆指向同一個US UAT org(`ccdev06`),Agent將兩者視為同一Target Org,指令統一使用`-o USUAT`;本機CLI須將兩個alias設為同一已授權帳號
 - Prod查詢不需授權;validation,dry-run,deploy依`.codex/playbooks/prod-validate.md`
 
 ## Experience Cloud / Site Domain
 | 環境 | my.site.com | salesforce-sites.com |
 | --- | --- | --- |
 | UAT | `adv--ccdev01.sandbox.my.site.com` | `adv--ccdev01.sandbox.my.salesforce-sites.com` |
+| US UAT | `adv--ccdev06.sandbox.my.site.com` | 尚未確認 |
 | Prod | `adv.my.site.com` | `adv.my.salesforce-sites.com` |
 
 - Site path prefix(兩環境相同):`en`,`enus`(en_us),`euvforcesite`(eu),`krvforcesite`(kr),`CTO`,`advtest`,`MyAdvantech`
