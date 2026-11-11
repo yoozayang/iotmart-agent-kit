@@ -19,6 +19,7 @@
 - Target Org:
   - 官方skill「未指定org時使用預設org」不適用
   - 依`.codex/playbooks/mcp-usage.md`:以對話中指定的org為準,`sf`指令一律帶`-o <Target Org>`
+  - 環境名稱與CLI alias依`.codex/knowledge/environments.md`解析,依該檔的同義alias對應至正式alias後執行指令
 - 工具:
   - retrieve,deploy,validate一律用`sf` CLI,不使用MCP metadata工具
   - SOQL查詢可用CLI;MCP僅在其預設org與Target Org相同時使用

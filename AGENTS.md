@@ -116,3 +116,6 @@
   - 英文保留空格
   - 不使用中文句點
 - 預設先報結果與阻礙，不重述背景、內部評估過程或已授權事項
+
+## 已完成摘要
+- US UAT已納入工具環境;`USUAT`與`usuat`對應同一org,指令統一使用`USUAT`,識別資訊見`.codex/knowledge/environments.md`
