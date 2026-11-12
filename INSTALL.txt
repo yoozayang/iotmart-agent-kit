@@ -6,11 +6,15 @@
 
 【Windows】
 1. 在下載的 zip 檔按右鍵 →「全部解壓縮」
+   (請解壓縮到路徑較短的地方,例如「下載」或 C:\Users\你的帳號\Development;
+    若用 git clone,指令要加 -c core.longpaths=true)
 2. 打開解壓縮後的資料夾,雙擊 install-windows.cmd
    (如果跳出「Windows 已保護您的電腦」,按「其他資訊」→「仍要執行」)
-3. 跳出「選擇資料夾」視窗時,選你的 IoTMart 專案資料夾
-   (就是裡面有 sfdx-project.json 的那一層)
-   按「取消」= 只安裝 skill,不放專案規則
+3. 安裝程式會自動尋找你的 IoTMart 專案資料夾:
+   - 找到一個:直接安裝,不用做任何事
+   - 找到多個:輸入要安裝的編號
+   - 找不到:貼上專案資料夾路徑(裡面有 sfdx-project.json 的那一層),
+     或直接按 Enter 跳出「選擇資料夾」視窗;輸入 S = 只安裝 skill,不放專案規則
 4. 看到「安裝完成」後按 Enter 關閉視窗
 5. 重新開啟 Codex / Claude Code / Gemini
 
@@ -23,7 +27,7 @@
 4. 看到「安裝完成」後按 Enter,重新開啟終端機與 Codex / Claude Code / Gemini
 
 【更新】
-下載新版 zip,重複上面的步驟即可。
+下載新版 zip,重複上面的步驟即可,新版會直接蓋過舊版。
 有變動的舊檔會先備份到使用者資料夾下的 .iotmart-agent-kit-backup 資料夾。
 
 【不會被覆蓋的個人設定】
@@ -44,11 +48,15 @@ change your code and needs no admin rights. Its on-screen messages are in Chines
 
 [Windows]
 1. Right-click the downloaded zip -> "Extract All" (skip if you used git clone)
+   (extract to a short path such as Downloads or C:\Users\<you>\Development;
+    with git clone, add -c core.longpaths=true)
 2. Open the folder and double-click install-windows.cmd
    (if "Windows protected your PC" appears, click "More info" -> "Run anyway")
-3. In the folder picker, choose your IoTMart project folder
-   (the one that contains sfdx-project.json)
-   Cancel = install the skills only, without project rules
+3. The installer looks for your IoTMart project folder:
+   - one found: it installs there without asking
+   - several found: enter the number of the one to use
+   - none found: paste the project folder path (the one that contains sfdx-project.json),
+     or press Enter for a folder picker; S = install the skills only, without project rules
 4. When "安裝完成" (installation complete) appears, press Enter
 5. Restart Codex / Claude Code / Gemini
 
@@ -61,7 +69,7 @@ change your code and needs no admin rights. Its on-screen messages are in Chines
 4. When "安裝完成" appears, press Enter, then restart your terminal and Codex / Claude Code / Gemini
 
 [Update]
-Run "git pull" (or download the new zip) and repeat the steps above.
+Run "git pull" (or download the new zip) and repeat the steps above; the new version overwrites the old one.
 Changed files are first backed up to the .iotmart-agent-kit-backup folder in your user folder.
 
 [Personal settings that are never overwritten]
