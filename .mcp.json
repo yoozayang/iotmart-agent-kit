@@ -1,8 +1,3 @@
 {
-  "mcpServers": {
-    "azure-devops": {
-      "command": "npx",
-      "args": ["-y", "@azure-devops/mcp@2.11.0", "advantech-curation", "--authentication", "azcli", "-d", "core", "wiki", "search"]
-    }
-  }
+  "mcpServers": {}
 }
