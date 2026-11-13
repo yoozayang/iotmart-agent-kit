@@ -31,6 +31,7 @@
 | Dev/UAT compare | `.codex/playbooks/uat-compare.md`,`.codex/knowledge/environments.md` |
 | UAT/Prod前台測試(Playwright,瀏覽器驗證),或需確認org alias,Org Id,前台網址,登入方式 | `.codex/knowledge/environments.md` |
 | Sandbox deploy scope | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/salesforce-deploy.md` |
+| ADO Wiki查詢或編輯 | `.codex/playbooks/mcp-usage.md` |
 | Data/Metadata/MCP task | `.codex/playbooks/mcp-usage.md`,`.codex/playbooks/sf-skills-overlay.md`,`.codex/knowledge/environments.md` |
 | Investigation,repository/system discovery,or task documentation | `.agents/skills/evidence-investigation-documentation/SKILL.md` |
 | Git baseline,branch diff,PR scope | `.codex/playbooks/git-baseline.md` |
