@@ -43,3 +43,11 @@
 - 研究,查詢,比對過程產生的臨時檔案只放在已exclude的位置,預設`~/codex_tmp`
 - Salesforce retrieve compare產物放`~/codex_tmp`時,優先使用`sf project retrieve start --target-metadata-dir ... --unzip`
 - 若臨時檔案誤生在repo內,結束前移到已exclude目錄或刪除,不可留下untracked檔案
+
+# Azure DevOps Wiki
+
+- `azure-devops` MCP is defined in this kit (`.codex/config.toml` for Codex, `.mcp.json` for Claude Code), auth via Azure CLI; do not install, reconfigure, or start it manually during a task.
+- Tools: `search_wiki`; `wiki` (`list_wikis`, `get_wiki`, `list_pages`, `get_page`, `get_page_content`); `wiki_upsert_page` (create/update); `core_list_projects`. No delete/move tool: ask the user.
+- Tools absent from the tool list: MCP loads only at session start; tell the user once to reload MCP or open a new session, then stop. Do not retry.
+- Auth error: ask the user to run `az login`; do not retry.
+- Before updating an existing page, read it with `get_page_content`, edit in place, and pass its `etag` to `wiki_upsert_page`; never overwrite a whole page from a local draft.
