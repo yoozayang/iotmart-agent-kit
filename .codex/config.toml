@@ -15,3 +15,9 @@ args = ["-y", "@upstash/context7-mcp"]
 url = "https://mcp.notion.com/mcp"
 bearer_token_env_var = "NOTION_API_KEY"
 http_headers = { "Notion-Version" = "2025-09-03" }
+
+[mcp_servers.azure-devops]
+# Azure CLI auth (`az login`); no secret stored here
+command = "npx"
+args = ["-y", "@azure-devops/mcp@2.11.0", "advantech-curation", "--authentication", "azcli", "-d", "core", "wiki", "search"]
+enabled_tools = ["core_list_projects", "search_wiki", "wiki", "wiki_upsert_page"]

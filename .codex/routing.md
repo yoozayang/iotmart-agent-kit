@@ -26,6 +26,7 @@
 | Dev/UAT/Sandbox內容比對 | `.codex/playbooks/uat-compare.md`,`.codex/playbooks/mcp-usage.md` |
 | 查環境alias/Org Id/網址/登入,前台瀏覽器測試 | `.codex/knowledge/environments.md` |
 | 通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`;異動才追加deploy流程 |
+| ADO Wiki查詢/編輯 | `.codex/playbooks/mcp-usage.md` |
 | Buzz協作平台事件 | `.agents/skills/buzz-collaboration/SKILL.md` |
 
 ## 系統知識與條件流程
