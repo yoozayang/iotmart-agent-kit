@@ -51,3 +51,9 @@
 - Tools absent from the tool list: MCP loads only at session start; tell the user once to reload MCP or open a new session, then stop. Do not retry.
 - Auth error: ask the user to run `az login`; do not retry.
 - Before updating an existing page, read it with `get_page_content`, edit in place, and pass its `etag` to `wiki_upsert_page`; never overwrite a whole page from a local draft.
+
+# DevOps Tracker
+
+- `devops-tracker` MCP connects to `https://iotmart-tracker.pages.dev/api/client/mcp` with each member's personal `WORKSPACE_CLIENT_TOKEN` (`Authorization: Bearer ${WORKSPACE_CLIENT_TOKEN}`), defined in `.codex/config.toml`, `.mcp.json`, `.gemini/settings.json`, or the user's own MCP config; never share or hardcode another person's token.
+- Tools: `get_action_recap`, `get_daily_report_context`, `save_daily_report`, `get_work_item_detail`, `get_pr_detail`. Follow `.agents/skills/iotmart-work-recap/SKILL.md` for response format, sync-time disclosure, and confirmation before `save_daily_report`.
+- Tools absent or 401/token-missing: tell the user once to create a personal `wsk_...` token at `https://iotmart-tracker.pages.dev` (My Work -> AI client), set `WORKSPACE_CLIENT_TOKEN`, add the remote MCP endpoint if needed, and reload MCP or open a new session; do not retry.

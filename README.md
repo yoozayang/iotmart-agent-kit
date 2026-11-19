@@ -53,7 +53,7 @@ iotmart-agent-kit/
 ├── skills-lock.json           skill sources and content hashes
 ├── review-skill-sources.json  upstream sources of the review skills (maintenance only)
 ├── .codex/
-│   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
+│   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion, DevOps Tracker)
 │   ├── routing.md             task type -> files to read
 │   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments, Salesforce review standards
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay, code-review-overlay, wi-development-handoff
@@ -134,6 +134,7 @@ SF Guard has been removed; agents use the native `sf` CLI. Prod and Target Org a
 | --- | --- |
 | `evidence-investigation-documentation` | evidence-led investigation and documentation workflow, including safe Notion update rules |
 | `iotmart-code-review` | task-aware review of an implementation against its ADO work item, PR or branch |
+| `iotmart-work-recap` | personal work recap ("what should I do now") and stand-up report generation via DevOps Tracker MCP |
 
 ### Third party
 | Skill | Source | Purpose |

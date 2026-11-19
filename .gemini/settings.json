@@ -8,6 +8,12 @@
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "devops-tracker": {
+      "httpUrl": "https://iotmart-tracker.pages.dev/api/client/mcp",
+      "headers": {
+        "Authorization": "Bearer ${WORKSPACE_CLIENT_TOKEN}"
+      }
     }
   }
 }
