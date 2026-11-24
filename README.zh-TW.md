@@ -41,6 +41,14 @@ flowchart TD
 - 優先序:`AGENTS.md`>`.codex/playbooks`>官方skill。規則衝突時採更嚴格,更保守的一方
 - 官方skill只提供知識與操作模式,不手改;IoTMart專屬限制一律寫在overlay
 
+## 依操作載入
+
+`AGENTS.md`保留全域限制,`.codex/routing.md`先選操作再加系統知識。只讀WI不載入Notion寫入,review不載入部署流程;測試,org操作與寫入前才讀對應規則,已讀且未變的context沿用
+
+WI讀取集中於`.codex/playbooks/ado-work-item.md`。調查skill只在寫文件時載入文件參考;其中`references/content-preservation.md`統一管理Notion與既有文件的原文保留,包含需求與SDD。複製與符號連結安裝都包含參考文件
+
+案例設計與證據檢查共用`.codex/skills/validation-review.md`;已有測試仍須在實作交付前確認情境覆蓋。任務完成後,未有紀錄授權時合併詢問一次是否記錄到Notion(給人看)或Agent Wiki(給agent看)
+
 ## 目錄結構
 
 ```text
@@ -54,9 +62,9 @@ iotmart-agent-kit/
 ├── .codex/
 │   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion,DevOps Tracker)
 │   ├── routing.md             任務類型→要讀的檔案
-│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
+│   ├── knowledge/             站點架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
 │   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay,code-review-overlay,wi-development-handoff
-│   └── skills/                requirement-review,minimum-sdd,test-case-generation,validation-review,deployment-package
+│   └── skills/                requirement-review,minimum-sdd,validation-review,deployment-package
 ├── .agents/skills/            agent skill(自有+第三方)
 ├── .gemini/                   Gemini MCP設定與code review風格
 ├── .mcp.json                  Claude Code專案MCP設定
@@ -81,7 +89,7 @@ iotmart-agent-kit/
 | --- | --- | --- | --- |
 | 根控制 | `AGENTS.md` | 硬限制,Ponytail-first,路由入口 | 細節流程與檔案清單 |
 | 路由 | `.codex/routing.md` | 任務類型對應要讀的檔案與分層基準 | 規則本文 |
-| 知識 | `.codex/knowledge/*.md` | 市場架構,系統責任邊界,領域背景 | 操作步驟 |
+| 知識 | `.codex/knowledge/*.md` | 站點架構,系統責任邊界,領域背景 | 操作步驟 |
 | 流程 | `.codex/playbooks/*.md` | deploy,validate,比對,MCP使用等可執行程序與守門規則 | 背景說明 |
 | 工作模式 | `.codex/skills/*.md` | 需求審查,最小規格,SDD,測試案例,驗證審查,部署包的產出格式 | 環境操作 |
 | Agent skill | `.agents/skills/*/SKILL.md` | 自有skill與第三方官方skill | 對第三方檔案的修改 |
@@ -134,6 +142,7 @@ SF Guard已移除,agent直接使用原生`sf` CLI;Prod與Target Org授權仍依`
 | `evidence-investigation-documentation` | 以證據為本的調查與文件化流程,含Notion安全更新規則 |
 | `iotmart-code-review` | 依ADO工作項,PR或branch審查實作的任務導向review |
 | `iotmart-work-recap` | 透過DevOps Tracker MCP快速recap個人待辦與產出日會報告 |
+| `agent-wiki` | 在ADO專案Wiki`/Agent-Knowledge`建立只給agent讀的知識頁,含現況與改版歷程,省token |
 
 ### 第三方
 | Skill | 來源 | 用途 |
@@ -168,7 +177,7 @@ SF Guard已移除,agent直接使用原生`sf` CLI;Prod與Target Org授權仍依`
 這些衝突不修改官方檔案,而是寫在`.codex/playbooks/sf-skills-overlay.md`;`AGENTS.md`與Task Routing Table要求使用官方Salesforce skill前先讀overlay,`CLAUDE.md`與`GEMINI.md`只橋接到這條共用路徑。官方skill升版時只需重新比對overlay一個檔案
 
 
-Review skill採相同方式:`code-review`與`differential-review`原樣保留,IoTMart覆寫(以ADO WI為spec,以PR目標分支或`origin/Dev`為diff基準,Salesforce標準與風險分級寫在`.codex/knowledge/salesforce-review-standards.md`,review唯讀)集中在`.codex/playbooks/code-review-overlay.md`;review一律由`iotmart-code-review`進入,只有風險HIGH時才執行`differential-review`;`code-review-and-quality`(addyosmani/agent-skills)只保留來源登錄;pinned commit與tree SHA記錄於`review-skill-sources.json`
+Review skill採相同方式:`code-review`與`differential-review`原樣保留,IoTMart覆寫(以ADO WI為spec,以使用者指定或PR目標優先,否則Salesforce用`origin/Dev`、Magnolia用`origin/main`為diff基準,Salesforce標準與風險分級寫在`.codex/knowledge/salesforce-review-standards.md`,review唯讀)集中在`.codex/playbooks/code-review-overlay.md`;review一律由`iotmart-code-review`進入,只有風險HIGH時才執行`differential-review`;`code-review-and-quality`(addyosmani/agent-skills)只保留來源登錄;pinned commit與tree SHA記錄於`review-skill-sources.json`
 
 ## 新增或更新skill
 

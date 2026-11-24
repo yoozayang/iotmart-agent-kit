@@ -2,7 +2,7 @@
 
 ## 目的
 - 本檔用於跨系統問題定位與責任邊界判斷
-- 不取代市場架構分流
+- 不取代站點架構分流
 - 當題目涉及SAP/PIS/APIM/Event Mesh/Payment/Shipment/On-Premise整合時優先參考
 
 ## 系統骨架
@@ -135,6 +135,6 @@ flowchart LR
   - 先看APIM / Flow / Connector / Event Mesh
 
 ## 使用規則
-- 若題目只是市場分流,優先讀`.codex/knowledge/market-architecture.md`
+- 若題目只是站點分流,優先讀`.codex/knowledge/store-architecture.md`
 - 若題目涉及跨系統整合或資料責任邊界,再讀本檔
 - 若題目已落到實際部署/比對流程,改讀對應playbook

@@ -1,32 +1,11 @@
-# Validation Review Skill
+# Validation cases and evidence
 
-## Purpose
-- Help the agent review whether validation evidence is sufficient
-- Identify missing test evidence,risk areas,and additional checks before handover or deployment task creation
-
-## When To Use
-- Before handover
-- After tests,manual checks,or validation commands have produced evidence
-- When deciding whether the current evidence supports deployment readiness
-
-## Required Inputs
-- Change Summary
-- Test results or manual validation evidence
-- Changed files or deployment scope
-- Relevant Minimum SDD
-- Relevant deployment or compare playbook
-
-## Expected Outputs
-- Validation Coverage
-- Missing Test Evidence
-- Risk Areas
-- Recommended Additional Checks
-
-## Guardrails
-- Do not claim validation is complete without evidence
-- Separate executed checks from recommended checks
-- If tests were not run,explain why and list residual risk
-- E2E前端測試只操作網站前端時，不需另行取得驗證授權，預設使用正式網站，除非使用者明確指定其他環境
-- 前述例外不涵蓋Salesforce CLI、Data、Metadata、deploy、validation或dry-run操作
-- Prod validation or dry-run evidence must come from authorized commands against confirmed Target Org
-- Confirm validation scope matches deployment scope
+When designing validation, before implementation handoff, or before a deployment-readiness claim:
+- For IoTMart browser tests that need an account, first consult the Notion [測試帳號](https://app.notion.com/p/30249fae4480809faf93c8a75cd93f49) page and match the account to the target store/environment and test purpose. Do not copy credentials into skills, source, logs, screenshots, Notion reports, or WI evidence. Account lookup does not change the login rules in `.codex/knowledge/environments.md` or authorize other account actions.
+- Derive scenarios from requirements, confirmed SDD, affected code, and store/platform context. Check applicable positive, negative, edge, and regression coverage even when tests already exist; test-class existence alone is not coverage evidence.
+- State each needed scenario, expected result, and verification method. Add tests only for uncovered relevant behavior; do not compensate for unrelated failures or load unrelated systems.
+- Compare requirements, changed scope, and confirmed SDD with executed checks/results.
+- Report covered behavior, missing evidence, risks, and needed checks. Separate executed checks from recommendations; explain skipped tests and residual risk.
+- Confirm validation and deployment scopes match. Relevant deployment playbooks govern Salesforce authorization and test levels.
+- `NoTestRun` is allowed only where those playbooks permit it; Prod tests must match the confirmed metadata scope.
+- Browser-only E2E uses Prod unless specified otherwise and needs no additional verification approval. This exception does not authorize Salesforce CLI, data/metadata, deploy, validation, or dry-run.

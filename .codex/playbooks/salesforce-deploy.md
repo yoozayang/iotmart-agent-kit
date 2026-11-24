@@ -61,7 +61,7 @@
   - 不補他人測項
 
 ## Guardrails
-- Salesforce/SFCC task前先讀`.codex/knowledge/market-architecture.md`
+- Salesforce/SFCC task前先讀`.codex/knowledge/store-architecture.md`
 - Dev/UAT/Sandbox比對需讀`.codex/playbooks/uat-compare.md`
 - Prod validation需讀`.codex/playbooks/prod-validate.md`
 - Data/Metadata/MCP需讀`.codex/playbooks/mcp-usage.md`

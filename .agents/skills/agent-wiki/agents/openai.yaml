@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Wiki"
+  short_description: "Agent-only ADO wiki knowledge with change history"
+  default_prompt: "Use $agent-wiki to create or update the agent-only ADO wiki page for this topic."
