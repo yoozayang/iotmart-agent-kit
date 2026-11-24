@@ -60,7 +60,7 @@ iotmart-agent-kit/
 ├── skills-lock.json           skill來源與內容hash
 ├── review-skill-sources.json  review skill的上游來源(僅維護時讀取)
 ├── .codex/
-│   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion)
+│   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion,DevOps Tracker)
 │   ├── routing.md             任務類型→要讀的檔案
 │   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
 │   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay,code-review-overlay,wi-development-handoff
@@ -141,6 +141,7 @@ SF Guard已移除,agent直接使用原生`sf` CLI;Prod與Target Org授權仍依`
 | --- | --- |
 | `evidence-investigation-documentation` | 以證據為本的調查與文件化流程,含Notion安全更新規則 |
 | `iotmart-code-review` | 依ADO工作項,PR或branch審查實作的任務導向review |
+| `iotmart-work-recap` | 透過DevOps Tracker MCP快速recap個人待辦與產出日會報告 |
 
 ### 第三方
 | Skill | 來源 | 用途 |
