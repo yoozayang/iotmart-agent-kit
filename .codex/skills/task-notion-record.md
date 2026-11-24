@@ -1,7 +1,7 @@
 # Notion task record
 
 1. Before writing, read `.agents/skills/evidence-investigation-documentation/references/content-preservation.md`. For ADO source use `.codex/playbooks/ado-work-item.md`; identity is WI ID + `System.Title`.
-2. Unless the user already requested the write, show a concise summary and ask `要建立Notion任務頁嗎？`. Do not create/update/move before authorization.
+2. Unless the user already requested the write, show a concise summary and ask the combined record question in `AGENTS.md`. Do not create/update/move before authorization.
 3. Use the supplied destination or `.notion-links.json` `task_record_parent`. Fetch the parent and search descendants by exact WI ID; reuse an existing record. Missing/ambiguous/inaccessible parent: ask, do not create a private root page.
 4. Use the format below. Record confirmed requirement/acceptance criteria/scope/priority/linked WIs. Generate SDD from confirmed requirements and revise after design decisions; separate pending choices.
 5. Discussion updates contain dated decisions/scope changes + source, not process logs or intermediate guesses. Technical notes distinguish facts from necessary labelled inferences, with paths/links.

@@ -48,7 +48,7 @@ flowchart TD
 
 WI reads use `.codex/playbooks/ado-work-item.md`. The investigation skill loads documentation references only for writing; its `references/content-preservation.md` is the shared retention rule for Notion and existing-document edits, including task requirements and SDD. Installed skill folders include these references in both copy and symlink modes.
 
-Validation case design and evidence review share `.codex/skills/validation-review.md`; existing tests still require scenario coverage checks before implementation handoff. Investigation/specification tasks offer Notion recording once when no recording authorization exists.
+Validation case design and evidence review share `.codex/skills/validation-review.md`; existing tests still require scenario coverage checks before implementation handoff. After a task without recording authorization, agents ask once whether to record it in Notion (for people) or the Agent Wiki (for agents).
 
 ## Directory layout
 
@@ -143,6 +143,7 @@ SF Guard has been removed; agents use the native `sf` CLI. Prod and Target Org a
 | `evidence-investigation-documentation` | evidence-led investigation and documentation workflow, including safe Notion update rules |
 | `iotmart-code-review` | task-aware review of an implementation against its ADO work item, PR or branch |
 | `iotmart-work-recap` | personal work recap ("what should I do now") and stand-up report generation via DevOps Tracker MCP |
+| `agent-wiki` | agent-only, token-light knowledge pages with change history in the ADO project wiki under `/Agent-Knowledge` |
 
 ### Third party
 | Skill | Source | Purpose |

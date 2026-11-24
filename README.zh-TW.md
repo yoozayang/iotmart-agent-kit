@@ -47,7 +47,7 @@ flowchart TD
 
 WI讀取集中於`.codex/playbooks/ado-work-item.md`。調查skill只在寫文件時載入文件參考;其中`references/content-preservation.md`統一管理Notion與既有文件的原文保留,包含需求與SDD。複製與符號連結安裝都包含參考文件
 
-案例設計與證據檢查共用`.codex/skills/validation-review.md`;已有測試仍須在實作交付前確認情境覆蓋。調查／規格討論完成後,未有紀錄授權時詢問一次是否建立Notion紀錄
+案例設計與證據檢查共用`.codex/skills/validation-review.md`;已有測試仍須在實作交付前確認情境覆蓋。任務完成後,未有紀錄授權時合併詢問一次是否記錄到Notion(給人看)或Agent Wiki(給agent看)
 
 ## 目錄結構
 
@@ -142,6 +142,7 @@ SF Guard已移除,agent直接使用原生`sf` CLI;Prod與Target Org授權仍依`
 | `evidence-investigation-documentation` | 以證據為本的調查與文件化流程,含Notion安全更新規則 |
 | `iotmart-code-review` | 依ADO工作項,PR或branch審查實作的任務導向review |
 | `iotmart-work-recap` | 透過DevOps Tracker MCP快速recap個人待辦與產出日會報告 |
+| `agent-wiki` | 在ADO專案Wiki`/Agent-Knowledge`建立只給agent讀的知識頁,含現況與改版歷程,省token |
 
 ### 第三方
 | Skill | 來源 | 用途 |

@@ -41,7 +41,7 @@ ITEMS=(AGENTS.md CLAUDE.md GEMINI.md GIT_GUIDE.md skills-lock.json .mcp.json
 # Links to kit files that no longer exist (removed SF Guard settings); dropped when relinking.
 STALE_ITEMS=(.claude/settings.json)
 # Own skills also exposed at user level with --user-links.
-OWN_SKILLS=(evidence-investigation-documentation iotmart-work-recap)
+OWN_SKILLS=(evidence-investigation-documentation iotmart-work-recap agent-wiki)
 
 BACKUP="$HOME/codex_tmp/agent-kit-backup/$(date +%Y%m%d-%H%M%S)"
 
