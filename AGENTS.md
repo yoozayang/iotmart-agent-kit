@@ -44,4 +44,6 @@
 - 只輸出回答問題或接續工作所需的資訊，省略重複與過程交代
 
 ## 已完成摘要
+- WI48078已合併PR3167與UAT MR(base !399、light-modules !1514)並部署ccdev01/UAT；EU訪客分享、連結還原、會員報價下載與同Cart去重已實測，四張截圖與結果留於Notion及WI；KR前台未測，Apex相關測試3/3通過
+- WI48082測試fixture已補Contact.FirstName與Lead.Email，PR3165待審；Prod驗證0AffS000000xB4HSAU成功，15/15通過，尚未Quick Deploy
 - US UAT已納入工具環境;`USUAT`與`usuat`對應同一org,指令統一使用`USUAT`,識別資訊見`.codex/knowledge/environments.md`
