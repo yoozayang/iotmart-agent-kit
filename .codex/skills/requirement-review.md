@@ -1,7 +1,7 @@
 # Requirement analysis
 
 - Read the supplied requirement and relevant source; for ADO use `.codex/playbooks/ado-work-item.md`. Do not design/implement before identifying missing information and risks.
-- Distinguish verified facts, evidence-backed inferences, and unknowns. Do not infer market, system owner, environment, or Target Org.
+- Distinguish verified facts, evidence-backed inferences, and unknowns. Do not infer store, system owner, environment, or Target Org.
 - Resolve answers available from WI/code/data with cited evidence; reserve pending questions for user/PM decisions.
 - Record summary, current understanding, gaps, risks, and necessary questions. In chat show differences between WI, earlier work, and verified environment state, then user decisions and PM questions; do not repeat known background or recorded detail.
 - Explain PM questions with the premise/current state and recommendation rationale. Expand platform terms when asked; distinguish custom from native objects/fields.

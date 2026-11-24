@@ -63,7 +63,7 @@ iotmart-agent-kit/
 ├── .codex/
 │   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion, DevOps Tracker)
 │   ├── routing.md             task type -> files to read
-│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments, Salesforce review standards
+│   ├── knowledge/             store architecture, system boundaries, SAP/SIS, repo map, environments, Salesforce review standards
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay, code-review-overlay, wi-development-handoff
 │   └── skills/                requirement-review, minimum-sdd, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)
@@ -90,7 +90,7 @@ iotmart-agent-kit/
 | --- | --- | --- | --- |
 | Root control | `AGENTS.md` | hard constraints, Ponytail-first, routing entry | detailed procedures and file inventories |
 | Routing | `.codex/routing.md` | which files to read per task type and layer baseline | rule bodies |
-| Knowledge | `.codex/knowledge/*.md` | market architecture, system responsibility boundaries, domain background | operating steps |
+| Knowledge | `.codex/knowledge/*.md` | store architecture, system responsibility boundaries, domain background | operating steps |
 | Procedures | `.codex/playbooks/*.md` | deploy, validate, compare, MCP usage and other executable procedures and guardrails | background explanations |
 | Work patterns | `.codex/skills/*.md` | output formats for requirement review, SDD, test cases, validation review, deployment package | environment operations |
 | Agent skills | `.agents/skills/*/SKILL.md` | own skills and third-party official skills | edits to third-party files |

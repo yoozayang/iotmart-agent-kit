@@ -34,7 +34,7 @@
 ## 系統知識與條件流程
 | 涉及範圍 | 追加 |
 | --- | --- |
-| Salesforce/SFCC/Magnolia/UI/商品/價格/購物車/訂單 | `.codex/knowledge/market-architecture.md` |
+| Salesforce/SFCC/Magnolia/UI/商品/價格/購物車/訂單 | `.codex/knowledge/store-architecture.md` |
 | 跨系統整合/資料責任 | `.codex/knowledge/system-landscape.md` |
 | SAP/SIS | `.codex/knowledge/sap-sis.md`,`.codex/knowledge/system-landscape.md` |
 | Magnolia實作/Git/部署 | `.codex/playbooks/magnolia-flow.md`;純review不載入此操作流程 |

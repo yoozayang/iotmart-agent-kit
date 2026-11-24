@@ -63,7 +63,7 @@
   - 本地沒有時用`sf sobject describe -s <Object> -o <ConfirmedTargetOrg>`
   - `platform-data-and-tooling-api-context-get`不涵蓋`__c`與`__mdt`
 - 自訂物件回報`sObject type ... is not supported`時:
-  - 先懷疑查錯org,確認Target Org與市場
+  - 先懷疑查錯org,確認Target Org與站點
   - 例:`Audit_Trail__c`,`CC_BTO_Define__c`只存在部分org
 - 標準物件名稱以context skill為準:
   - 例:購物車是`WebCart`不是`Cart`

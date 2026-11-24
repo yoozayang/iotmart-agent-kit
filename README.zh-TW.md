@@ -62,7 +62,7 @@ iotmart-agent-kit/
 ├── .codex/
 │   ├── config.toml            Codex MCP設定(Salesforce DX,context7,Notion,DevOps Tracker)
 │   ├── routing.md             任務類型→要讀的檔案
-│   ├── knowledge/             市場架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
+│   ├── knowledge/             站點架構,系統邊界,SAP/SIS,repo地圖,環境資訊,Salesforce review標準
 │   ├── playbooks/             deploy,prod-validate,uat-compare,mcp-usage,git-baseline,magnolia-flow,sf-skills-overlay,code-review-overlay,wi-development-handoff
 │   └── skills/                requirement-review,minimum-sdd,validation-review,deployment-package
 ├── .agents/skills/            agent skill(自有+第三方)
@@ -89,7 +89,7 @@ iotmart-agent-kit/
 | --- | --- | --- | --- |
 | 根控制 | `AGENTS.md` | 硬限制,Ponytail-first,路由入口 | 細節流程與檔案清單 |
 | 路由 | `.codex/routing.md` | 任務類型對應要讀的檔案與分層基準 | 規則本文 |
-| 知識 | `.codex/knowledge/*.md` | 市場架構,系統責任邊界,領域背景 | 操作步驟 |
+| 知識 | `.codex/knowledge/*.md` | 站點架構,系統責任邊界,領域背景 | 操作步驟 |
 | 流程 | `.codex/playbooks/*.md` | deploy,validate,比對,MCP使用等可執行程序與守門規則 | 背景說明 |
 | 工作模式 | `.codex/skills/*.md` | 需求審查,最小規格,SDD,測試案例,驗證審查,部署包的產出格式 | 環境操作 |
 | Agent skill | `.agents/skills/*/SKILL.md` | 自有skill與第三方官方skill | 對第三方檔案的修改 |

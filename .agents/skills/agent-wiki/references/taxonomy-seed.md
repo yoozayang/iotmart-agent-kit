@@ -38,8 +38,8 @@ Use only when `/Agent-Knowledge` does not exist; afterwards the wiki root is aut
 |sap|SAP(經SIS/API Hub)|none|帳號、訂單、庫存、出貨|
 |kit|agent規則|ADO IoTMart 3.0/iotmart-agent-kit|agent規則與skill|
 
-## markets
-|market|sf store|sf site path|magnolia site|
+## stores
+|store|sf store|sf site path|magnolia site|
 |-|-|-|-|
 |global|en|en|none(純SFCC)|
 |eu|eu|euvforcesite|en-eu|
