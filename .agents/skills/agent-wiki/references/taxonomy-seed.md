@@ -15,7 +15,7 @@ Use only when `/Agent-Knowledge` does not exist; afterwards the wiki root is aut
 |Promotion|優惠券、ePoint、虛擬禮品|Coupon,ePoint,獎勵,禮品|
 |Service-Case|Case、Inquiry、CLA|Case,Inquiry,客服,CLA|
 |Notification|各類通知信與告警|通知信,收件人,Alert,告警|
-|Content-UI|Magnolia模板、站台設定、LWC畫面|模板,頁面,site config,LWC|
+|Content-UI|共用模板、元件結構、站台設定|模板,元件,site config,LWC|
 |Integration|SAP、SIS、APIM介接與同步|SAP,SIS,同步,API|
 |Platform-Ops|環境、部署、權限、監控工具|部署,權限,org,監控|
 |Agent-Tooling|kit、skill、MCP|skill,agent,MCP,kit|
