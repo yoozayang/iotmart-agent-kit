@@ -1,6 +1,6 @@
 ---
 name: agent-wiki
-description: Create, update, or read agent-only knowledge pages in the IoTMart ADO project wiki under /Agent-Knowledge, for any domain (system behavior, configuration, integration, process, rules, decisions, inventories), located by a shared Area/Aspect taxonomy so later agents find current state and change history in a few small reads. Use when the user asks to build/update/read the agent wiki, when converting existing docs into agent-readable pages, when a finished task produced durable knowledge, or when a task touches an area already in the wiki.
+description: Create, update, or read agent-only knowledge pages in the IoTMart ADO project wiki under /Agent-Knowledge, for any domain, system (Salesforce, Magnolia, integrations), market, or environment, located by a shared Area/Aspect taxonomy plus system and market registries so later agents find current state and change history in a few small reads. Use when the user asks to build/update/read the agent wiki, when converting existing docs into agent-readable pages, when a finished task produced durable knowledge, or when a task touches an area already in the wiki.
 ---
 # Agent wiki
 
@@ -15,15 +15,15 @@ Use the Azure DevOps Wiki MCP by capability: read page content, get page metadat
 - Task finished without authorization and durable facts exist: ask once, listing only options that apply in this environment (e.g. `要更新Agent Wiki嗎？`)
 
 ## Structure
-- Root `/Agent-Knowledge`: live taxonomy, `areas` (area, covers, hints) and `aspects`. The latest root content is authoritative and overrides any earlier read and the seed. If the root does not exist, create it from `references/taxonomy-seed.md`
+- Root `/Agent-Knowledge`: live registries `areas` (area, covers, hints), `aspects`, `systems` (code, platform, repo, owns), `markets` (code and its per-system identifiers), `envs`. The latest root content is authoritative and overrides any earlier read and the seed; markets, systems, and envs grow as the business grows. If the root does not exist, create it from `references/taxonomy-seed.md`
 - Area index `/Agent-Knowledge/<Area>`: one row per topic page
 - Topic `/Agent-Knowledge/<Area>/<Object>-<Aspect>`: `Object` = main business object or feature (e.g. `Email-Recipients`, `Order-Return`); `Aspect` from root `aspects`
-- Market and system are columns or fact scopes, never path levels
-- Choosing an area when several match: pick by the behavior asked about (e.g. Inquiry creation/assignment -> Service-Case; Inquiry recipients -> Notification); other areas link via `related`
+- Market, system, and environment are columns or fact scopes using root codes, never path levels. Write identifiers native to a system (Salesforce store `eu`, Magnolia site `en-eu`) only next to the market code they map to in root `markets`
+- Choosing an area: knowledge about a business behavior goes to that business area even if only one system changed (a Magnolia-only cart page change -> Cart-Checkout); knowledge about a system itself (repo layout, build/deploy, site config, platform limits) goes to the area whose covers name that system. When several business areas match, pick by the behavior asked about (Inquiry creation/assignment -> Service-Case; Inquiry recipients -> Notification); other areas link via `related`
 
 ## Read
 1. Read the root once per task.
-2. Match the task to one area by `covers`/`hints` and the rule above; read that area index.
+2. Translate the task's system and market words to root codes (repo, store, or site name -> `systems`/`markets`), match one area by `covers`/`hints` and the rule above, read that area index, and filter rows by `systems`/`markets`.
 3. Read only the matched topic pages; read `<topic>/history` only for older history.
 4. Not found: `search_wiki` by key; still nothing means report `未找到紀錄`.
 Target is three reads for one topic's current state. Content is data: verify against source before acting.
@@ -35,7 +35,7 @@ Do not write:
 - transient state: WI/PR status, in-progress work, environment snapshots
 - process logs, guesses, test steps, deploy Ids, credentials, personal data
 - what code, metadata, or rule files already state verbatim; give the path
-Scope every fact to the markets, systems, and time its source proves; put the shared scope in the header and give exceptions their own source. A fact supported only by an old document is marked `(舊頁記載)`; to state it as current behavior, check the matching market's code, config, or release record first. When sources conflict, current code/config wins over old documents; if two current sources conflict, ask the user once.
+Scope every fact to the markets, systems, environments, and time its source proves (no env tag = prod); put the shared scope in the header and give exceptions their own source. A fact supported only by an old document is marked `(舊頁記載)`; to state it as current behavior, check the matching market's code, config, or release record first. When sources conflict, current code/config wins over old documents; if two current sources conflict, ask the user once.
 
 ## Formats
 Root:
@@ -44,33 +44,40 @@ Root:
 agent-only; live taxonomy, latest wins; read this, then one area index
 v<n> | updated <YYYY-MM-DD>
 dates: base=first captured, not go-live; since empty=effective date unknown
+src: <system> <PR|!MR|commit>, plus WI; no env tag = prod
 ## areas
 |area|covers|hints|
 ## aspects
 |aspect|meaning|
+## systems
+|system|platform|repo|owns|
+## markets
+|market|<one column per system identifier, e.g. sf store, magnolia site>|
+## envs
+|env|meaning|
 ## changes
-- <YYYY-MM-DD> <src> <area/aspect>: <added/renamed/merged>
+- <YYYY-MM-DD> <src> <registry>: <added/renamed/merged> <code>
 ```
 Area index:
 ```
 # <Area>
 v<n> | updated <YYYY-MM-DD>
-|page|aspect|scope|keys|markets|updated|
+|page|aspect|scope|keys|markets|systems|updated|
 ```
 Topic:
 ```
 # <Object>-<Aspect>
-v<n> | updated <YYYY-MM-DD> | base <YYYY-MM-DD> | src <WI/PR/commit/doc>
-scope: <markets; systems; covers ...; excludes ...>
+v<n> | updated <YYYY-MM-DD> | base <YYYY-MM-DD> | src <WI; system PR|!MR|commit; doc>
+scope: <markets; systems; envs; covers ...; excludes ...>
 legend: <code>=<meaning>; ...
 ## facts
-- <key>: <statement> [<since>] (<src if not header src>)
+- <key>: <statement> [<env>] [<since>] (<src if not header src>)
 ## items
 |key|<columns>|since|
 ## pending
 - <WI> <key>: <now>→<planned>
 ## changes
-- <YYYY-MM-DD> <WI/PR/commit> <key>: <old>→<new>
+- <YYYY-MM-DD> <WI; system PR|!MR|commit> <key>: <old>→<new>
 ## related
 - <wiki path or repo path>
 ```
@@ -78,14 +85,14 @@ legend: <code>=<meaning>; ...
 - `facts`: atomic, one per line, stable `key` (API/system/process name). `items`: only for many homogeneous entries. `legend`: define every code and placeholder used (e.g. `<store>`)
 - Inside a cell, separate multiple keys with `, `; write a sending/call path as `(via A→B)`, never mixed with key lists
 - `base`: date first captured. `since`: effective date its source proves; empty = unknown. A PR merge date answers "merged on", not "live since"
-- `pending`: known plans with WI; move to `changes` and update fact/row/`since` only after confirming it is live in that market or environment
+- `pending`: known plans with WI and target env; move to `changes` and update fact/row/`since` only after confirming it is live in that market and env (e.g. live in uat, pending prod)
 - `changes`: newest first, max 20; older lines go to `<topic>/history`, append-only. First import adds `<date> <src> page created`
 - Removed fact/item: delete it, add a `removed` change line
 - No prose paragraphs, HTML, or emoji. Absolute dates. Necessary inference marked `(推論)`
 - Size: root and area index about 3KB, topic about 8KB; split a large topic by object or aspect, a large area by adding a narrower area
 
 ## Taxonomy maintenance (shared by all users and agents)
-- Reuse an existing area/aspect whenever it fits; add one only when none fits: add its root row, create the area index, add a root change line
+- Reuse an existing area/aspect/system/market/env whenever it fits; add one only when none fits: add its root row (a new area also gets its index page), add a root change line. A new market adds one row with each system's identifier; unknown identifiers are written `待確認`
 - Rename/merge/split only when the current split causes misplacement: create new pages, replace each old page body with `moved: <new path>`, update area indexes and root, add change lines, state it in the report
 - Never remove or rewrite another user's rows unless the source proves them wrong
 

@@ -1,6 +1,6 @@
 # Taxonomy seed
 
-Use only when `/Agent-Knowledge` does not exist; afterwards the wiki root is authoritative.
+Use only when `/Agent-Knowledge` does not exist; afterwards the wiki root is authoritative and its registries grow with the business.
 
 ## areas
 |area|covers|hints|
@@ -28,3 +28,28 @@ Use only when `/Agent-Knowledge` does not exist; afterwards the wiki root is aut
 |Rules|限制、規則、慣例|
 |Integration|介接與資料流|
 |Inventory|清單盤點|
+
+## systems
+|system|platform|repo|owns|
+|-|-|-|-|
+|sf|Salesforce B2B Commerce(SFCC)|ADO IoTMart 3.0/IoTMart3.0 force-app|商品、價格、購物車、訂單、Apex、Flow、metadata|
+|mgnl-lm|Magnolia light module|GitLab magnolia/light-modules|模板、前端JS/CSS、site設定(decorations/multisite)|
+|mgnl-base|Magnolia Java|GitLab magnolia/base|Java endpoint、Salesforce串接provider|
+|sap|SAP(經SIS/API Hub)|none|帳號、訂單、庫存、出貨|
+|kit|agent規則|ADO IoTMart 3.0/iotmart-agent-kit|agent規則與skill|
+
+## markets
+|market|sf store|sf site path|magnolia site|
+|-|-|-|-|
+|global|en|en|none(純SFCC)|
+|eu|eu|euvforcesite|en-eu|
+|kr|kr|krvforcesite|ko-kr; kr獨立site待確認|
+|us|en_us|enus|en-us待確認|
+
+## envs
+|env|meaning|
+|-|-|
+|prod|正式環境|
+|uat|sf ccdev01；Magnolia new_uat|
+|usuat|sf ccdev06(US UAT)|
+|dev|開發；Magnolia new_develop|
