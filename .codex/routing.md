@@ -28,7 +28,7 @@
 | 通知收件人查詢或異動 | `.codex/playbooks/email-recipient-change.md`;異動才追加deploy流程 |
 | ADO Wiki查詢/編輯 | `.codex/playbooks/mcp-usage.md` |
 | 建立/更新/查詢Agent Wiki | `.agents/skills/agent-wiki/SKILL.md` |
-| 個人工作recap,現在該幹嘛,日會報告,DevOps Tracker | `.agents/skills/iotmart-work-recap/SKILL.md`,`.codex/playbooks/mcp-usage.md` |
+| 個人工作recap,現在該幹嘛,日會報告,週回顧,DevOps Tracker | `.agents/skills/iotmart-work-recap/SKILL.md`,`.codex/playbooks/mcp-usage.md` |
 | Buzz協作平台事件 | `.agents/skills/buzz-collaboration/SKILL.md` |
 
 ## 系統知識與條件流程

@@ -8,16 +8,21 @@ Coding-agent rules and skills for IoTMart 3.0. Codex, Claude Code and Gemini rea
 
 No agent, git skills or admin rights needed.
 
-1. Get the kit: `git clone https://github.com/yoozayang/iotmart-agent-kit.git`, or on the GitHub page click **Code → Download ZIP** and extract it
+1. Get the kit: `git clone -c core.longpaths=true https://github.com/yoozayang/iotmart-agent-kit.git`, or on the GitHub page click **Code → Download ZIP** and extract it
+   - Windows: `-c core.longpaths=true` is required, otherwise git silently skips the files with long paths. Keep the kit in a short folder such as `%USERPROFILE%\Development\iotmart-agent-kit` (Windows PowerShell cannot open paths of 260+ characters)
 2. Double-click the installer:
    - Windows: `install-windows.cmd` (if "Windows protected your PC" appears, click **More info → Run anyway**)
    - macOS: right-click `install-mac.command` → **Open** (needed the first time only)
-3. When the folder picker appears, choose your IoTMart project folder (the one containing `sfdx-project.json`); **Cancel** installs the skills to your user folder only
+3. Choose the project:
+   - Windows: the installer looks for IoTMart projects (folders whose `sfdx-project.json` mentions IoTMart) in your user folder and at the top of each local drive. One found: it is used without asking. Several: enter its number. None: paste the project folder path, press Enter for a folder picker, or enter `S` to install the skills to your user folder only. Picking the parent of the project folder is corrected automatically
+   - macOS: in the folder picker choose your IoTMart project folder (the one containing `sfdx-project.json`); **Cancel** installs the skills to your user folder only
 4. When "安裝完成" (installation complete) appears, press Enter, then restart Codex / Claude Code / Gemini
 
 What the installer does:
 - Copies the rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.codex/`) and skills (`.agents/skills`, `.claude/skills`) into the project and adds them to the project's `.git/info/exclude`
-- Changed files are first moved to `~/.iotmart-agent-kit-backup/<timestamp>/`; identical files are left alone
+- New versions always overwrite old ones: changed files are first moved to `~/.iotmart-agent-kit-backup/<timestamp>/`; identical files are left alone
+- Windows: kit skills that also exist in the user folder (`~/.claude/skills`, `~/.agents/skills`, left by an earlier skills-only install) are updated too, because Claude Code prefers a personal skill over a project skill of the same name
+- Windows: stops with instructions before copying anything when the kit is incomplete (a git clone without `core.longpaths`) or a path would exceed the Windows PowerShell limit
 - Removes the SF Guard installed by older versions: the `# iotmart-agent-kit sf guard` PATH lines in shell startup files, `~/.codex/rules/iotmart-sf-guard.rules`, `~/.iotmart-agent-kit/bin` and the project's `.codex/rules/sf-guard.rules`
 
 To update: `git pull` (or download the ZIP again) and double-click the installer again. The same steps are in `INSTALL.txt` at the repository root.
