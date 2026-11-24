@@ -44,7 +44,7 @@ Root:
 agent-only; live taxonomy, latest wins; read this, then one area index
 v<n> | updated <YYYY-MM-DD>
 dates: base=first captured, not go-live; since empty=effective date unknown
-src: <system> <PR|!MR|commit> and WI when they exist; untagged facts inherit the page scope env
+src: #<WI id> links the work item; <system> PR<id>|MR<id>|<commit> when they exist; untagged facts inherit the page scope env
 writers: one writer per page at a time
 ## areas
 |area|covers|hints|
@@ -58,7 +58,7 @@ writers: one writer per page at a time
 ## envs
 |env|meaning|
 ## changes
-- <YYYY-MM-DD> <src> <registry>: <added/renamed/merged> <code>
+- <YYYY-MM-DD> <#WI or src> <registry>: <added/renamed/merged> <code>
 ```
 Area index:
 ```
@@ -69,7 +69,7 @@ v<n> | updated <YYYY-MM-DD>
 Topic:
 ```
 # <Object>-<Aspect>
-v<n> | updated <YYYY-MM-DD> | base <YYYY-MM-DD> | src <WI; system PR|!MR|commit; doc>
+v<n> | updated <YYYY-MM-DD> | base <YYYY-MM-DD> | src <#WI; system PR<id>|MR<id>|commit; doc>
 scope: <stores; systems; envs; covers ...; excludes ...>
 legend: <code>=<meaning>; ...
 ## facts
@@ -77,14 +77,15 @@ legend: <code>=<meaning>; ...
 ## items
 |key|<columns>|since|
 ## pending
-- <WI> <key>: <now>→<planned>
+- <#WI> <key>: <now>→<planned>
 ## changes
-- <YYYY-MM-DD> <WI; system PR|!MR|commit> <key>: <old>→<new>
+- <YYYY-MM-DD> <#WI; system PR<id>|MR<id>|commit> <key>: <old>→<new>
 ## related
 - <wiki path or repo path>
 ```
 - Topic required: header, `scope`, `facts` or `items`, `changes`; others only when used
 - `facts`: atomic, one per line, stable `key` (API/system/process name). `items`: only for many homogeneous entries. `legend`: define every code and placeholder used (e.g. `<store>`)
+- Write every work item as `#<id>` (e.g. `#48111`) so the ADO wiki renders a direct link; ADO PR as `PR<id>`, GitLab MR as `MR<id>`; never `!<id>`, which ADO renders as an ADO PR link
 - Inside a cell, separate multiple keys with `, `; write a sending/call path as `(via A→B)`, never mixed with key lists
 - `base`: date first captured. `since`: effective date its source proves; empty = unknown. A PR merge date answers "merged on", not "live since"
 - `pending`: known plans with WI and target env; move to `changes` and update fact/row/`since` only after confirming it is live in that store and env (e.g. live in uat, pending prod)
