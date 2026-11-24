@@ -40,7 +40,8 @@ Scope every fact to the stores, systems, environments, and time its source prove
 
 ## Converting existing sources
 Within the requested scope, preserve each independent use documented by the source. Keep inputs, entry points, exact dependency mappings, conditions and outcomes, exceptions, execution and recovery order, reusable verification steps and success criteria. Retain sourced decisions and changes with dates and scope. Compress exposition and duplicates.
-Before proposing or writing, check each source section against the topic and its directly linked wiki details. Match every inventory row and relationship and each branch to its outcome. Use only the draft to answer the source's supported questions. Restore omissions and label gaps in the source as unknown.
+Before drafting, turn each independent source use (including diagrams, queries and prior-page history) into a question with its expected fields, relationships or outcome. After drafting, answer each question using only its intended wiki read path. Compare the actual answer with the expected one; fix and retry any missing field, branch, link or unverifiable conclusion. Keep this working checklist out of the wiki. For “none anywhere”, give a reusable lookup across the full population (including inactive records), its access prerequisites and the meaning of zero results. Keep historical examples needed to interpret a check in a labelled detail with their original scope/date (unknown if absent). Keep live values out of current rules. Restore omissions and label gaps or contradictions in the source.
+On update, compare against the previous wiki too: diff the original base, change entries, source types and relevant link targets against the draft; restore missing entries and supported facts. A wiki page ID links to the page; use `#<id>` only for a verified work item.
 
 ## Formats
 Root:
@@ -101,7 +102,7 @@ legend: <code>=<meaning>; ...
 - Topic `changes`: newest first, max 20; older lines go to `<topic>/history`, append-only. First import adds `<date> <src> page created`
 - Removed fact/item: delete it, add a `removed` change line
 - No prose paragraphs, HTML, or emoji. Absolute dates. Necessary inference marked `(推論)`
-- Size: root and area index about 3KB, topic about 8KB; split long details by task and link them from the topic with when to read them. Size guides splitting, never omission. Split a large area by adding a narrower area
+- Size: root and area index about 3KB, topic about 8KB; split long details by task and link them from the topic with when to read them. Keep the common answer and task-labelled links on the topic. Give each mapping, procedure or query one authoritative location, including across bullets, diagrams and tables on the same page. Verify common questions from the topic alone and specialist questions by following only the indicated wiki detail. Size guides splitting, never omission. Split a large area by adding a narrower area
 
 ## Taxonomy maintenance (shared by all users and agents)
 - Reuse an existing area/aspect/system/store/env whenever it fits; add one only when none fits: add its root row (a new area also gets its index page), record the change in root history. A new store adds one row with each system's identifier; unknown identifiers are written `待確認`
