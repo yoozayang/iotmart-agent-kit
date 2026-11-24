@@ -16,13 +16,14 @@ Use the Azure DevOps Wiki MCP by capability: read page content, get page metadat
 
 ## Structure
 - Root `/Agent-Knowledge`: live registries `areas` (area, covers, hints), `aspects`, `systems` (code, platform, repo, owns), `stores` (store code and its per-system identifiers), `envs`. The latest root content is authoritative and overrides any earlier read and the seed; stores, systems, and envs grow as the business grows. If the root does not exist, create it from `references/taxonomy-seed.md`
+- Root history `/Agent-Knowledge/history`: reserved path for registry changes; create it on the first entry.
 - Area index `/Agent-Knowledge/<Area>`: one row per topic page
 - Topic `/Agent-Knowledge/<Area>/<Object>-<Aspect>`: `Object` = main business object or feature (e.g. `Email-Recipients`, `Order-Return`); `Aspect` from root `aspects`
 - Store, system, and environment are columns or fact scopes using root codes, never path levels. A `待確認` value in root `stores` is a lookup hint only, not a verified identifier. Write identifiers native to a system (Salesforce store `eu`, Magnolia site `en-eu`) only next to the store code they map to in root `stores`
 - Choosing an area: knowledge about a business behavior goes to that business area even if only one system changed (a Magnolia-only cart page change -> Cart-Checkout); knowledge about a system itself (repo layout, build/deploy, site config, platform limits) goes to the area whose covers name that system. When several business areas match, pick by the behavior asked about (Inquiry creation/assignment -> Service-Case; Inquiry recipients -> Notification); other areas link via `related`
 
 ## Read
-1. Read the root once per task.
+1. Read the root once per task. Read `/Agent-Knowledge/history` only for registry history.
 2. Translate the task's system and store words to root codes (repo, sf store, or site name -> `systems`/`stores`), match one area by `covers`/`hints` and the rule above, read that area index, and filter rows by `systems`/`stores`.
 3. Read only the matched topic pages; read `<topic>/history` only for older history.
 4. Not found: `search_wiki` by key; still nothing means report `未找到紀錄`.
@@ -57,8 +58,12 @@ writers: one writer per page at a time
 待確認=lookup hint only, not a verified identifier
 ## envs
 |env|meaning|
-## changes
-- <YYYY-MM-DD> <#WI or src> <registry>: <added/renamed/merged> <code>
+[Registry history](/Agent-Knowledge/history)
+```
+Root history (append each entry once, newest first):
+```
+# Registry history
+- <YYYY-MM-DD> <#WI or src> <registry>: <change> <code>
 ```
 Area index:
 ```
@@ -89,14 +94,14 @@ legend: <code>=<meaning>; ...
 - Inside a cell, separate multiple keys with `, `; write a sending/call path as `(via A→B)`, never mixed with key lists
 - `base`: date first captured. `since`: effective date its source proves; empty = unknown. A PR merge date answers "merged on", not "live since"
 - `pending`: known plans with WI and target env; move to `changes` and update fact/row/`since` only after confirming it is live in that store and env (e.g. live in uat, pending prod)
-- `changes`: newest first, max 20; older lines go to `<topic>/history`, append-only. First import adds `<date> <src> page created`
+- Topic `changes`: newest first, max 20; older lines go to `<topic>/history`, append-only. First import adds `<date> <src> page created`
 - Removed fact/item: delete it, add a `removed` change line
 - No prose paragraphs, HTML, or emoji. Absolute dates. Necessary inference marked `(推論)`
 - Size: root and area index about 3KB, topic about 8KB; split a large topic by object or aspect, a large area by adding a narrower area
 
 ## Taxonomy maintenance (shared by all users and agents)
-- Reuse an existing area/aspect/system/store/env whenever it fits; add one only when none fits: add its root row (a new area also gets its index page), add a root change line. A new store adds one row with each system's identifier; unknown identifiers are written `待確認`
-- Rename/merge/split only when the current split causes misplacement: create new pages, replace each old page body with `moved: <new path>`, update area indexes and root, add change lines, state it in the report
+- Reuse an existing area/aspect/system/store/env whenever it fits; add one only when none fits: add its root row (a new area also gets its index page), record the change in root history. A new store adds one row with each system's identifier; unknown identifiers are written `待確認`
+- Rename/merge/split only when the current split causes misplacement: create new pages, replace each old page body with `moved: <new path>`, update area indexes and root, record registry changes in root history, state it in the report
 - Never remove or rewrite another user's rows unless the source proves them wrong
 - One writer per page at a time: re-reading cannot block a write that lands between your re-read and your write, so concurrent editing of the same page is not supported
 
@@ -105,6 +110,6 @@ legend: <code>=<meaning>; ...
 2. Read root, pick area and aspect (maintain taxonomy if none fits), read the area index, pick the topic by `<Object>-<Aspect>`; create only if none fits; never duplicate a fact across topics.
 3. Build the new page from the content you read. Compare with it: identical means skip, no version bump, no change line.
 4. Immediately before writing, read the page again. If it differs from what you built on, reapply only your diff to the new content. Write with the page version (ETag) when the tool exposes one; on a version conflict, re-read and reapply only your diff. If you cannot apply your diff safely, leave the page and report the pending diff.
-5. Order: parent pages that do not exist yet, then the topic, then the area index row, then the root (only when taxonomy changed). A rerun after partial failure fills only what is missing.
+5. Order: parent pages that do not exist yet, then the topic, then the area index row, then the root and its history (only for registry changes). On retry, append any missing entry for the completed registry change even if the root already matches; skip duplicates.
 6. Bump `v`/`updated` only on real changes; read back every touched page.
 7. Report in at most 3 lines: pages touched, facts/items added/changed/removed, taxonomy changes. No content dump.
