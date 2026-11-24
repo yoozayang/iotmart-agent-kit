@@ -43,6 +43,7 @@ Root:
 # Agent-Knowledge
 agent-only; live taxonomy, latest wins; read this, then one area index
 v<n> | updated <YYYY-MM-DD>
+dates: base=first captured, not go-live; since empty=effective date unknown
 ## areas
 |area|covers|hints|
 ## aspects
@@ -74,7 +75,8 @@ legend: <code>=<meaning>; ...
 - <wiki path or repo path>
 ```
 - Topic required: header, `scope`, `facts` or `items`, `changes`; others only when used
-- `facts`: atomic, one per line, stable `key` (API/system/process name). `items`: only for many homogeneous entries. `legend`: only when codes are used
+- `facts`: atomic, one per line, stable `key` (API/system/process name). `items`: only for many homogeneous entries. `legend`: define every code and placeholder used (e.g. `<store>`)
+- Inside a cell, separate multiple keys with `, `; write a sending/call path as `(via A→B)`, never mixed with key lists
 - `base`: date first captured. `since`: effective date its source proves; empty = unknown. A PR merge date answers "merged on", not "live since"
 - `pending`: known plans with WI; move to `changes` and update fact/row/`since` only after confirming it is live in that market or environment
 - `changes`: newest first, max 20; older lines go to `<topic>/history`, append-only. First import adds `<date> <src> page created`
