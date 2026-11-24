@@ -45,6 +45,7 @@ agent-only; live taxonomy, latest wins; read this, then one area index
 v<n> | updated <YYYY-MM-DD>
 dates: base=first captured, not go-live; since empty=effective date unknown
 src: <system> <PR|!MR|commit> and WI when they exist; untagged facts inherit the page scope env
+writers: one writer per page at a time
 ## areas
 |area|covers|hints|
 ## aspects
@@ -53,6 +54,7 @@ src: <system> <PR|!MR|commit> and WI when they exist; untagged facts inherit the
 |system|platform|repo|owns|
 ## stores
 |store|<one column per system identifier, e.g. sf store, magnolia site>|
+待確認=lookup hint only, not a verified identifier
 ## envs
 |env|meaning|
 ## changes
