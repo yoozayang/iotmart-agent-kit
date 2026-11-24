@@ -1,53 +1,18 @@
-# MCP Usage
+# Org access and technical references
 
-## 適用情境
-- 涉及Data
-- 涉及Metadata
-- 涉及Target Org
-- 需要查官方技術文件
-- 需要把調查或結論記錄到Notion
-
-## Target Org與Salesforce MCP
-- Target Org以使用者在對話中指定的org為準:
-  - 同一對話已指定即沿用,不需重複確認,也不需比對`SF_TARGET_ORG`
-  - 未指定時先詢問;詢問前不執行retrieve,query,deploy,validation,dry-run
-- `sf`指令一律明確帶`-o <Target Org>`,不依賴預設org
-- UAT(`ccdev01`)與Prod的Org Id,網址等參考資訊見`.codex/knowledge/environments.md`
-- Salesforce MCP只作用於設定檔的預設org(`.codex/config.toml`的`SF_TARGET_ORG`):
-  - 與Target Org相同時可用
-  - 不同時改用`sf` CLI
-- Prod相關操作另讀`.codex/playbooks/prod-validate.md`;Prod validation或dry-run不是一般查詢,仍須使用者明確授權
-
-## context7
-- 當題目涉及library,framework,SDK,API,CLI,cloud service時優先使用
-- 用途:
-  - 查官方文件
-  - 查版本差異
-  - 查正確語法或設定
-- 不用於:
-  - 一般商業邏輯推論
-  - repo內部流程判斷
-
-## Notion MCP
-- 問題調查完成後:
-  - 主動詢問是否建立Notion記錄頁面
-- 規格討論完成後:
-  - 主動詢問是否建立Notion記錄頁面
-- 若使用者同意建立:
-  - 記錄背景
-  - 記錄結論
-  - 區分事實/推論
-  - 記錄待確認事項
-
-## 暫存產物
-- 研究,查詢,比對過程產生的臨時檔案只放在已exclude的位置,預設`~/codex_tmp`
-- Salesforce retrieve compare產物放`~/codex_tmp`時,優先使用`sf project retrieve start --target-metadata-dir ... --unzip`
-- 若臨時檔案誤生在repo內,結束前移到已exclude目錄或刪除,不可留下untracked檔案
+- Before org operations, read `.codex/knowledge/environments.md` for exact alias case/identity and resolve Target Org; ask if absent, never substitute another org. Prod operations also read `.codex/playbooks/prod-validate.md`; querying does not authorize validation/dry-run.
+- Retrieve comparisons to `~/codex_tmp` with `sf project retrieve start --target-metadata-dir ... --unzip`; remove/move accidental repo artifacts before handoff.
+- Use context7 for external library/framework/SDK/API/CLI/cloud docs, versions, and syntax, not internal repo logic.
 
 # Azure DevOps Wiki
 
-- `azure-devops` MCP is defined in each agent's user-level config (Codex `~/.codex/config.toml`, Claude Code `~/.claude.json`, Gemini `~/.gemini/config/mcp_config.json`), auth via Azure CLI; do not install, reconfigure, or start it manually during a task.
+- `azure-devops` MCP is defined in each agent's user-level config (Codex `~/.codex/config.toml`, Claude Code `~/.claude.json`, Gemini `~/.gemini/config/mcp_config.json`) with Azure CLI auth; never install, reconfigure, or start it during a task.
 - Tools: `search_wiki`; `wiki` (`list_wikis`, `get_wiki`, `list_pages`, `get_page`, `get_page_content`); `wiki_upsert_page` (create/update); `core_list_projects`. No delete/move tool: ask the user.
-- Tools absent from the tool list: MCP loads only at session start; tell the user once to reload MCP or open a new session, then stop. Do not retry.
-- Auth error: ask the user to run `az login`; do not retry.
-- Before updating an existing page, read it with `get_page_content`, edit in place, and pass its `etag` to `wiki_upsert_page`; never overwrite a whole page from a local draft.
+- Tools absent: MCP loads only at session start; tell the user once to reload MCP or open a new session, then stop. Auth error: ask the user to run `az login`. Do not retry either.
+- Update an existing page only after `get_page_content`: edit in place and pass its `etag`; never overwrite from a local draft.
+
+# DevOps Tracker
+
+- `devops-tracker` MCP connects to `https://iotmart-tracker.pages.dev/api/client/mcp` with each member's personal `WORKSPACE_CLIENT_TOKEN` (`Authorization: Bearer ${WORKSPACE_CLIENT_TOKEN}`), defined in `.codex/config.toml`, `.mcp.json`, `.gemini/settings.json`, or the user's own MCP config; never share or hardcode another person's token.
+- Tools: `get_action_recap`, `get_daily_report_context`, `save_daily_report`, `get_work_item_detail`, `get_pr_detail`. Follow `.agents/skills/iotmart-work-recap/SKILL.md` for response format, sync-time disclosure, and confirmation before `save_daily_report`.
+- Tools absent or 401/token-missing: tell the user once to create a personal `wsk_...` token at `https://iotmart-tracker.pages.dev` (My Work -> AI client), set `WORKSPACE_CLIENT_TOKEN`, add the remote MCP endpoint if needed, and reload MCP or open a new session; do not retry.

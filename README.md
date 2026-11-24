@@ -42,6 +42,14 @@ flowchart TD
 - Precedence: `AGENTS.md` > `.codex/playbooks` > official skills. When rules conflict, the stricter and more conservative one applies
 - Official skills only provide knowledge and operating patterns and are never edited by hand; IoTMart-specific constraints live in the overlay
 
+## Operation-scoped loading
+
+`AGENTS.md` keeps global constraints; `.codex/routing.md` selects the operation before system context. Reading a WI does not load Notion writing, and code review does not load deployment procedures. Tests, org operations, and writes load their rules before execution. Unchanged context is reused.
+
+WI reads use `.codex/playbooks/ado-work-item.md`. The investigation skill loads documentation references only for writing; its `references/content-preservation.md` is the shared retention rule for Notion and existing-document edits, including task requirements and SDD. Installed skill folders include these references in both copy and symlink modes.
+
+Validation case design and evidence review share `.codex/skills/validation-review.md`; existing tests still require scenario coverage checks before implementation handoff. After a task without recording authorization, agents ask once whether to record it in Notion (for people) or the Agent Wiki (for agents).
+
 ## Directory layout
 
 ```text
@@ -53,11 +61,11 @@ iotmart-agent-kit/
 ├── skills-lock.json           skill sources and content hashes
 ├── review-skill-sources.json  upstream sources of the review skills (maintenance only)
 ├── .codex/
-│   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion)
+│   ├── config.toml            Codex MCP settings (Salesforce DX, context7, Notion, DevOps Tracker)
 │   ├── routing.md             task type -> files to read
-│   ├── knowledge/             market architecture, system boundaries, SAP/SIS, repo map, environments, Salesforce review standards
+│   ├── knowledge/             store architecture, system boundaries, SAP/SIS, repo map, environments, Salesforce review standards
 │   ├── playbooks/             deploy, prod-validate, uat-compare, mcp-usage, git-baseline, magnolia-flow, sf-skills-overlay, code-review-overlay, wi-development-handoff
-│   └── skills/                requirement-review, minimum-sdd, test-case-generation, validation-review, deployment-package
+│   └── skills/                requirement-review, minimum-sdd, validation-review, deployment-package
 ├── .agents/skills/            agent skills (own + third party)
 ├── .gemini/                   Gemini MCP settings and code review style
 ├── .mcp.json                  Claude Code project MCP settings
@@ -82,7 +90,7 @@ iotmart-agent-kit/
 | --- | --- | --- | --- |
 | Root control | `AGENTS.md` | hard constraints, Ponytail-first, routing entry | detailed procedures and file inventories |
 | Routing | `.codex/routing.md` | which files to read per task type and layer baseline | rule bodies |
-| Knowledge | `.codex/knowledge/*.md` | market architecture, system responsibility boundaries, domain background | operating steps |
+| Knowledge | `.codex/knowledge/*.md` | store architecture, system responsibility boundaries, domain background | operating steps |
 | Procedures | `.codex/playbooks/*.md` | deploy, validate, compare, MCP usage and other executable procedures and guardrails | background explanations |
 | Work patterns | `.codex/skills/*.md` | output formats for requirement review, SDD, test cases, validation review, deployment package | environment operations |
 | Agent skills | `.agents/skills/*/SKILL.md` | own skills and third-party official skills | edits to third-party files |
@@ -134,6 +142,8 @@ SF Guard has been removed; agents use the native `sf` CLI. Prod and Target Org a
 | --- | --- |
 | `evidence-investigation-documentation` | evidence-led investigation and documentation workflow, including safe Notion update rules |
 | `iotmart-code-review` | task-aware review of an implementation against its ADO work item, PR or branch |
+| `iotmart-work-recap` | personal work recap ("what should I do now") and stand-up report generation via DevOps Tracker MCP |
+| `agent-wiki` | agent-only, token-light knowledge pages with change history in the ADO project wiki under `/Agent-Knowledge` |
 
 ### Third party
 | Skill | Source | Purpose |
@@ -167,7 +177,7 @@ The official skills are written for general use, and parts of them conflict with
 
 These conflicts are not fixed in the official files. They are written in `.codex/playbooks/sf-skills-overlay.md`; `AGENTS.md` and the Task Routing Table require it before an official Salesforce skill is used. `CLAUDE.md` and `GEMINI.md` bridge to that shared path. When the official skills are upgraded, only the overlay needs to be re-checked.
 
-Review skills follow the same pattern: `code-review` and `differential-review` stay unmodified, and IoTMart overrides (ADO WI as the spec, PR target or `origin/Dev` as the diff base, Salesforce standards and risk levels in `.codex/knowledge/salesforce-review-standards.md`, read-only output) live in `.codex/playbooks/code-review-overlay.md`. Reviews start from `iotmart-code-review`; `differential-review` runs only when the risk level is HIGH. `code-review-and-quality` (addyosmani/agent-skills) is kept as a source reference only. Pinned commits and tree SHAs are in `review-skill-sources.json`.
+Review skills follow the same pattern: `code-review` and `differential-review` stay unmodified, and IoTMart overrides (ADO WI as the spec, explicit user base or PR target, otherwise Salesforce `origin/Dev` / Magnolia `origin/main`, as the diff base, Salesforce standards and risk levels in `.codex/knowledge/salesforce-review-standards.md`, read-only output) live in `.codex/playbooks/code-review-overlay.md`. Reviews start from `iotmart-code-review`; `differential-review` runs only when the risk level is HIGH. `code-review-and-quality` (addyosmani/agent-skills) is kept as a source reference only. Pinned commits and tree SHAs are in `review-skill-sources.json`.
 
 ## Adding or updating skills
 

@@ -15,3 +15,9 @@ args = ["-y", "@upstash/context7-mcp"]
 url = "https://mcp.notion.com/mcp"
 bearer_token_env_var = "NOTION_API_KEY"
 http_headers = { "Notion-Version" = "2025-09-03" }
+
+[mcp_servers."devops-tracker"]
+# Each member creates a personal wsk_... token at https://iotmart-tracker.pages.dev
+# (My Work -> AI client) and sets WORKSPACE_CLIENT_TOKEN in their shell environment.
+url = "https://iotmart-tracker.pages.dev/api/client/mcp"
+bearer_token_env_var = "WORKSPACE_CLIENT_TOKEN"

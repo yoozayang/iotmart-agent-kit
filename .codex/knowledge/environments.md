@@ -44,7 +44,7 @@
 | UAT | `https://iotmart-test.advantech.com` | `ccdev01` |
 | Prod | `https://www.iotmart.com` | Prod |
 
-- 市場路徑:
+- 站點路徑:
   - EU:`/en-eu/<lang>`
   - KR:`/ko-kr/<lang>`,例`/ko-kr/en`
 - KR訂單明細(Store_Default_Value`MyOrderURL__c`):`/ko-kr/Customer-Service/Account/order-details?ref=email&orderNo=<OrderNo>`

@@ -4,20 +4,21 @@
 
 ## 適用情境
 - 本目錄為**選配模板**，一般開發者使用本 Kit 時無需安裝或設定 Buzz
-- 當團隊希望建立由 Claude（Lead）、Codex（Reviewer/Developer）、Gemini（Junior）與 Hermes（Local Qwen 3.5 9B 調查員）組成的全自動化多階審核團隊時，可依本指南快速部署
+- 團隊分工為 Codex Lead 指揮、Claude Developer 開發、Gemini Reviewer 唯讀審查
 
 ## 目錄結構
 - `team-instructions.md`: 全隊通用協作指示、階級定義與邊界規範
+- `base-prompt.md`: 以 Buzz 0.5.25 的基本規則為基礎，要求每次正式指派先在頻道發開工計畫
 - `prompts/`: 各角色之專屬 System Prompt（已內建 Work in the open 與 `buzz messages send` 通訊硬限制）
-  - `claude.md`: Claude Lead（任務統籌、規劃與分派）
-  - `codex.md`: Codex Developer Reviewer（核心開發、獨立代碼審查）
-  - `gemini.md`: Gemini Junior（初階開發、Hermes成果審查）
+  - `claude.md`: Claude Developer（實作、自測與交付）
+  - `codex.md`: Codex Lead（規劃、派工與驗收）
+  - `gemini.md`: Gemini Reviewer（唯讀審查與證據核對）
 
 ## 快速部署指南
 將本目錄之設定複製至本機配置路徑：
 ```bash
 mkdir -p ~/.config/buzz-multi-agent/prompts
-cp templates/buzz-multi-agent/team-instructions.md ~/.config/buzz-multi-agent/
+cp templates/buzz-multi-agent/{base-prompt,team-instructions}.md ~/.config/buzz-multi-agent/
 cp templates/buzz-multi-agent/prompts/*.md ~/.config/buzz-multi-agent/prompts/
 ```
-搭配 `buzz-acp` 或相關 harness 啟動時，即可自動注入團隊角色與通訊規則。
+在 Buzz Desktop 建立受管 Agent，角色提示加上共同規則。各角色的 Edit 介面可選接頭與模型。三個角色使用同一 Owner，Conversation context 選 Each thread。在 Advanced 的 Environment variables 將 `BUZZ_ACP_BASE_PROMPT_FILE` 指向本機 `base-prompt.md` 的絕對路徑，儲存後重新啟動 Agent。正式交接只 Mention 下一位，開工計畫在同串公開發出。

@@ -1,4 +1,4 @@
-# Market Architecture
+# Store Architecture
 
 ## 架構模型
 - EN/NA:
@@ -31,7 +31,7 @@
   - 改讀`.codex/knowledge/system-landscape.md`
 
 ## 使用規則
-- 先用本檔判斷市場與主責系統
+- 先用本檔判斷站點與主責系統
 - 若題目涉及跨系統整合、資料流向、外部系統責任邊界,再讀`.codex/knowledge/system-landscape.md`
 - 若題目已明確落到部署、retrieve、比對、validation流程,改讀對應playbook
 
