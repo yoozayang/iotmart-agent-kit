@@ -8,17 +8,22 @@ IoTMart 3.0的coding-agent規則與skill集。Codex,Claude Code,Gemini讀同一�
 
 不需要agent協助,也不需要管理員權限
 
-1. 取得kit:`git clone https://github.com/yoozayang/iotmart-agent-kit.git`,或在GitHub頁面按「Code→Download ZIP」後解壓縮
+1. 取得kit:`git clone -c core.longpaths=true https://github.com/yoozayang/iotmart-agent-kit.git`,或在GitHub頁面按「Code→Download ZIP」後解壓縮
+   - Windows:一定要加`-c core.longpaths=true`,否則git會悄悄略過路徑太長的檔案;kit請放在較短的資料夾,例如`%USERPROFILE%\Development\iotmart-agent-kit`(Windows PowerShell無法開啟260字元以上的路徑)
 2. 雙擊安裝檔:
    - Windows:`install-windows.cmd`(若出現「Windows已保護您的電腦」,按「其他資訊」→「仍要執行」)
    - macOS:在`install-mac.command`按右鍵→「打開」(第一次需要,之後可直接雙擊)
-3. 跳出「選擇資料夾」時選IoTMart專案資料夾(有`sfdx-project.json`的那一層);按「取消」=只安裝skill到使用者資料夾
+3. 選擇專案:
+   - Windows:安裝程式會在使用者資料夾與各磁碟最上層尋找IoTMart專案(`sfdx-project.json`內含IoTMart的資料夾);找到一個就直接使用,找到多個時輸入編號,找不到時貼上專案資料夾路徑,直接按Enter開啟選擇資料夾視窗,輸入`S`=只安裝skill到使用者資料夾;選到專案的上一層會自動修正
+   - macOS:跳出「選擇資料夾」時選IoTMart專案資料夾(有`sfdx-project.json`的那一層);按「取消」=只安裝skill到使用者資料夾
 4. 看到「安裝完成」後按Enter,重新開啟Codex/Claude Code/Gemini
 
 安裝程式會做的事:
 - 把規則(`AGENTS.md`,`CLAUDE.md`,`GEMINI.md`,`.codex/`)與skill(`.agents/skills`,`.claude/skills`)複製進專案,並寫入專案`.git/info/exclude`
 - `.codex/config.toml`,`.gemini/settings.json`已存在時保留原檔
-- 有變動的舊檔先移到`~/.iotmart-agent-kit-backup/<時間>/`,內容相同則不動
+- 新版一律覆蓋舊版:有變動的舊檔先移到`~/.iotmart-agent-kit-backup/<時間>/`,內容相同則不動
+- Windows:使用者資料夾(`~/.claude/skills`,`~/.agents/skills`,以前「只安裝skill」留下的)若有同名skill也一併更新,因為Claude Code遇到同名skill時個人層級優先於專案層級
+- Windows:kit不完整(git clone沒加`core.longpaths`)或路徑超過Windows PowerShell上限時,在複製任何檔案前停下並顯示處理方式
 - 移除舊版安裝的SF Guard:shell設定檔中`# iotmart-agent-kit sf guard`的PATH行,`~/.codex/rules/iotmart-sf-guard.rules`,`~/.iotmart-agent-kit/bin`與專案的`.codex/rules/sf-guard.rules`
 
 更新:`git pull`(或重新下載ZIP)後再雙擊一次安裝檔。操作說明也放在根目錄`INSTALL.txt`
